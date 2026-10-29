@@ -48,7 +48,7 @@ Repo ini sudah siap dideploy sebagai satu project Vercel (frontend statis + API 
 
 Cara kerjanya:
 
-- `api/[...path].js` meneruskan semua `/api/*` ke aplikasi Express yang sama seperti di lokal, jadi sesi login, pesanan, dan OTP tetap berjalan.
+- `api/[...path].js` dan entrypoint pada subfolder `api/` meneruskan rute API satu tingkat maupun bertingkat ke aplikasi Express yang sama seperti di lokal, jadi sesi login, pesanan, dan OTP tetap berjalan.
 - `vercel.json` mengarahkan rute non-API ke `index.html` (SPA) dan menetapkan timeout function 30 detik.
 - SSE `/api/events` tidak didukung di serverless; frontend otomatis beralih ke polling 15 detik (`src/db/repository.js`).
 - Pool PostgreSQL dibatasi 1 koneksi per instance (`server/db.js`) agar koneksi Neon tidak habis.
