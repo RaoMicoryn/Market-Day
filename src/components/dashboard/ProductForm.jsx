@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import FormField from "../FormField";
 import { CATEGORIES, CATEGORY_META, formatRupiah } from "../../data/products";
-
-const MAX_BYTES = 400 * 1024;
+import { imageFileToDataUrl } from "../../utils/imageUpload";
 
 export default function ProductForm({ product, onSave, onClose }) {
   const [f, setF] = useState({
@@ -34,16 +33,17 @@ export default function ProductForm({ product, onSave, onClose }) {
     setErr((v) => ({ ...v, [e.target.name]: undefined }));
   };
 
-  const pickFile = (e) => {
+  const pickFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > MAX_BYTES) return setErr((v) => ({ ...v, image: "Maksimal 400 KB (atau pakai URL foto)." }));
-    const reader = new FileReader();
-    reader.onload = () => {
-      setF((v) => ({ ...v, image: reader.result }));
+    e.target.value = "";
+    try {
+      const image = await imageFileToDataUrl(file);
+      setF((v) => ({ ...v, image }));
       setErr((v) => ({ ...v, image: undefined }));
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      setErr((v) => ({ ...v, image: error.message }));
+    }
   };
 
   const submit = async (e) => {
@@ -266,7 +266,7 @@ export default function ProductForm({ product, onSave, onClose }) {
                     <Trash2 size={12} /> Hapus
                   </button>
                 )}
-                <span className="text-[10px] text-navy/65">Maks. 400 KB</span>
+                <span className="text-[10px] text-navy/65">Maks. 2 MB · otomatis dikompres</span>
               </div>
             </div>
           </div>

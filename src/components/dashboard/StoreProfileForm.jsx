@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { ImagePlus, Loader2, Save, Trash2, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AlertTriangle, ImagePlus, Loader2, Save, Trash2, Users } from "lucide-react";
 import FormField from "../FormField";
 import { useToast } from "../../context/ToastContext";
-import { updateStore } from "../../db/repository";
-
-const MAX_BYTES = 400 * 1024;
+import { useConfirm } from "../../context/ConfirmContext";
+import { deleteStore, updateStore } from "../../db/repository";
+import { imageFileToDataUrl } from "../../utils/imageUpload";
 
 export default function StoreProfileForm({ store }) {
   const toast = useToast();
+  const confirm = useConfirm();
+  const navigate = useNavigate();
   const [f, setF] = useState({
     name: store.name || "",
     kelas: store.kelas || "",
@@ -18,6 +21,7 @@ export default function StoreProfileForm({ store }) {
   });
   const [err, setErr] = useState({});
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setF({
@@ -35,23 +39,17 @@ export default function StoreProfileForm({ store }) {
     setErr((v) => ({ ...v, [e.target.name]: undefined }));
   };
 
-  const pick = (key) => (e) => {
+  const pick = (key) => async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
-    if (file.size > MAX_BYTES) {
-      setErr((v) => ({ ...v, [key]: "Maksimal 400 KB." }));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setF((v) => ({ ...v, [key]: reader.result }));
+    try {
+      const image = await imageFileToDataUrl(file);
+      setF((v) => ({ ...v, [key]: image }));
       setErr((v) => ({ ...v, [key]: undefined }));
-    };
-    reader.onerror = () => {
-      setErr((v) => ({ ...v, [key]: "Gagal membaca file gambar. Coba pilih file lain." }));
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      setErr((v) => ({ ...v, [key]: error.message }));
+    }
   };
 
   const submit = async (e) => {
@@ -80,7 +78,28 @@ export default function StoreProfileForm({ store }) {
     }
   };
 
+  const removeStore = async () => {
+    const approved = await confirm({
+      title: `Hapus toko “${store.name}” secara permanen?`,
+      message: "Toko, akun penjual, semua produk, dan seluruh riwayat pesanan terkait akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.",
+      confirmLabel: "Hapus permanen",
+      danger: true,
+    });
+    if (!approved) return;
+
+    setDeleting(true);
+    try {
+      await deleteStore(store.id);
+      toast("Toko dan seluruh datanya telah dihapus.", { type: "success" });
+      navigate("/", { replace: true });
+    } catch (error) {
+      toast(error.message || "Toko gagal dihapus. Coba lagi.", { type: "error" });
+      setDeleting(false);
+    }
+  };
+
   return (
+    <div className="space-y-4">
     <form onSubmit={submit} noValidate className="space-y-4">
       <div className="card overflow-hidden">
         <div className="relative h-36 bg-gradient-to-br from-navy-600 via-navy to-navy-900">
@@ -140,6 +159,7 @@ export default function StoreProfileForm({ store }) {
           </div>
           {err.logo && <p className="mt-2 text-[11px] font-semibold text-red-700">{err.logo}</p>}
           {err.cover && <p className="mt-2 text-[11px] font-semibold text-red-700">{err.cover}</p>}
+          <p className="mt-2 text-[10px] text-navy/65">Logo dan banner maksimal 2 MB per file; gambar dikompres otomatis.</p>
         </div>
       </div>
 
@@ -199,12 +219,30 @@ export default function StoreProfileForm({ store }) {
         </div>
 
         <div className="flex justify-end border-t border-navy/[0.06] pt-4">
-          <button type="submit" disabled={saving} className="btn-primary">
+          <button type="submit" disabled={saving || deleting} className="btn-primary">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {saving ? "Menyimpan..." : "Simpan perubahan"}
           </button>
         </div>
       </div>
     </form>
+    <section className="card flex flex-col gap-3 border border-red-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 className="text-sm font-bold text-red-800">Hapus toko</h2>
+        <p className="mt-1 max-w-xl text-xs leading-relaxed text-navy/65">
+          Menghapus akun, produk, dan riwayat pesanan secara permanen. Tindakan ini tidak bisa dibatalkan.
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={removeStore}
+        disabled={saving || deleting}
+        className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-bold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {deleting ? <Loader2 size={15} className="animate-spin" /> : <AlertTriangle size={15} />}
+        {deleting ? "Menghapus..." : "Hapus toko"}
+      </button>
+    </section>
+    </div>
   );
 }

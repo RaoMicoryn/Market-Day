@@ -22,7 +22,7 @@ if (!process.env.SESSION_SECRET) {
 
 app.disable("x-powered-by");
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({ limit: "4mb" }));
 app.use(
   session({
     store: new PgSession({ pool, tableName: "user_sessions", createTableIfMissing: true }),
@@ -299,6 +299,52 @@ app.patch("/api/stores/:id", async (req, res, next) => {
   } catch (error) {
     if (error.code === "23505") return fail(res, 409, "Nama toko sudah dipakai toko lain.");
     next(error);
+  }
+});
+
+app.delete("/api/stores/:id", async (req, res, next) => {
+  if (!requireOwner(req, res, req.params.id)) return;
+
+  const client = await pool.connect();
+  try {
+    await client.query("begin");
+    const storeResult = await client.query(
+      "select owner_id as \"ownerId\" from stores where id = $1 for update",
+      [req.params.id]
+    );
+    if (!storeResult.rowCount) {
+      await client.query("rollback");
+      return fail(res, 404, "Toko tidak ditemukan.");
+    }
+    if (storeResult.rows[0].ownerId !== req.session.user.accountId) {
+      await client.query("rollback");
+      return fail(res, 403, "Kamu tidak punya akses ke toko ini.");
+    }
+
+    await client.query("delete from orders where store_id = $1", [req.params.id]);
+    await client.query("delete from stores where id = $1", [req.params.id]);
+    await client.query(
+      "delete from user_sessions where sess->'user'->>'accountId' = $1",
+      [storeResult.rows[0].ownerId]
+    );
+    await client.query("delete from accounts where id = $1", [storeResult.rows[0].ownerId]);
+    await client.query("commit");
+
+    req.session.destroy((error) => {
+      if (error) return next(error);
+      res.clearCookie("market.sid", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      sendChange();
+      res.status(204).end();
+    });
+  } catch (error) {
+    await client.query("rollback");
+    next(error);
+  } finally {
+    client.release();
   }
 });
 

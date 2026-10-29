@@ -8,7 +8,7 @@
     "dev:api": "node --watch server/index.js",
     "dev:web": "vite",
     "db:setup": "node server/migrate.js",
-    "test": "node --test server/lib/validator.test.js server/lib/productStock.test.js",
+    "test": "node --test server/lib/validator.test.js server/lib/productStock.test.js src/utils/imageUpload.test.js",
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server/index.js"

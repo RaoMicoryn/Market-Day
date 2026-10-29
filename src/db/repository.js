@@ -122,6 +122,8 @@ export const findStoreByCode = (input) => {
 };
 export const setStoreOpen = (storeId, isOpen) =>
   request(`/stores/${encodeURIComponent(storeId)}/open`, { method: "PATCH", body: body({ isOpen }) });
+export const deleteStore = (storeId) =>
+  request(`/stores/${encodeURIComponent(storeId)}`, { method: "DELETE" });
 export const updateStore = (storeId, patch) =>
   request(`/stores/${encodeURIComponent(storeId)}`, { method: "PATCH", body: body(patch) });
 

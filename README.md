@@ -82,7 +82,7 @@ Cara kerjanya:
 
 ### Fitur penjual
 - Buka/tutup booth (booth tutup tidak bisa menerima pesanan).
-- Kelola produk: tambah, ubah, hapus, atur jumlah stok atau stok tidak dibatasi, switch ketersediaan, atur topping per produk tanpa batas jumlah, upload gambar (maks 400 KB).
+- Kelola produk: tambah, ubah, hapus, atur jumlah stok atau stok tidak dibatasi, switch ketersediaan, atur topping per produk tanpa batas jumlah, unggah foto produk/logo/banner maksimal 2 MB per file (dikompres otomatis agar aman untuk API Vercel). Penjual juga dapat menghapus toko secara permanen; tindakan ini menghapus akun, semua sesi login, produk, dan riwayat pesanan terkait setelah konfirmasi.
 - Pesanan: filter status, cari nama/nomor, terima semua, ubah status, ekspor CSV, hubungi pembeli via WhatsApp.
 - Statistik: omzet, jumlah pesanan, rata-rata transaksi, nilai pesanan aktif, produk terlaris, grafik 7 hari.
 - Profil toko: nama, kelas, anggota, bio, logo, banner.
