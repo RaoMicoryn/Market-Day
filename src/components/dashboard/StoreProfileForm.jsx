@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ImagePlus, Loader2, Save, Trash2, Users } from "lucide-react";
 import FormField from "../FormField";
 import { useToast } from "../../context/ToastContext";
@@ -18,8 +18,6 @@ export default function StoreProfileForm({ store }) {
   });
   const [err, setErr] = useState({});
   const [saving, setSaving] = useState(false);
-  const coverInput = useRef(null);
-  const logoInput = useRef(null);
 
   useEffect(() => {
     setF({
@@ -87,12 +85,18 @@ export default function StoreProfileForm({ store }) {
       <div className="card overflow-hidden">
         <div className="relative h-36 bg-gradient-to-br from-navy-600 via-navy to-navy-900">
           {f.cover && <img src={f.cover} alt="" className="h-full w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
-          <div className="absolute bottom-3 right-3 flex gap-1.5">
-            <button type="button" onClick={() => coverInput.current?.click()} className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-bold text-navy shadow-soft backdrop-blur transition hover:bg-white">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
+          <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
+            <label className="relative inline-flex cursor-pointer items-center gap-1.5 overflow-hidden rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-bold text-navy shadow-soft backdrop-blur transition hover:bg-white">
               <ImagePlus size={12} /> Ganti cover
-            </button>
-            <input ref={coverInput} type="file" accept="image/*" onChange={pick("cover")} className="hidden" aria-label="Pilih gambar cover toko" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={pick("cover")}
+                aria-label="Pilih gambar cover toko"
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              />
+            </label>
             {f.cover && (
               <button type="button" onClick={() => setF((v) => ({ ...v, cover: "" }))} aria-label="Hapus cover" className="rounded-full bg-white/90 p-1.5 text-navy/65 shadow-soft transition hover:text-red-700">
                 <Trash2 size={12} />
@@ -111,10 +115,16 @@ export default function StoreProfileForm({ store }) {
                   {(f.name || "T").slice(0, 1).toUpperCase()}
                 </span>
               )}
-              <button type="button" onClick={() => logoInput.current?.click()} className="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-accent text-white shadow-glow transition hover:bg-price" title="Ganti logo" aria-label="Ganti logo">
+              <label className="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-accent text-white shadow-glow transition hover:bg-price" title="Ganti logo">
                 <ImagePlus size={13} />
-              </button>
-              <input ref={logoInput} type="file" accept="image/*" onChange={pick("logo")} className="hidden" aria-label="Pilih gambar logo toko" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={pick("logo")}
+                  aria-label="Pilih gambar logo toko"
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+              </label>
             </div>
             <div className="pb-1">
               <p className="text-sm font-bold text-navy">{f.name || "Nama toko"}</p>
