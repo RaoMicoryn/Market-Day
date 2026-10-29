@@ -32,7 +32,7 @@ Untuk production, jalankan `npm run build`, lalu `npm start`. Server Express mel
 
 Repo ini sudah siap dideploy sebagai satu project Vercel (frontend statis + API Express sebagai function):
 
-1. Import repo di Vercel. Vercel memakai `vercel.json`: build `npm run build`, output `dist`.
+1. Import repo di Vercel. Vercel memakai `vercel.json`: setiap deploy menjalankan `npm run db:setup` lalu `npm run build`, dengan output `dist`.
 2. Isi **Environment Variables** di Project Settings:
 
    ```env
@@ -43,8 +43,7 @@ Repo ini sudah siap dideploy sebagai satu project Vercel (frontend statis + API 
    VITE_SELLER_WHATSAPP=08xxxxxxxxxx   # opsional
    ```
 
-3. Jalankan `npm run db:setup` dari lokal (database Neon yang sama) untuk membuat tabel. Setelah menambahkan stok kuantitatif, jalankan kembali perintah ini sebelum deploy agar kolom stok ditambahkan; stok produk lama tetap tidak dibatasi.
-4. Deploy ulang.
+3. Klik **Deploy** atau **Redeploy**. Migrasi skema idempoten berjalan otomatis sebelum build, termasuk menambahkan kolom stok; stok produk lama tetap tidak dibatasi.
 
 Cara kerjanya:
 
