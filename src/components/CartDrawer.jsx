@@ -121,37 +121,49 @@ export default function CartDrawer() {
                 <span className="text-[11px] font-semibold text-navy/65">{g.items.length} item</span>
               </div>
               <ul className="space-y-2">
-                {g.items.map((i) => (
-                  <li key={i.key} className="relative flex gap-3 rounded-2xl border border-navy/[0.05] bg-white p-2.5 shadow-soft">
-                    <ProductImage product={i.product} className="h-16 w-16 shrink-0 rounded-xl" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate pr-5 text-sm font-bold text-navy">{i.product.name}</p>
-                      {optionsText(i.options) && (
-                        <p className="truncate text-[11px] text-navy/65">{optionsText(i.options)}</p>
-                      )}
-                      <div className="mt-1.5 flex items-center justify-between">
-                        <span className="text-sm font-extrabold text-price">{formatRupiah(i.unit * i.qty)}</span>
-                        <span className="flex items-center gap-1.5">
-                          <button type="button" onClick={() => changeQty(i.key, -1)} aria-label={`Kurangi ${i.product.name}`} className={btn}>
-                            <Minus size={12} />
-                          </button>
-                          <span className="w-4 text-center text-xs font-bold text-navy">{i.qty}</span>
-                          <button type="button" onClick={() => changeQty(i.key, 1)} aria-label={`Tambah ${i.product.name}`} className={btn}>
-                            <Plus size={12} />
-                          </button>
-                        </span>
+                {g.items.map((i) => {
+                  const productQty = cart.reduce(
+                    (totalQty, item) => totalQty + (item.product.id === i.product.id ? item.qty : 0),
+                    0
+                  );
+                  return (
+                    <li key={i.key} className="relative flex gap-3 rounded-2xl border border-navy/[0.05] bg-white p-2.5 shadow-soft">
+                      <ProductImage product={i.product} className="h-16 w-16 shrink-0 rounded-xl" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate pr-5 text-sm font-bold text-navy">{i.product.name}</p>
+                        {optionsText(i.options) && (
+                          <p className="truncate text-[11px] text-navy/65">{optionsText(i.options)}</p>
+                        )}
+                        <div className="mt-1.5 flex items-center justify-between">
+                          <span className="text-sm font-extrabold text-price">{formatRupiah(i.unit * i.qty)}</span>
+                          <span className="flex items-center gap-1.5">
+                            <button type="button" onClick={() => changeQty(i.key, -1)} aria-label={`Kurangi ${i.product.name}`} className={btn}>
+                              <Minus size={12} />
+                            </button>
+                            <span className="w-4 text-center text-xs font-bold text-navy">{i.qty}</span>
+                            <button
+                              type="button"
+                              onClick={() => changeQty(i.key, 1)}
+                              aria-label={`Tambah ${i.product.name}`}
+                              disabled={i.product.stockQuantity != null && productQty >= i.product.stockQuantity}
+                              className={`${btn} disabled:cursor-not-allowed disabled:opacity-40`}
+                            >
+                              <Plus size={12} />
+                            </button>
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(i.key)}
-                      aria-label={`Hapus ${i.product.name}`}
-                      className="absolute right-2 top-2 rounded-full p-1 text-navy/25 transition hover:bg-red-50 hover:text-red-700"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </li>
-                ))}
+                      <button
+                        type="button"
+                        onClick={() => removeItem(i.key)}
+                        aria-label={`Hapus ${i.product.name}`}
+                        className="absolute right-2 top-2 rounded-full p-1 text-navy/25 transition hover:bg-red-50 hover:text-red-700"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

@@ -9,6 +9,7 @@ export default function ProductForm({ product, onSave, onClose }) {
   const [f, setF] = useState({
     name: product?.name ?? "",
     price: product?.price ?? "",
+    stockQuantity: product?.stockQuantity == null ? (product ? "" : "0") : String(product.stockQuantity),
     category: product?.category ?? CATEGORIES[0],
     description: product?.description ?? "",
     image: product?.image ?? "",
@@ -50,6 +51,9 @@ export default function ProductForm({ product, onSave, onClose }) {
     const found = {};
     if (!f.name.trim()) found.name = "Nama produk wajib diisi";
     if (!(Number(f.price) > 0)) found.price = "Harga harus lebih dari 0";
+    if (f.stockQuantity !== "" && (!/^\d+$/.test(f.stockQuantity) || Number(f.stockQuantity) > 2_147_483_647)) {
+      found.stockQuantity = "Stok harus berupa bilangan bulat 0 atau lebih.";
+    }
     const activeToppings = f.toppings.filter((topping) => topping.name.trim() || topping.price !== "");
     if (activeToppings.some((topping) => !topping.name.trim())) {
       found.toppings = "Isi nama untuk setiap topping yang ditambahkan.";
@@ -65,6 +69,7 @@ export default function ProductForm({ product, onSave, onClose }) {
       await onSave({
         ...f,
         price: Number(f.price),
+        stockQuantity: f.stockQuantity === "" ? null : Number(f.stockQuantity),
         toppings: activeToppings.map((topping) => ({
           name: topping.name.trim(),
           price: Number(topping.price),
@@ -144,6 +149,32 @@ export default function ProductForm({ product, onSave, onClose }) {
               ))}
             </select>
           </div>
+        </div>
+
+        <div>
+          <label htmlFor="stockQuantity" className="mb-1.5 block text-[13px] font-bold text-navy">
+            Stok tersedia
+          </label>
+          <input
+            id="stockQuantity"
+            name="stockQuantity"
+            type="number"
+            min="0"
+            max="2147483647"
+            step="1"
+            value={f.stockQuantity}
+            onChange={set}
+            placeholder="Tidak dibatasi"
+            aria-describedby="stockQuantity-hint"
+            className={`field ${err.stockQuantity ? "border-red-400 bg-red-50/40" : ""}`}
+          />
+          {err.stockQuantity ? (
+            <p role="alert" className="mt-1.5 text-[11px] font-semibold text-red-700">{err.stockQuantity}</p>
+          ) : (
+            <p id="stockQuantity-hint" className="mt-1.5 text-[11px] text-navy/65">
+              Kosongkan untuk stok tidak dibatasi. Isi 0 jika sedang habis.
+            </p>
+          )}
         </div>
 
         <FormField

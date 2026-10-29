@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { pool } from "./db.js";
 import otpRouter from "./routes/otp.js";
 import { validateWhatsAppNumber } from "./lib/validator.js";
+import { parseStockQuantity } from "./lib/productStock.js";
 
 const app = express();
 const PgSession = connectPgSimple(session);
@@ -307,14 +308,18 @@ app.get("/api/products", async (req, res, next) => {
       const ids = String(req.query.ids).split(",").filter(Boolean);
       const result = await pool.query(
         `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
-          p.in_stock as "inStock", p.created_at as "createdAt" from products p where p.id = any($1::uuid[])`,
+          p.stock_quantity as "stockQuantity",
+          (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
+          p.created_at as "createdAt" from products p where p.id = any($1::uuid[])`,
         [ids]
       );
       return res.json(result.rows);
     }
     const result = await pool.query(
       `select id, store_id as "storeId", name, category, price, toppings, description, image,
-        in_stock as "inStock", created_at as "createdAt" from products where store_id = $1 order by created_at desc`,
+        stock_quantity as "stockQuantity",
+        (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
+        created_at as "createdAt" from products where store_id = $1 order by created_at desc`,
       [req.query.storeId]
     );
     res.json(result.rows);
@@ -326,23 +331,25 @@ app.get("/api/products", async (req, res, next) => {
 app.get("/api/products/search", async (req, res, next) => {
   const { q = "", category = "", sort = "recommended", onlyOpen = "false", onlyAvailable = "false" } = req.query;
   const ordering = {
-    recommended: "s.is_open desc, p.in_stock desc, sold desc, p.name asc",
+    recommended: "s.is_open desc, (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) desc, sold desc, p.name asc",
     newest: "p.created_at desc",
     "price-asc": "p.price asc",
     "price-desc": "p.price desc",
     name: "p.name asc",
-  }[sort] || "s.is_open desc, p.in_stock desc, sold desc, p.name asc";
+  }[sort] || "s.is_open desc, (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) desc, sold desc, p.name asc";
   try {
     const result = await pool.query(
       `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
-        p.in_stock as "inStock", p.created_at as "createdAt", s.name as "storeName", s.slug as "storeSlug",
+        p.stock_quantity as "stockQuantity",
+        (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
+        p.created_at as "createdAt", s.name as "storeName", s.slug as "storeSlug",
         s.code as "storeCode", s.is_open as "storeOpen",
         (select coalesce(sum(oi.qty), 0)::int from order_items oi join orders o on o.id = oi.order_id
           where oi.product_id = p.id and o.status = 'done') as sold
        from products p join stores s on s.id = p.store_id
        where ($1 = '' or p.category = $1)
          and ($2::boolean is false or s.is_open)
-         and ($3::boolean is false or p.in_stock)
+         and ($3::boolean is false or (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)))
          and ($4 = '' or concat_ws(' ', p.name, p.description, s.name, p.category) ilike '%' || $4 || '%')
        order by ${ordering}`,
       [category, onlyOpen === "true", onlyAvailable === "true", String(q)]
@@ -355,20 +362,24 @@ app.get("/api/products/search", async (req, res, next) => {
 
 app.post("/api/stores/:storeId/products", async (req, res, next) => {
   if (!requireOwner(req, res, req.params.storeId)) return;
-  const { name = "", price, category, description = "", image = "", toppings = [] } = req.body;
+  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity } = req.body;
   if (!name.trim()) return fail(res, 400, "Nama produk wajib diisi.");
   if (!(Number(price) > 0)) return fail(res, 400, "Harga harus lebih dari 0.");
   if (!CATEGORIES.includes(category)) return fail(res, 400, "Kategori tidak valid.");
+  const stock = parseStockQuantity(stockQuantity);
+  if (!stock.valid) return fail(res, 400, "Stok harus berupa bilangan bulat 0 atau lebih.");
   const validatedToppings = validateToppings(toppings);
   if (!validatedToppings) return fail(res, 400, "Periksa kembali nama dan harga topping.");
   try {
     const result = await pool.query(
-      `insert into products (store_id, name, price, category, description, image, toppings)
-       values ($1, $2, $3, $4, $5, $6, $7)
+      `insert into products (store_id, name, price, category, description, image, toppings, stock_quantity)
+       values ($1, $2, $3, $4, $5, $6, $7, $8)
        returning id, store_id as "storeId", name, price, category, description, image, toppings,
-         in_stock as "inStock", created_at as "createdAt"`,
+         stock_quantity as "stockQuantity",
+         (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
+         created_at as "createdAt"`,
       [req.params.storeId, name.trim().slice(0, 60), Math.round(Number(price)), category,
-        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings)]
+        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value]
     );
     sendChange();
     res.status(201).json(result.rows[0]);
@@ -378,10 +389,12 @@ app.post("/api/stores/:storeId/products", async (req, res, next) => {
 });
 
 app.patch("/api/products/:id", async (req, res, next) => {
-  const { name = "", price, category, description = "", image = "", toppings = [] } = req.body;
+  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity } = req.body;
   if (!name.trim()) return fail(res, 400, "Nama produk wajib diisi.");
   if (!(Number(price) > 0)) return fail(res, 400, "Harga harus lebih dari 0.");
   if (!CATEGORIES.includes(category)) return fail(res, 400, "Kategori tidak valid.");
+  const stock = parseStockQuantity(stockQuantity);
+  if (!stock.valid) return fail(res, 400, "Stok harus berupa bilangan bulat 0 atau lebih.");
   const validatedToppings = validateToppings(toppings);
   if (!validatedToppings) return fail(res, 400, "Periksa kembali nama dan harga topping.");
   try {
@@ -389,11 +402,14 @@ app.patch("/api/products/:id", async (req, res, next) => {
     if (!owner.rowCount) return fail(res, 404, "Produk tidak ditemukan.");
     if (!requireOwner(req, res, owner.rows[0].store_id)) return;
     const result = await pool.query(
-      `update products set name = $2, price = $3, category = $4, description = $5, image = $6, toppings = $7
+      `update products set name = $2, price = $3, category = $4, description = $5, image = $6, toppings = $7,
+         stock_quantity = $8
        where id = $1 returning id, store_id as "storeId", name, price, category, description, image, toppings,
-         in_stock as "inStock", created_at as "createdAt"`,
+         stock_quantity as "stockQuantity",
+         (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
+         created_at as "createdAt"`,
       [req.params.id, name.trim().slice(0, 60), Math.round(Number(price)), category,
-        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings)]
+        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value]
     );
     sendChange();
     res.json(result.rows[0]);
@@ -407,7 +423,16 @@ app.patch("/api/products/:id/stock", async (req, res, next) => {
     const owner = await pool.query("select store_id from products where id = $1", [req.params.id]);
     if (!owner.rowCount) return fail(res, 404, "Produk tidak ditemukan.");
     if (!requireOwner(req, res, owner.rows[0].store_id)) return;
-    await pool.query("update products set in_stock = $2 where id = $1", [req.params.id, Boolean(req.body.inStock)]);
+    if (req.body.inStock === true) {
+      const result = await pool.query(
+        `update products set in_stock = true where id = $1 and (stock_quantity is null or stock_quantity > 0)
+         returning id`,
+        [req.params.id]
+      );
+      if (!result.rowCount) return fail(res, 409, "Tambahkan stok sebelum menandai produk tersedia.");
+    } else {
+      await pool.query("update products set in_stock = false where id = $1", [req.params.id]);
+    }
     sendChange();
     res.json({ ok: true });
   } catch (error) {
@@ -447,18 +472,59 @@ app.post("/api/orders", async (req, res, next) => {
     );
     const customerId = customerResult.rows[0].id;
     const grouped = new Map();
-    for (const entry of items) {
+    const orderedItems = [...items].sort((a, b) =>
+      String(a.product?.id || "").localeCompare(String(b.product?.id || ""))
+    );
+    const productIds = [...new Set(orderedItems.map((entry) => String(entry.product?.id || "")))];
+    if (productIds.some((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))) {
+      throw Object.assign(new Error("Produk sudah tidak tersedia."), { status: 400 });
+    }
+    const productStores = await client.query(
+      "select id, store_id as \"storeId\" from products where id = any($1::uuid[]) order by id",
+      [productIds]
+    );
+    if (productStores.rowCount !== productIds.length) {
+      throw Object.assign(new Error("Produk sudah tidak tersedia."), { status: 400 });
+    }
+    const storeIds = [...new Set(productStores.rows.map((product) => product.storeId))].sort();
+    const lockedStores = await client.query(
+      `select id, name, is_open as "isOpen" from stores where id = any($1::uuid[])
+       order by id for share`,
+      [storeIds]
+    );
+    if (lockedStores.rowCount !== storeIds.length) {
+      throw Object.assign(new Error("Toko sudah tidak tersedia."), { status: 400 });
+    }
+    const storesById = new Map(lockedStores.rows.map((store) => [store.id, store]));
+
+    for (const entry of orderedItems) {
       const productResult = await client.query(
-        `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.in_stock as "inStock",
-          s.name as "storeName", s.is_open as "storeOpen"
-         from products p join stores s on s.id = p.store_id where p.id = $1 for update of p, s`,
+        `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings,
+          p.in_stock as "inStock", p.stock_quantity as "stockQuantity", s.name as "storeName"
+         from products p join stores s on s.id = p.store_id where p.id = $1 for update of p`,
         [entry.product?.id]
       );
       const product = productResult.rows[0];
       if (!product) throw Object.assign(new Error("Produk sudah tidak tersedia."), { status: 400 });
-      if (!product.storeOpen) throw Object.assign(new Error(`${product.storeName} sedang tutup.`), { status: 400 });
-      if (!product.inStock) throw Object.assign(new Error(`"${product.name}" sedang habis.`), { status: 400 });
+      if (!storesById.get(product.storeId)?.isOpen) {
+        throw Object.assign(new Error(`${product.storeName} sedang tutup.`), { status: 400 });
+      }
       const qty = Math.max(1, Math.min(99, Math.round(Number(entry.qty) || 1)));
+      if (!product.inStock) {
+        throw Object.assign(new Error(`Maaf, "${product.name}" sedang tidak tersedia. Coba pilih produk lain ya.`), { status: 409 });
+      }
+      if (product.stockQuantity !== null && product.stockQuantity < qty) {
+        const message = product.stockQuantity === 0
+          ? `Maaf, stok "${product.name}" baru saja habis saat kamu checkout. Coba pilih produk lain ya.`
+          : `Maaf, stok "${product.name}" tinggal ${product.stockQuantity}. Kurangi jumlah pesananmu atau pilih produk lain ya.`;
+        throw Object.assign(new Error(message), { status: 409 });
+      }
+      if (product.stockQuantity !== null) {
+        await client.query(
+          "update products set stock_quantity = stock_quantity - $2 where id = $1",
+          [product.id, qty]
+        );
+      }
       const options = entry.options && typeof entry.options === "object" ? entry.options : {};
       if (!Array.isArray(options.toppings || [])) {
         throw Object.assign(new Error("Pilihan topping tidak valid."), { status: 400 });

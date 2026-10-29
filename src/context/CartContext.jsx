@@ -67,21 +67,47 @@ export function CartProvider({ children }) {
 
   const addSilently = (product, { options = {}, qty = 1 } = {}) => {
     const key = keyOf(product.id, options);
+    const alreadyInCart = cart.reduce(
+      (total, item) => total + (item.product.id === product.id ? item.qty : 0),
+      0
+    );
+    if (product.stockQuantity != null && alreadyInCart + qty > product.stockQuantity) {
+      notify(
+        product.stockQuantity === 0
+          ? `${product.name} sedang habis.`
+          : `Stok ${product.name} tinggal ${product.stockQuantity}. Kurangi jumlah di keranjang.`,
+        { type: "warning" }
+      );
+      return false;
+    }
     lastAdded.current = { id: product.id, key };
     setCart((c) =>
       c.some((i) => i.key === key)
         ? c.map((i) => (i.key === key ? { ...i, qty: i.qty + qty } : i))
         : [...c, { key, product, qty, options, unit: unitPrice(product.price, options), note: "" }]
     );
+    return true;
   };
 
   const addToCart = (product, config) => {
-    addSilently(product, config);
+    if (!addSilently(product, config)) return false;
     notify(`${product.name} masuk keranjang`, { type: "success" });
+    return true;
   };
 
-  const changeQty = (key, delta) =>
+  const changeQty = (key, delta) => {
+    const item = cart.find((entry) => entry.key === key);
+    if (!item) return;
+    const productQty = cart.reduce(
+      (total, entry) => total + (entry.product.id === item.product.id ? entry.qty : 0),
+      0
+    );
+    if (delta > 0 && item.product.stockQuantity != null && productQty + delta > item.product.stockQuantity) {
+      notify(`Stok ${item.product.name} tinggal ${item.product.stockQuantity}.`, { type: "warning" });
+      return;
+    }
     setCart((c) => c.map((i) => (i.key === key ? { ...i, qty: i.qty + delta } : i)).filter((i) => i.qty > 0));
+  };
   const removeItem = (key) => setCart((c) => c.filter((i) => i.key !== key));
   const setNote = (key, note) => setCart((c) => c.map((i) => (i.key === key ? { ...i, note } : i)));
 

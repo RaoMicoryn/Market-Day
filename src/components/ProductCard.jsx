@@ -63,6 +63,11 @@ export default function ProductCard({ product, onAdd, onSelect, showStore = fals
             <Store size={11} /> {product.storeName}
           </p>
         )}
+        {product.stockQuantity != null && (
+          <p className="mt-1 text-[10px] font-semibold text-navy/65">
+            {product.stockQuantity > 0 ? `Stok tersisa: ${product.stockQuantity}` : "Stok habis"}
+          </p>
+        )}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-2.5">
           <p className="text-sm font-extrabold text-price sm:text-base">{formatRupiah(product.price)}</p>

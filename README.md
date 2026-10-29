@@ -43,7 +43,7 @@ Repo ini sudah siap dideploy sebagai satu project Vercel (frontend statis + API 
    VITE_SELLER_WHATSAPP=08xxxxxxxxxx   # opsional
    ```
 
-3. Jalankan `npm run db:setup` sekali dari lokal (database Neon yang sama) untuk membuat tabel.
+3. Jalankan `npm run db:setup` dari lokal (database Neon yang sama) untuk membuat tabel. Setelah menambahkan stok kuantitatif, jalankan kembali perintah ini sebelum deploy agar kolom stok ditambahkan; stok produk lama tetap tidak dibatasi.
 4. Deploy ulang.
 
 Cara kerjanya:
@@ -77,12 +77,13 @@ Cara kerjanya:
 - Keranjang dipisah otomatis per booth, opsi rasa/topping, catatan per item.
 - Nomor antrean (`MD-0xx`) + pelacak status melalui pembaruan server.
 - Checkout dua langkah: isi data → verifikasi OTP WhatsApp → pesanan dibuat (data checkout disimpan sementara di `sessionStorage`, tahan refresh, kedaluwarsa 30 menit).
+- Produk dengan stok terbatas menampilkan jumlah tersisa; stok dipotong atomik saat checkout berhasil. Jika beberapa pembeli berebut unit terakhir, hanya transaksi pertama yang mendapatkannya dan transaksi lain diberi pesan untuk memilih produk lain.
 - Wishlist, riwayat pesanan, dan tombol **Pesan lagi**.
 - Data pembeli terakhir diingat untuk checkout berikutnya.
 
 ### Fitur penjual
 - Buka/tutup booth (booth tutup tidak bisa menerima pesanan).
-- Kelola produk: tambah, ubah, hapus, switch stok habis, atur topping per produk tanpa batas jumlah, upload gambar (maks 400 KB).
+- Kelola produk: tambah, ubah, hapus, atur jumlah stok atau stok tidak dibatasi, switch ketersediaan, atur topping per produk tanpa batas jumlah, upload gambar (maks 400 KB).
 - Pesanan: filter status, cari nama/nomor, terima semua, ubah status, ekspor CSV, hubungi pembeli via WhatsApp.
 - Statistik: omzet, jumlah pesanan, rata-rata transaksi, nilai pesanan aktif, produk terlaris, grafik 7 hari.
 - Profil toko: nama, kelas, anggota, bio, logo, banner.

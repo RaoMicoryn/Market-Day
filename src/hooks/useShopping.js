@@ -11,12 +11,14 @@ export function useShopping() {
   const guard = (fn) => (p, config) => {
     if (p.storeOpen === false) return notify(`${p.storeName} sedang tutup.`);
     if (p.inStock === false) return notify(`${p.name} sedang habis.`);
-    fn(p, config);
+    return fn(p, config);
   };
   return {
     selected,
     setSelected,
     onAdd: guard(addToCart),
-    onBuy: guard((p, config) => (addSilently(p, config), navigate("/checkout"))),
+    onBuy: guard((p, config) => {
+      if (addSilently(p, config)) navigate("/checkout");
+    }),
   };
 }

@@ -17,8 +17,10 @@ function StockSwitch({ product, onToggle }) {
       role="switch"
       aria-checked={on}
       aria-label={`${product.name}: ${on ? "tersedia" : "habis"}`}
+      disabled={product.stockQuantity === 0}
+      title={product.stockQuantity === 0 ? "Tambahkan stok lewat menu ubah produk." : undefined}
       onClick={() => onToggle(product)}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
     >
       <span className={`relative h-6 w-10 rounded-full transition-colors duration-300 ${on ? "bg-emerald-500" : "bg-navy/20"}`}>
         <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all duration-300 ${on ? "left-[18px]" : "left-0.5"}`} />
@@ -125,6 +127,9 @@ export default function ProductsTab({ store }) {
                   {CATEGORY_META[p.category]?.emoji} {p.category}
                 </p>
                 <p className="text-sm font-extrabold text-price">{formatRupiah(p.price)}</p>
+                <p className="text-[10px] font-medium text-navy/65">
+                  {p.stockQuantity == null ? "Stok tidak dibatasi" : `Stok: ${p.stockQuantity}`}
+                </p>
               </div>
               <StockSwitch product={p} onToggle={toggleStock} />
               <div className="flex items-center gap-1">

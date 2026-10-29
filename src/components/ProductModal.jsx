@@ -40,6 +40,7 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
   const soldOut = product.inStock === false;
   const closed = product.storeOpen === false;
   const disabled = soldOut || closed;
+  const maxQty = product.stockQuantity == null ? 99 : Math.min(99, product.stockQuantity);
 
   const options = {
     ...(hasIce(product.category) ? { ice } : {}),
@@ -75,7 +76,7 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
 
   const addToCart = () => {
     if (disabled) return;
-    onAdd(product, { options, qty });
+    if (onAdd(product, { options, qty }) === false) return;
     close();
   };
   const buyNow = () => {
@@ -136,6 +137,9 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
             </div>
 
             <p className="mt-3 text-sm leading-relaxed text-navy/65">{product.description}</p>
+            {product.stockQuantity != null && product.stockQuantity > 0 && (
+              <p className="mt-2 text-xs font-semibold text-navy/65">Stok tersisa: {product.stockQuantity}</p>
+            )}
 
             {closed && (
               <p className="mt-4 rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-700">
@@ -196,9 +200,10 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
               </span>
               <button
                 type="button"
-                onClick={() => setQty((q) => Math.min(99, q + 1))}
+                onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
                 aria-label="Tambah jumlah"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100"
+                disabled={qty >= maxQty}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Plus size={15} />
               </button>

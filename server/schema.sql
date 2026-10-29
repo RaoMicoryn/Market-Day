@@ -33,9 +33,11 @@ create table if not exists products (
   description text not null default '',
   image text not null default '',
   in_stock boolean not null default true,
+  stock_quantity integer check (stock_quantity >= 0),
   created_at timestamptz not null default now()
 );
 alter table products add column if not exists toppings jsonb not null default '[]'::jsonb;
+alter table products add column if not exists stock_quantity integer check (stock_quantity >= 0);
 create index if not exists products_store_idx on products (store_id, created_at desc);
 create index if not exists products_search_idx
   on products using gin (to_tsvector('simple', name || ' ' || description));

@@ -28,11 +28,12 @@ export default function OrdersPage() {
         skipped += 1;
         return;
       }
-      addSilently(
+      const didAdd = addSilently(
         { ...p, storeName: o.storeName, storeOpen: true },
         { options: it.optionsObj || {}, qty: it.qty }
       );
-      added += 1;
+      if (didAdd) added += 1;
+      else skipped += 1;
     });
     if (!added) {
       toast("Produk dari pesanan ini sudah tidak tersedia.", { type: "error" });
