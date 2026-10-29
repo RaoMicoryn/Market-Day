@@ -1,3 +1,18 @@
+async function parseJsonBody(response) {
+  const raw = await response.text();
+  if (!raw) return null;
+
+  const contentType = String(response.headers.get("content-type") || "");
+  const looksLikeJson = contentType.includes("application/json") || /^[\[{\s]/.test(raw.trim());
+  if (!looksLikeJson) return null;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`/api${path}`, {
     credentials: "same-origin",
@@ -8,8 +23,15 @@ async function request(path, options = {}) {
     },
   });
   if (response.status === 204) return null;
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Permintaan gagal. Silakan coba lagi.");
+
+  // Jangan asumsikan balasan selalu JSON: serverless / deployment yang belum siap
+  // sering membalas HTML error, bukan payload JSON. Bila itu terjadi, tetap tampilkan
+  // pesan yang jelas daripada memicu SyntaxError dari JSON.parse.
+  const data = await parseJsonBody(response);
+
+  if (!response.ok) {
+    throw new Error(data?.error || `Server membalas ${response.status}. Coba lagi beberapa saat.`);
+  }
   return data;
 }
 
@@ -157,12 +179,7 @@ async function otpRequest(path, payload) {
     });
   }
 
-  let data = null;
-  try {
-    data = await response.json();
-  } catch {
-    data = null;
-  }
+  const data = await parseJsonBody(response);
 
   if (!response.ok || !data?.success) {
     throw new OtpApiError(data?.error || "Permintaan OTP gagal. Silakan coba lagi.", {
