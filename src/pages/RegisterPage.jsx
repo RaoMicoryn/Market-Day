@@ -118,7 +118,7 @@ export default function RegisterPage() {
           {busy ? "Membuat toko..." : "Buat toko"}
         </button>
         <p className="text-center text-[11px] leading-relaxed text-navy/65">
-          Dengan mendaftar, kamu menjadi penanggung jawab konten toko. Data disimpan di perangkat ini.
+          Dengan mendaftar, kamu menjadi penanggung jawab konten toko. Data tersimpan di server Market Day.
         </p>
       </form>
     </AuthLayout>

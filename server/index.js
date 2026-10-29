@@ -125,13 +125,17 @@ async function ordersByIds(ids) {
   });
 }
 
-app.get("/api/events", (req, res) => {
-  res.set({ "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
-  res.flushHeaders();
-  res.write("retry: 5000\n\n");
-  subscribers.add(res);
-  req.on("close", () => subscribers.delete(res));
-});
+// SSE hanya tersedia saat server Express berjalan penuh (lokal/Render).
+// Di Vercel (serverless) koneksi panjang tidak didukung; frontend memakai polling.
+if (!process.env.VERCEL) {
+  app.get("/api/events", (req, res) => {
+    res.set({ "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
+    res.flushHeaders();
+    res.write("retry: 5000\n\n");
+    subscribers.add(res);
+    req.on("close", () => subscribers.delete(res));
+  });
+}
 
 app.get("/api/session", (req, res) => res.json(req.session.user || null));
 
@@ -625,11 +629,17 @@ app.get("/api/stats", async (req, res, next) => {
 });
 
 app.use("/api", (req, res) => fail(res, 404, "Endpoint tidak ditemukan."));
-app.use(express.static(path.resolve(__dirname, "../dist")));
-app.get("*splat", (req, res, next) => {
-  if (req.path.startsWith("/api/")) return next();
-  res.sendFile(path.resolve(__dirname, "../dist/index.html"));
-});
+
+// Saat berjalan lokal, Express juga menyajikan hasil build Vite.
+// Di Vercel, file statis dilayani langsung oleh platform (outputDirectory: dist).
+if (!process.env.VERCEL) {
+  app.use(express.static(path.resolve(__dirname, "../dist")));
+  app.get("*splat", (req, res, next) => {
+    if (req.path.startsWith("/api/")) return next();
+    res.sendFile(path.resolve(__dirname, "../dist/index.html"));
+  });
+}
+
 app.use((error, req, res, next) => {
   console.error(error);
   if (res.headersSent) return next(error);
@@ -638,4 +648,8 @@ app.use((error, req, res, next) => {
 });
 
 const port = Number(process.env.PORT || 3000);
-app.listen(port, () => console.log(`Market app running on http://localhost:${port}`));
+if (!process.env.VERCEL) {
+  app.listen(port, () => console.log(`Market app running on http://localhost:${port}`));
+}
+
+export default app;

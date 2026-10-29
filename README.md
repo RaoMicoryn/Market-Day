@@ -28,6 +28,31 @@ Jalankan `npm test` untuk menguji aturan validasi nomor WhatsApp (`server/lib/va
 
 Untuk production, jalankan `npm run build`, lalu `npm start`. Server Express melayani API dan folder `dist/` dari origin yang sama. Jangan taruh connection string Neon di kode frontend atau variabel `VITE_*`.
 
+## Deploy ke Vercel
+
+Repo ini sudah siap dideploy sebagai satu project Vercel (frontend statis + API Express sebagai function):
+
+1. Import repo di Vercel. Vercel memakai `vercel.json`: build `npm run build`, output `dist`.
+2. Isi **Environment Variables** di Project Settings:
+
+   ```env
+   DATABASE_URL=postgresql://...   # pakai connection string pooled dari Neon
+   SESSION_SECRET=string-acak-panjang
+   FONNTE_TOKEN=token-fonnte
+   OTP_SECRET=string-acak-lain
+   VITE_SELLER_WHATSAPP=08xxxxxxxxxx   # opsional
+   ```
+
+3. Jalankan `npm run db:setup` sekali dari lokal (database Neon yang sama) untuk membuat tabel.
+4. Deploy ulang.
+
+Cara kerjanya:
+
+- `api/[...path].js` meneruskan semua `/api/*` ke aplikasi Express yang sama seperti di lokal, jadi sesi login, pesanan, dan OTP tetap berjalan.
+- `vercel.json` mengarahkan rute non-API ke `index.html` (SPA) dan menetapkan timeout function 30 detik.
+- SSE `/api/events` tidak didukung di serverless; frontend otomatis beralih ke polling 15 detik (`src/db/repository.js`).
+- Pool PostgreSQL dibatasi 1 koneksi per instance (`server/db.js`) agar koneksi Neon tidak habis.
+
 ---
 
 ## Halaman

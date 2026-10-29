@@ -41,10 +41,40 @@ export function normalizeCode(input = "") {
   return match ? `MD-${match[1].padStart(4, "0")}` : null;
 }
 
+// Server penuh (lokal/Render) memakai SSE. Di Vercel (serverless) koneksi panjang
+// tidak tersedia, jadi otomatis beralih ke polling supaya UI tetap ter-update.
+const POLL_INTERVAL_MS = 15000;
+
 export const subscribe = (callback) => {
-  const events = new EventSource("/api/events");
-  events.addEventListener("change", callback);
-  return () => events.close();
+  let source = null;
+  let timer = null;
+  let stopped = false;
+
+  const startPolling = () => {
+    if (stopped || timer) return;
+    timer = setInterval(() => {
+      if (!stopped) callback();
+    }, POLL_INTERVAL_MS);
+  };
+
+  try {
+    source = new EventSource("/api/events");
+    source.addEventListener("change", callback);
+    source.addEventListener("error", () => {
+      // Serverless membalas 404 / koneksi ditutup: matikan SSE, pakai polling.
+      source?.close();
+      source = null;
+      startPolling();
+    });
+  } catch {
+    startPolling();
+  }
+
+  return () => {
+    stopped = true;
+    if (timer) clearInterval(timer);
+    source?.close();
+  };
 };
 
 export const getSession = () => request("/session");
