@@ -1,0 +1,12 @@
+{
+  "name": "market day — SMK Tri Ratna",
+  "short_name": "market day",
+  "description": "Katalog jajanan dan pesanan booth Market Day SMK Tri Ratna.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFBF5",
+  "theme_color": "#0B2545",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
