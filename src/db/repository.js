@@ -79,6 +79,14 @@ export const subscribe = (callback) => {
     }, POLL_INTERVAL_MS);
   };
 
+  if (import.meta.env.VITE_VERCEL) {
+    startPolling();
+    return () => {
+      stopped = true;
+      if (timer) clearInterval(timer);
+    };
+  }
+
   try {
     source = new EventSource("/api/events");
     source.addEventListener("change", callback);
@@ -198,4 +206,3 @@ export const sendOtp = (phoneNumber) => otpRequest("/send", { phoneNumber });
 
 /** Cocokkan kode OTP yang diinput pengguna. */
 export const verifyOtp = (phoneNumber, code) => otpRequest("/verify", { phoneNumber, code });
-
