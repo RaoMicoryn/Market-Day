@@ -111,10 +111,10 @@ function withCustomer(order) {
   };
 }
 
-async function ordersByIds(ids) {
+async function ordersByIds(ids, database = pool) {
   const validIds = ids.filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id));
   if (!validIds.length) return [];
-  const result = await pool.query(
+  const result = await database.query(
     `${ORDER_SELECT} where o.id = any($1::uuid[]) group by o.id, s.name, c.id order by o.created_at desc`,
     [validIds]
   );
@@ -623,8 +623,8 @@ app.post("/api/orders", async (req, res, next) => {
         );
       }
     }
+    const orders = await ordersByIds(createdIds, client);
     await client.query("commit");
-    const orders = await ordersByIds(createdIds);
     sendChange();
     res.status(201).json(orders);
   } catch (error) {
