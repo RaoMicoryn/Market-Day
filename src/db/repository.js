@@ -66,8 +66,9 @@ export function normalizeCode(input = "") {
 // Server penuh (lokal/Render) memakai SSE. Di Vercel (serverless) koneksi panjang
 // tidak tersedia, jadi otomatis beralih ke polling supaya UI tetap ter-update.
 const POLL_INTERVAL_MS = 15000;
+export const ORDER_POLL_INTERVAL_MS = 3000;
 
-export const subscribe = (callback) => {
+export const subscribe = (callback, { pollIntervalMs = POLL_INTERVAL_MS } = {}) => {
   let source = null;
   let timer = null;
   let stopped = false;
@@ -76,7 +77,7 @@ export const subscribe = (callback) => {
     if (stopped || timer) return;
     timer = setInterval(() => {
       if (!stopped) callback();
-    }, POLL_INTERVAL_MS);
+    }, pollIntervalMs);
   };
 
   if (import.meta.env.VITE_VERCEL) {

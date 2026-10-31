@@ -49,7 +49,7 @@ Cara kerjanya:
 
 - `vercel.json` mengarahkan semua `/api/*` ke satu Vercel Function di `api/index.js`, lalu handler meneruskan rute satu tingkat maupun bertingkat ke aplikasi Express yang sama seperti di lokal. Pola ini menjaga jumlah function tetap di bawah batas paket Hobby.
 - `vercel.json` mengarahkan rute non-API ke `index.html` (SPA) dan menetapkan timeout function 30 detik.
-- Di Vercel, frontend langsung memakai polling 15 detik tanpa mencoba SSE `/api/events`, yang tidak didukung serverless. Di server Express biasa, pembaruan tetap memakai SSE (`src/db/repository.js`).
+- Di Vercel, frontend memakai polling 15 detik untuk data umum dan 3 detik untuk pesanan, tanpa mencoba SSE `/api/events` yang tidak didukung serverless. Di server Express biasa, pembaruan tetap memakai SSE (`src/db/repository.js`).
 - Pool PostgreSQL dibatasi 1 koneksi per instance (`server/db.js`) agar koneksi Neon tidak habis.
 
 ---

@@ -6,7 +6,7 @@ import OverviewTab from "../components/dashboard/OverviewTab";
 import OrdersTab from "../components/dashboard/OrdersTab";
 import ProductsTab from "../components/dashboard/ProductsTab";
 import StoreProfileForm from "../components/dashboard/StoreProfileForm";
-import { getOrders, getStoreById, logout, setStoreOpen } from "../db/repository";
+import { getOrders, getStoreById, logout, ORDER_POLL_INTERVAL_MS, setStoreOpen } from "../db/repository";
 import { useDb, useSession } from "../db/useDb";
 import { useToast } from "../context/ToastContext";
 import { usePageTitle } from "../hooks/usePageTitle";
@@ -31,7 +31,8 @@ export default function DashboardPage() {
   );
   const { data: orders } = useDb(
     () => (session ? getOrders(session.storeId) : Promise.resolve([])),
-    [session?.storeId]
+    [session?.storeId],
+    { pollIntervalMs: ORDER_POLL_INTERVAL_MS }
   );
 
   if (session === null) return <Navigate to="/dashboard/login" replace />;

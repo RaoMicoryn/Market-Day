@@ -4,7 +4,13 @@ import EmptyState from "../components/ui/EmptyState";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { formatDateTime, formatRupiah, optionsText, timeAgo } from "../data/products";
-import { ORDER_STATUS, STATUS_TONE, getOrdersByIds, getProductsByIds } from "../db/repository";
+import {
+  getOrdersByIds,
+  getProductsByIds,
+  ORDER_POLL_INTERVAL_MS,
+  ORDER_STATUS,
+  STATUS_TONE,
+} from "../db/repository";
 import { useDb } from "../db/useDb";
 import { usePageTitle } from "../hooks/usePageTitle";
 
@@ -15,7 +21,9 @@ export default function OrdersPage() {
   const { trackIds, openTracker, addSilently } = useCart();
   const toast = useToast();
   const navigate = useNavigate();
-  const { data: orders } = useDb(() => getOrdersByIds(trackIds), [trackIds.join(",")]);
+  const { data: orders } = useDb(() => getOrdersByIds(trackIds), [trackIds.join(",")], {
+    pollIntervalMs: ORDER_POLL_INTERVAL_MS,
+  });
 
   const reorder = async (o) => {
     const products = await getProductsByIds(o.items.map((i) => i.productId));

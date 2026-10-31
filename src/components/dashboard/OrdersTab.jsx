@@ -3,7 +3,14 @@ import { CheckCheck, ChevronDown, Download, Footprints, MapPin, Phone, Search } 
 import EmptyState from "../ui/EmptyState";
 import { useConfirm } from "../../context/ConfirmContext";
 import { useToast } from "../../context/ToastContext";
-import { NEXT_STATUS, ORDER_STATUS, STATUS_TONE, getOrders, updateOrderStatus } from "../../db/repository";
+import {
+  NEXT_STATUS,
+  ORDER_POLL_INTERVAL_MS,
+  ORDER_STATUS,
+  STATUS_TONE,
+  getOrders,
+  updateOrderStatus,
+} from "../../db/repository";
 import { useDb } from "../../db/useDb";
 import { formatDateTime, formatRupiah, timeAgo } from "../../data/products";
 
@@ -12,7 +19,9 @@ const FILTERS = [{ id: "all", label: "Semua" }, ...Object.entries(ORDER_STATUS).
 const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
 
 export default function OrdersTab({ store }) {
-  const { data: orders } = useDb(() => getOrders(store.id), [store.id]);
+  const { data: orders } = useDb(() => getOrders(store.id), [store.id], {
+    pollIntervalMs: ORDER_POLL_INTERVAL_MS,
+  });
   const confirm = useConfirm();
   const toast = useToast();
   const [status, setStatus] = useState("all");

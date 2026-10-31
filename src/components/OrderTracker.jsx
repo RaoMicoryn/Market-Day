@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, ChefHat, Clock, MapPin, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatRupiah, timeAgo } from "../data/products";
-import { getOrdersByIds } from "../db/repository";
+import { getOrdersByIds, ORDER_POLL_INTERVAL_MS } from "../db/repository";
 import { useDb } from "../db/useDb";
 
 // Status pembeli: Diantre (pending/accepted) -> Sedang Dimasak -> Siap Diambil/Diantar
@@ -95,7 +95,9 @@ function Ticket({ o }) {
 export default function OrderTracker() {
   const { trackerOpen, closeTracker, trackIds } = useCart();
   const navigate = useNavigate();
-  const { data: orders } = useDb(() => getOrdersByIds(trackIds), [trackIds.join(",")]); // live: ikut berubah saat penjual update
+  const { data: orders } = useDb(() => getOrdersByIds(trackIds), [trackIds.join(",")], {
+    pollIntervalMs: ORDER_POLL_INTERVAL_MS,
+  }); // live: ikut berubah saat penjual update
 
   useEffect(() => {
     if (!trackerOpen) return;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getSession, subscribe } from "./repository";
 
 // Jalankan fetcher, lalu jalankan ulang otomatis setiap ada perubahan data (real-time).
-export function useDb(fetcher, deps = []) {
+export function useDb(fetcher, deps = [], options) {
   const [state, setState] = useState({ data: null, loading: true, error: null });
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export function useDb(fetcher, deps = []) {
         .catch((error) => alive && setState({ data: null, loading: false, error }));
 
     run();
-    const off = subscribe(run);
+    const off = subscribe(run, options);
     return () => {
       alive = false;
       off();
