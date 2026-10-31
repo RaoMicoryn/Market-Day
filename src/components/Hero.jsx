@@ -21,9 +21,14 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" aria-hidden="true" />
         <div className="pointer-events-none absolute -left-20 top-1/3 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />
-
         <div className="relative grid gap-7 px-5 pb-6 pt-7 sm:gap-10 sm:px-10 sm:pb-10 sm:pt-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:px-14 lg:py-16">
           <div className="animate-rise">
+            <p className="mb-3 flex max-w-full flex-wrap items-center gap-x-1 text-[9px] leading-relaxed text-white/50 sm:mb-4 sm:text-[10px]">
+              <span className="font-medium text-white/65">Dibuat oleh Kyo.Motion</span>
+              <span aria-hidden="true">·</span>
+              <span>WB, Steven, Cherryl</span>
+            </p>
+
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold text-white/80 backdrop-blur sm:text-[11px]">
               <Sparkles size={12} className="text-accent-300" />
               Jajanan dari berbagai booth
