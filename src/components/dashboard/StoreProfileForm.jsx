@@ -165,7 +165,7 @@ export default function StoreProfileForm({ store }) {
       </div>
 
       <div className="card space-y-4 p-4 sm:p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField label="Nama toko" name="name" value={f.name} onChange={set} error={err.name} maxLength={40} />
           <FormField label="Kelas / jurusan" name="kelas" value={f.kelas} onChange={set} error={err.kelas} placeholder="Kelas / jurusan" />
         </div>
@@ -183,7 +183,7 @@ export default function StoreProfileForm({ store }) {
 
         <MembersInput value={f.members} onChange={(members) => setF((v) => ({ ...v, members }))} />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             label="URL logo"
             name="logo"

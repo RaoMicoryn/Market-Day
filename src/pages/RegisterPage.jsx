@@ -78,7 +78,7 @@ export default function RegisterPage() {
       }
     >
       <form onSubmit={submit} noValidate className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField label="Nama akun" name="nama" value={f.nama} onChange={set} error={errors.nama} autoComplete="name" placeholder="Nama kamu" />
           <FormField label="Kelas" name="kelas" value={f.kelas} onChange={set} error={errors.kelas} placeholder="Kelas / jurusan" />
         </div>

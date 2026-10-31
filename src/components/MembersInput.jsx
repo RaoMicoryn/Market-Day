@@ -16,7 +16,7 @@ export default function MembersInput({
   leading = "",
   label = "Anggota kelompok",
   hint,
-  placeholder = "Ketik nama anggota, lalu Enter",
+  placeholder = "Nama anggota",
   className = "",
 }) {
   const [draft, setDraft] = useState("");
@@ -64,8 +64,8 @@ export default function MembersInput({
   };
 
   return (
-    <div className={className}>
-      <div className="mb-1.5 flex items-baseline justify-between gap-3">
+    <div className={`min-w-0 ${className}`}>
+      <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
         <label htmlFor="members-input" className="text-[13px] font-bold text-navy">
           {label}
         </label>
@@ -112,7 +112,7 @@ export default function MembersInput({
             maxLength={MAX_NAME}
             placeholder={full ? `Maksimal ${max} anggota` : placeholder}
             enterKeyHint="done"
-            className="min-h-10 min-w-0 flex-1 bg-transparent px-1 text-base text-ink outline-none placeholder:text-navy/50 disabled:cursor-not-allowed sm:text-sm"
+            className="min-h-10 w-0 min-w-0 flex-1 bg-transparent px-1 text-base text-ink outline-none placeholder:text-navy/50 disabled:cursor-not-allowed sm:text-sm"
           />
           <button
             type="button"
