@@ -23,8 +23,8 @@ export default function CodeSearch() {
   };
 
   return (
-    <section id="kode-toko" className="shell pt-10">
-      <div className="relative overflow-hidden rounded-3xl border border-accent/20 bg-gradient-to-r from-accent-50 via-white to-amber-50 p-5 shadow-soft sm:p-6">
+    <section id="kode-toko" className="shell pt-7 sm:pt-10">
+      <div className="relative overflow-hidden rounded-3xl border border-accent/20 bg-gradient-to-r from-accent-50 via-white to-amber-50 p-4 shadow-soft sm:p-6">
         <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-2xl" aria-hidden="true" />
         <form onSubmit={submit} className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <div className="flex items-start gap-3 sm:flex-1">
@@ -50,12 +50,12 @@ export default function CodeSearch() {
                 placeholder="Masukkan kode"
                 aria-label="Kode toko"
                 maxLength={8}
-                className="min-w-0 flex-1 rounded-full border border-navy/10 bg-white px-4 py-2.5 text-sm font-bold uppercase tracking-[0.15em] text-navy outline-none transition placeholder:font-medium placeholder:tracking-widest placeholder:text-navy/65 focus:border-accent focus:ring-4 focus:ring-accent/10"
+                className="min-h-11 min-w-0 flex-1 rounded-full border border-navy/10 bg-white px-4 py-2.5 text-base font-bold uppercase tracking-[0.15em] text-navy outline-none transition placeholder:font-medium placeholder:tracking-widest placeholder:text-navy/65 focus:border-accent focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-sm"
               />
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full bg-navy px-4 text-sm font-semibold text-white transition duration-300 hover:bg-accent active:scale-95 disabled:opacity-60"
+                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-navy px-4 text-sm font-semibold text-white transition duration-300 hover:bg-accent active:scale-95 disabled:opacity-60 sm:min-h-10"
               >
                 <Search size={15} /> Cek
               </button>

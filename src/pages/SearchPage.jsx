@@ -21,9 +21,9 @@ export default function SearchPage() {
 
   return (
     <>
-      <section className="shell pt-8">
+      <section className="shell pt-4 sm:pt-8">
         <p className="eyebrow mb-1.5">{q ? "Hasil pencarian" : "Katalog"}</p>
-        <h1 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">
+        <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">
           {q ? (
             <>
               Hasil untuk <span className="text-price">“{q}”</span>
@@ -32,7 +32,7 @@ export default function SearchPage() {
             "Semua menu hari ini"
           )}
         </h1>
-        <p className="mt-1.5 text-sm text-navy/65">
+        <p className="mt-1.5 text-[13px] leading-relaxed text-navy/65 sm:text-sm">
           {q
             ? "Produk dan booth yang cocok dengan kata kunci kamu. Gunakan filter untuk mempersempit."
             : "Jelajahi menu dari semua booth. Filter kategori atau urutkan sesuai selera."}
@@ -45,13 +45,13 @@ export default function SearchPage() {
       </section>
 
       {q && matched.length > 0 && (
-        <section className="shell pt-8">
-          <div className="mb-4 flex items-center gap-2">
+        <section className="shell pt-6 sm:pt-8">
+          <div className="mb-3 flex items-center gap-2 sm:mb-4">
             <Store size={16} className="text-accent" />
-            <h2 className="font-display text-lg font-extrabold text-navy">Booth yang cocok</h2>
+            <h2 className="font-display text-base font-extrabold text-navy sm:text-lg">Booth yang cocok</h2>
             <span className="rounded-full bg-navy-50 px-2 py-0.5 text-[11px] font-bold text-navy/65">{matched.length}</span>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {matched.map((s) => (
               <StoreCard key={s.id} store={s} />
             ))}

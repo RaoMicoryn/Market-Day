@@ -35,7 +35,7 @@ export default function CartDrawer() {
     };
   }, [drawerOpen, closeDrawer]);
 
-  const btn = "flex h-7 w-7 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-accent hover:text-white active:scale-90";
+  const btn = "flex h-8 w-8 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-accent hover:text-white active:scale-90 sm:h-7 sm:w-7";
 
   const emptyAll = async () => {
     const ok = await confirm({
@@ -59,11 +59,11 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Keranjang belanja"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream shadow-lift transition-transform duration-300 ease-out ${
+        className={`absolute right-0 top-0 flex h-[100dvh] w-full max-w-md flex-col bg-cream shadow-lift transition-transform duration-300 ease-out ${
           drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <header className="flex items-center justify-between border-b border-navy/[0.06] bg-white px-5 py-4">
+        <header className="flex items-center justify-between border-b border-navy/[0.06] bg-white px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:py-4">
           <div>
             <h2 className="font-display text-lg font-extrabold text-navy">
               Keranjang <span className="text-sm font-semibold text-navy/65">({cartCount})</span>
@@ -84,14 +84,14 @@ export default function CartDrawer() {
               type="button"
               onClick={closeDrawer}
               aria-label="Tutup keranjang"
-              className="rounded-full p-2 text-navy/65 transition hover:bg-navy/5 hover:text-navy"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90"
             >
-              <X size={19} />
+              <X size={20} />
             </button>
           </div>
         </header>
 
-        <div className="flex-1 space-y-5 overflow-y-auto p-4">
+        <div className="scroll-contain flex-1 space-y-4 overflow-y-auto p-4">
           {groups.length === 0 && (
             <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
               <span className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white text-navy/20 shadow-soft">
@@ -157,9 +157,9 @@ export default function CartDrawer() {
                         type="button"
                         onClick={() => removeItem(i.key)}
                         aria-label={`Hapus ${i.product.name}`}
-                        className="absolute right-2 top-2 rounded-full p-1 text-navy/25 transition hover:bg-red-50 hover:text-red-700"
+                        className="absolute right-1.5 top-1.5 flex h-8 w-8 items-center justify-center rounded-full text-navy/30 transition hover:bg-red-50 hover:text-red-700 active:scale-90"
                       >
-                        <Trash2 size={13} />
+                        <Trash2 size={14} />
                       </button>
                     </li>
                   );
@@ -170,7 +170,7 @@ export default function CartDrawer() {
         </div>
 
         {cart.length > 0 && (
-          <footer className="safe-bottom space-y-3 border-t border-navy/[0.06] bg-white p-4">
+          <footer className="space-y-3 border-t border-navy/[0.06] bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4">
             {trackIds.length > 0 && (
               <button
                 type="button"
@@ -178,7 +178,7 @@ export default function CartDrawer() {
                   closeDrawer();
                   openTracker();
                 }}
-                className="flex w-full items-center justify-center gap-2 text-xs font-semibold text-price hover:underline"
+                className="flex min-h-10 w-full items-center justify-center gap-2 text-xs font-semibold text-price hover:underline"
               >
                 <ReceiptText size={14} /> Lacak pesanan terakhir
               </button>
@@ -196,7 +196,7 @@ export default function CartDrawer() {
                 closeDrawer();
                 navigate("/checkout");
               }}
-              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-navy text-sm font-bold text-white shadow-soft transition duration-300 hover:bg-navy-700 active:scale-[0.98]"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-navy text-sm font-bold text-white shadow-soft transition duration-300 hover:bg-navy-700 active:scale-[0.98]"
             >
               Lanjut ke checkout <ArrowRight size={16} />
             </button>

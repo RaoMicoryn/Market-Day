@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import CheckoutPage from "./components/CheckoutPage";
 import CartDrawer from "./components/CartDrawer";
 import OrderTracker from "./components/OrderTracker";
+import BottomNav from "./components/BottomNav";
 import HomePage from "./pages/HomePage";
 import StorePage from "./pages/StorePage";
 import LoginPage from "./pages/LoginPage";
@@ -37,8 +38,13 @@ function CheckoutRoute() {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
+  const hideNav = ["/checkout", "/verifikasi", "/dashboard"].some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-dvh flex-col">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[500] focus:rounded-full focus:bg-navy focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
@@ -47,7 +53,10 @@ export default function App() {
       </a>
       <ScrollManager />
       <Header />
-      <main id="main" className="flex-1">
+      <main
+        id="main"
+        className={`flex-1 ${hideNav ? "" : "pb-[calc(4.5rem+env(safe-area-inset-bottom))]"} md:pb-0`}
+      >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/toko/:slug" element={<StorePage />} />
@@ -65,6 +74,7 @@ export default function App() {
       </main>
       <CartDrawer />
       <OrderTracker />
+      <BottomNav />
     </div>
   );
 }

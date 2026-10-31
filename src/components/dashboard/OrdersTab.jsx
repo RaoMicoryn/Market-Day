@@ -97,9 +97,9 @@ export default function OrdersTab({ store }) {
 
   return (
     <div className="space-y-4">
-      <div className="card p-4">
+      <div className="card p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="no-scrollbar -mx-1 flex flex-1 gap-1.5 overflow-x-auto px-1">
+          <div className="no-scrollbar -mx-1 flex flex-1 gap-1.5 overflow-x-auto px-1 pb-0.5">
             {FILTERS.map((f) => {
               const n = f.id === "all" ? all.length : count(f.id);
               const active = status === f.id;
@@ -109,7 +109,7 @@ export default function OrdersTab({ store }) {
                   type="button"
                   onClick={() => setStatus(f.id)}
                   aria-pressed={active}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                  className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-xs font-semibold transition active:scale-95 ${
                     active ? "bg-navy text-white shadow-soft" : "bg-navy-50 text-navy/65 hover:bg-navy-100 hover:text-navy"
                   }`}
                 >
@@ -129,17 +129,17 @@ export default function OrdersTab({ store }) {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Cari antrean / pembeli..."
                 aria-label="Cari pesanan"
-                className="h-9 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-xs outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10"
+                className="h-10 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-base outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-9 sm:text-xs"
               />
             </label>
-            <button type="button" onClick={exportCsv} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-navy/10 bg-white px-3 text-xs font-semibold text-navy/65 transition hover:border-accent/40 hover:text-price">
+            <button type="button" onClick={exportCsv} className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-navy/10 bg-white px-3 text-xs font-semibold text-navy/65 transition hover:border-accent/40 hover:text-price active:scale-95 sm:h-9">
               <Download size={13} /> CSV
             </button>
           </div>
         </div>
 
         {pending.length > 0 && (
-          <button type="button" onClick={acceptAll} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent-50 px-3 py-1.5 text-[11px] font-bold text-price transition hover:bg-accent-100">
+          <button type="button" onClick={acceptAll} className="mt-2.5 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-accent-50 px-3 text-[11px] font-bold text-price transition hover:bg-accent-100 active:scale-95">
             <CheckCheck size={13} /> Terima semua pesanan baru ({pending.length})
           </button>
         )}
@@ -222,7 +222,7 @@ export default function OrdersTab({ store }) {
                       <button
                         type="button"
                         onClick={() => advance(o)}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-[11px] font-bold text-white transition hover:bg-accent active:scale-95"
+                        className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-navy px-4 text-xs font-bold text-white transition hover:bg-accent active:scale-95"
                       >
                         {next[1]} <ChevronDown size={12} className="-rotate-90" />
                       </button>

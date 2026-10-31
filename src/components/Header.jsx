@@ -61,7 +61,7 @@ export default function Header() {
   }, [mobileSearch, menu]);
 
   const iconBtn =
-    "relative flex h-10 w-10 items-center justify-center rounded-full text-navy/70 transition hover:bg-navy/5 hover:text-navy active:scale-95";
+    "relative flex h-10 w-10 items-center justify-center rounded-full text-navy/70 transition hover:bg-navy/5 hover:text-navy active:scale-90";
 
   return (
     <>
@@ -70,7 +70,7 @@ export default function Header() {
           scrolled ? "border-navy/[0.07] shadow-soft" : "border-transparent"
         }`}
       >
-        <div className="shell flex h-[72px] items-center gap-2">
+        <div className="shell flex h-[60px] items-center gap-1 sm:h-[72px] sm:gap-2">
           <Logo className="shrink-0" />
 
           <nav aria-label="Navigasi utama" className="ml-5 hidden items-center gap-0.5 lg:flex">
@@ -99,7 +99,7 @@ export default function Header() {
               <Search size={20} />
             </button>
 
-            <Link to="/wishlist" aria-label={`Wishlist, ${wishCount} produk`} className={iconBtn}>
+            <Link to="/wishlist" aria-label={`Wishlist, ${wishCount} produk`} className={`${iconBtn} hidden md:flex`}>
               <Heart size={20} />
               {wishCount > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
@@ -134,10 +134,15 @@ export default function Header() {
       </header>
 
       {mobileSearch && (
-        <div className="fixed inset-0 z-[110] bg-cream p-4 pt-5 md:hidden" role="dialog" aria-modal="true" aria-label="Pencarian">
+        <div
+          className="fixed inset-0 z-[110] min-h-[100dvh] overflow-y-auto bg-cream px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Pencarian"
+        >
           <div className="mb-3 flex items-center justify-between">
             <p className="font-display text-lg font-extrabold text-navy">Cari sesuatu</p>
-            <button type="button" onClick={() => setMobileSearch(false)} aria-label="Tutup pencarian" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-navy shadow-soft">
+            <button type="button" onClick={() => setMobileSearch(false)} aria-label="Tutup pencarian" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-navy shadow-soft active:scale-95">
               <X size={20} />
             </button>
           </div>
@@ -149,10 +154,10 @@ export default function Header() {
       {menu && (
         <div className="fixed inset-0 z-[105] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-sm" onClick={() => setMenu(false)} />
-          <div className="absolute right-0 top-0 flex h-full w-[82%] max-w-xs animate-rise flex-col bg-cream p-5 shadow-lift">
+          <div className="absolute right-0 top-0 flex h-[100dvh] w-[86%] max-w-xs animate-rise flex-col bg-cream px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-lift">
             <div className="flex items-center justify-between">
               <Logo />
-              <button type="button" onClick={() => setMenu(false)} aria-label="Tutup menu" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-navy shadow-soft">
+              <button type="button" onClick={() => setMenu(false)} aria-label="Tutup menu" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-navy shadow-soft active:scale-95">
                 <X size={19} />
               </button>
             </div>
@@ -164,7 +169,7 @@ export default function Header() {
                   to={item.to}
                   end={item.end}
                   className={({ isActive }) =>
-                    `rounded-2xl px-4 py-3 text-base font-semibold transition ${
+                    `flex min-h-12 items-center rounded-2xl px-4 text-base font-semibold transition active:scale-[0.99] ${
                       isActive ? "bg-navy text-white" : "text-navy/70 hover:bg-white"
                     }`
                   }
@@ -172,15 +177,28 @@ export default function Header() {
                   {item.label}
                 </NavLink>
               ))}
-              <NavLink to="/wishlist" className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-semibold text-navy/70 transition hover:bg-white">
+              <NavLink to="/wishlist" className="flex min-h-12 items-center justify-between rounded-2xl px-4 text-base font-semibold text-navy/70 transition hover:bg-white active:scale-[0.99]">
                 Wishlist <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-700">{wishCount}</span>
               </NavLink>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenu(false);
+                  openDrawer();
+                }}
+                className="flex min-h-12 items-center justify-between rounded-2xl px-4 text-base font-semibold text-navy/70 transition hover:bg-white active:scale-[0.99]"
+              >
+                Keranjang <span className="rounded-full bg-accent-50 px-2 py-0.5 text-xs font-bold text-price">{cartCount}</span>
+              </button>
             </nav>
 
             <div className="mt-auto space-y-2 border-t border-navy/10 pt-4">
               <Link to="/dashboard" className="btn-primary w-full">
                 <Store size={16} /> Dashboard penjual
               </Link>
+              <p className="pt-1 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-navy/35">
+                market day · SMK Tri Ratna
+              </p>
             </div>
           </div>
         </div>

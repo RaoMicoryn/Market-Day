@@ -124,8 +124,8 @@ export default function StoreProfileForm({ store }) {
           </div>
         </div>
 
-        <div className="relative px-5 pb-5">
-          <div className="-mt-10 flex items-end gap-4">
+        <div className="relative px-4 pb-4 sm:px-5 sm:pb-5">
+          <div className="-mt-10 flex items-end gap-3 sm:gap-4">
             <div className="relative">
               {f.logo ? (
                 <img src={f.logo} alt="" className="h-20 w-20 rounded-full object-cover ring-4 ring-white" onError={(e) => (e.currentTarget.style.display = "none")} />
@@ -163,7 +163,7 @@ export default function StoreProfileForm({ store }) {
         </div>
       </div>
 
-      <div className="card space-y-4 p-5">
+      <div className="card space-y-4 p-4 sm:p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField label="Nama toko" name="name" value={f.name} onChange={set} error={err.name} maxLength={40} />
           <FormField label="Kelas / jurusan" name="kelas" value={f.kelas} onChange={set} error={err.kelas} placeholder="Kelas / jurusan" />
@@ -219,14 +219,14 @@ export default function StoreProfileForm({ store }) {
         </div>
 
         <div className="flex justify-end border-t border-navy/[0.06] pt-4">
-          <button type="submit" disabled={saving || deleting} className="btn-primary">
+          <button type="submit" disabled={saving || deleting} className="btn-primary w-full sm:w-auto">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {saving ? "Menyimpan..." : "Simpan perubahan"}
           </button>
         </div>
       </div>
     </form>
-    <section className="card flex flex-col gap-3 border border-red-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+    <section className="card flex flex-col gap-3 border border-red-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
       <div>
         <h2 className="text-sm font-bold text-red-800">Hapus toko</h2>
         <p className="mt-1 max-w-xl text-xs leading-relaxed text-navy/65">
@@ -237,7 +237,7 @@ export default function StoreProfileForm({ store }) {
         type="button"
         onClick={removeStore}
         disabled={saving || deleting}
-        className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-bold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-bold text-white transition hover:bg-red-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {deleting ? <Loader2 size={15} className="animate-spin" /> : <AlertTriangle size={15} />}
         {deleting ? "Menghapus..." : "Hapus toko"}

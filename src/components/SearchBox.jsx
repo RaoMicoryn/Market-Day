@@ -152,7 +152,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-          className="h-11 w-full rounded-full border border-navy/10 bg-navy/[0.04] pl-11 pr-10 text-sm text-ink outline-none transition placeholder:text-navy/65 focus:border-accent/60 focus:bg-white focus:ring-4 focus:ring-accent/10"
+          className="h-12 w-full rounded-full border border-navy/10 bg-navy/[0.04] pl-11 pr-11 text-base text-ink outline-none transition placeholder:text-navy/65 focus:border-accent/60 focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-11 sm:text-sm"
         />
         {q ? (
           <button
@@ -163,7 +163,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
               inputRef.current?.focus();
             }}
             aria-label="Hapus pencarian"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-navy/65 transition hover:bg-navy/5 hover:text-navy"
+            className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90"
           >
             <X size={15} />
           </button>
@@ -178,7 +178,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
         <div
           id={listId}
           role="listbox"
-          className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[70vh] animate-pop overflow-y-auto rounded-2xl border border-navy/[0.07] bg-white p-2 shadow-lift"
+          className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[60dvh] animate-pop overflow-y-auto rounded-2xl border border-navy/[0.07] bg-white p-2 shadow-lift sm:max-h-[70vh]"
         >
           {!q.trim() ? (
             <div className="p-2">
@@ -232,7 +232,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
                       aria-selected={active === i}
                       onMouseEnter={() => setActive(i)}
                       onClick={() => goProduct(p)}
-                      className={`flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(i)}`}
+                      className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(i)}`}
                     >
                       <ProductImage product={p} className="h-10 w-10 shrink-0 rounded-lg" />
                       <span className="min-w-0 flex-1">
@@ -260,7 +260,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
                         aria-selected={active === index}
                         onMouseEnter={() => setActive(index)}
                         onClick={() => goStore(s)}
-                        className={`flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(index)}`}
+                        className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(index)}`}
                       >
                         <StoreLogo store={s} className="h-10 w-10 text-sm" />
                         <span className="min-w-0 flex-1">

@@ -1,5 +1,5 @@
 const base =
-  "w-full rounded-xl border bg-navy/[0.03] px-3.5 py-2.5 text-sm text-ink outline-none transition duration-200 placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10";
+  "min-h-11 w-full rounded-xl border bg-navy/[0.03] px-3.5 py-2.5 text-base text-ink outline-none transition duration-200 placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-sm";
 
 export default function FormField({ label, name, value, onChange, error, hint, multiline = false, className = "", ...rest }) {
   const Tag = multiline ? "textarea" : "input";

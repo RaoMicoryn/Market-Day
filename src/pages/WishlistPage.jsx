@@ -49,31 +49,31 @@ export default function WishlistPage() {
   };
 
   return (
-    <section className="shell py-10">
-      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+    <section className="shell pb-8 pt-4 sm:py-10">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-7 sm:gap-4">
         <div>
           <p className="eyebrow mb-1.5">Simpanan</p>
-          <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold text-navy sm:text-3xl">
-            Wishlist <Heart size={22} className="text-red-700" fill="currentColor" />
+          <h1 className="flex items-center gap-2 font-display text-[22px] font-extrabold text-navy sm:text-3xl">
+            Wishlist <Heart size={20} className="text-red-700" fill="currentColor" />
           </h1>
-          <p className="mt-1.5 text-sm text-navy/65">
+          <p className="mt-1.5 text-[13px] leading-relaxed text-navy/65 sm:text-sm">
             {count > 0 ? `${count} produk kamu simpan. Jangan sampai kehabisan!` : "Simpan menu favorit supaya mudah ditemukan nanti."}
           </p>
         </div>
 
         {count > 0 && (
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center gap-2 sm:w-auto">
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               aria-label="Urutkan wishlist"
-              className="h-9 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-xs font-semibold text-navy outline-none focus:border-accent"
+              className="h-10 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
             >
               <option value="newest">Terbaru</option>
               <option value="price-asc">Harga terendah</option>
               <option value="price-desc">Harga tertinggi</option>
             </select>
-            <button type="button" onClick={clearAll} className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100">
+            <button type="button" onClick={clearAll} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 transition hover:bg-red-100 active:scale-95">
               <Trash2 size={13} /> Hapus semua
             </button>
           </div>

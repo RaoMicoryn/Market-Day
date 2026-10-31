@@ -78,32 +78,34 @@ export default function ProductsTab({ store }) {
 
   return (
     <div className="space-y-4">
-      <div className="card flex flex-wrap items-center gap-2 p-4">
-        <label className="relative min-w-0 flex-1 sm:max-w-xs">
+      <div className="card space-y-2 p-3 sm:flex sm:flex-wrap sm:items-center sm:gap-2 sm:space-y-0 sm:p-4">
+        <label className="relative block min-w-0 sm:max-w-xs sm:flex-1">
           <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy/30" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Cari produk..."
             aria-label="Cari produk"
-            className="h-9 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-xs outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10"
+            className="h-10 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-base outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-9 sm:text-xs"
           />
         </label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          aria-label="Filter kategori"
-          className="h-9 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-xs font-semibold text-navy outline-none focus:border-accent"
-        >
-          <option value="">Semua kategori</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        <span className="hidden text-[11px] font-semibold text-navy/65 sm:block">{rows.length} produk</span>
-        <button type="button" onClick={() => setEditing("new")} className="btn-accent ml-auto">
-          <Plus size={15} /> Tambah produk
-        </button>
+        <div className="flex items-center gap-2">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            aria-label="Filter kategori"
+            className="h-10 min-w-0 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
+          >
+            <option value="">Semua kategori</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <span className="hidden shrink-0 text-[11px] font-semibold text-navy/65 sm:block">{rows.length} produk</span>
+          <button type="button" onClick={() => setEditing("new")} className="btn-accent shrink-0 sm:ml-auto">
+            <Plus size={15} /> Tambah
+          </button>
+        </div>
       </div>
 
       {rows.length === 0 ? (
@@ -119,8 +121,8 @@ export default function ProductsTab({ store }) {
       ) : (
         <ul className="space-y-2.5">
           {rows.map((p) => (
-            <li key={p.id} className="card flex items-center gap-3 p-3">
-              <ProductImage product={p} className={`h-16 w-16 shrink-0 rounded-xl ${p.inStock === false ? "opacity-50 grayscale" : ""}`} />
+            <li key={p.id} className="card flex items-center gap-2.5 p-2.5 sm:gap-3 sm:p-3">
+              <ProductImage product={p} className={`h-14 w-14 shrink-0 rounded-xl sm:h-16 sm:w-16 ${p.inStock === false ? "opacity-50 grayscale" : ""}`} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-navy">{p.name}</p>
                 <p className="text-[10px] font-semibold text-navy/65">
@@ -132,22 +134,22 @@ export default function ProductsTab({ store }) {
                 </p>
               </div>
               <StockSwitch product={p} onToggle={toggleStock} />
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1">
                 <button
                   type="button"
                   onClick={() => setEditing(p)}
                   aria-label={`Ubah ${p.name}`}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy-50 hover:text-navy"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy-50 hover:text-navy active:scale-90"
                 >
-                  <Pencil size={14} />
+                  <Pencil size={15} />
                 </button>
                 <button
                   type="button"
                   onClick={() => remove(p)}
                   aria-label={`Hapus ${p.name}`}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-red-400 transition hover:bg-red-50 hover:text-red-700"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-red-400 transition hover:bg-red-50 hover:text-red-700 active:scale-90"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={15} />
                 </button>
               </div>
             </li>

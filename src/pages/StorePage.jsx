@@ -113,7 +113,7 @@ export default function StorePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-navy">
-        <div className="relative h-44 overflow-hidden sm:h-60">
+        <div className="relative h-40 overflow-hidden sm:h-60">
           {store.cover ? (
             <img src={store.cover} alt="" className="h-full w-full object-cover" />
           ) : (
@@ -122,52 +122,52 @@ export default function StorePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-navy/20" />
         </div>
 
-        <div className="shell relative -mt-24 pb-7 sm:-mt-28">
+        <div className="shell relative -mt-20 pb-6 sm:-mt-28 sm:pb-7">
           <Link
             to="/"
-            className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 backdrop-blur transition hover:bg-white/20"
+            className="mb-3 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 backdrop-blur transition hover:bg-white/20 active:scale-95 sm:mb-4"
           >
             <ArrowLeft size={13} /> Semua booth
           </Link>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex items-end gap-4">
-              <StoreLogo store={store} className="h-20 w-20 text-2xl ring-4 ring-white sm:h-24 sm:w-24 sm:text-3xl" />
-              <div className="min-w-0 pb-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="font-display text-2xl font-extrabold text-white sm:text-4xl">{store.name}</h1>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+            <div className="flex items-end gap-3 sm:gap-4">
+              <StoreLogo store={store} className="h-16 w-16 text-xl ring-[3px] ring-white sm:h-24 sm:w-24 sm:text-3xl sm:ring-4" />
+              <div className="min-w-0 pb-0.5 sm:pb-1">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <h1 className="font-display text-[22px] font-extrabold leading-tight text-white sm:text-4xl">{store.name}</h1>
                   <OpenBadge isOpen={store.isOpen} className="bg-white/90" />
                 </div>
-                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/70 sm:text-xs">
+                <p className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] font-semibold text-white/70 sm:gap-x-3 sm:text-xs">
                   <span className="inline-flex items-center gap-1">
-                    <MapPin size={12} /> {store.kelas}
+                    <MapPin size={11} /> {store.kelas}
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <Users size={12} /> {store.members?.join(", ")}
+                    <Users size={11} /> {store.members?.join(", ")}
                   </span>
                   <span className="rounded-full bg-white/15 px-2 py-0.5 tracking-widest">{store.code}</span>
                 </p>
               </div>
             </div>
 
-            <button type="button" onClick={share} className="inline-flex w-fit items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/20">
+            <button type="button" onClick={share} className="inline-flex min-h-10 w-fit items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[11px] font-semibold text-white backdrop-blur transition hover:bg-white/20 active:scale-95 sm:text-xs">
               <Share2 size={14} /> Bagikan toko
             </button>
           </div>
 
-          {store.bio && <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70">{store.bio}</p>}
+          {store.bio && <p className="mt-3 line-clamp-3 max-w-2xl text-[13px] leading-relaxed text-white/70 sm:mt-4 sm:text-sm">{store.bio}</p>}
 
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:max-w-md sm:gap-3">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5 sm:max-w-md sm:gap-3">
             {[
               { icon: Package, label: "Menu", value: store.productCount ?? items.length },
               { icon: BadgeCheck, label: "Terjual", value: store.soldCount ?? 0 },
               { icon: Clock3, label: "Pesanan", value: store.orderCount ?? 0 },
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-white backdrop-blur">
-                <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-white/65">
-                  <s.icon size={11} /> {s.label}
+              <div key={s.label} className="rounded-xl border border-white/10 bg-white/10 px-2.5 py-2 text-white backdrop-blur sm:rounded-2xl sm:px-3">
+                <p className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-white/65 sm:text-[10px]">
+                  <s.icon size={10} /> {s.label}
                 </p>
-                <p className="font-display text-lg font-extrabold">{s.value}</p>
+                <p className="font-display text-base font-extrabold sm:text-lg">{s.value}</p>
               </div>
             ))}
           </div>
@@ -180,37 +180,39 @@ export default function StorePage() {
         </p>
       )}
 
-      <section className="shell pt-8">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <CategoryChips value={category} onChange={setCategory} className="lg:order-1" />
-          <div className="flex items-center gap-2 lg:order-2">
-            <label className="relative flex-1 lg:w-56">
-              <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy/30" />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Cari di toko ini..."
-                aria-label="Cari produk di toko ini"
-                className="h-9 w-full rounded-full border border-navy/10 bg-white pl-9 pr-3 text-xs outline-none transition placeholder:text-navy/65 focus:border-accent focus:ring-4 focus:ring-accent/10"
-              />
-            </label>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              aria-label="Urutkan produk"
-              className="h-9 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-xs font-semibold text-navy outline-none focus:border-accent"
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.id} value={o.id}>{o.label}</option>
-              ))}
-            </select>
+      <section className="shell pt-4 sm:pt-8">
+        <div className="sticky top-[60px] z-40 -mx-4 border-b border-navy/[0.06] bg-cream/95 px-4 pb-2.5 pt-2 backdrop-blur-xl sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+          <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
+            <CategoryChips value={category} onChange={setCategory} className="lg:order-1" />
+            <div className="flex items-center gap-2 lg:order-2">
+              <label className="relative flex-1 lg:w-56">
+                <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy/30" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Cari di toko ini..."
+                  aria-label="Cari produk di toko ini"
+                  className="h-10 w-full rounded-full border border-navy/10 bg-white pl-9 pr-3 text-base outline-none transition placeholder:text-navy/65 focus:border-accent focus:ring-4 focus:ring-accent/10 sm:h-9 sm:text-xs"
+                />
+              </label>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                aria-label="Urutkan produk"
+                className="h-10 max-w-[7.75rem] cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none focus:border-accent sm:h-9 sm:max-w-none sm:text-xs"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
         {loadingProducts ? (
-          <div className="pt-8"><GridSkeleton count={6} /></div>
+          <div className="pt-6 sm:pt-8"><GridSkeleton count={6} /></div>
         ) : filtered.length === 0 ? (
-          <div className="pt-8">
+          <div className="pt-6 sm:pt-8">
             <EmptyState
               icon={Search}
               title={q ? `Tidak ada hasil untuk “${q}”` : "Belum ada produk di kategori ini"}
@@ -231,15 +233,15 @@ export default function StorePage() {
           </div>
         ) : sort === "recommended" && !q ? (
           groups.map((g) => (
-            <div key={g.title} className="pt-8">
-              <div className="mb-4 flex items-end justify-between">
+            <div key={g.title} className="pt-6 sm:pt-8">
+              <div className="mb-3 flex items-end justify-between sm:mb-4">
                 <div>
-                  <h2 className="font-display text-lg font-extrabold text-navy sm:text-xl">{g.title}</h2>
+                  <h2 className="font-display text-base font-extrabold text-navy sm:text-xl">{g.title}</h2>
                   <p className="text-[11px] text-navy/65">{g.products.length} menu</p>
                 </div>
                 <span className="text-[11px] font-semibold text-navy/65">Mulai {formatRupiah(Math.min(...g.products.map((p) => p.price)))}</span>
               </div>
-              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
                 {g.products.map((p) => (
                   <ProductCard key={p.id} product={p} onAdd={onAdd} onSelect={setSelected} />
                 ))}
@@ -247,21 +249,21 @@ export default function StorePage() {
             </div>
           ))
         ) : (
-          <div className="pt-8">
-            <div className="mb-4 flex items-center justify-between">
+          <div className="pt-6 sm:pt-8">
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
               <p className="text-sm font-bold text-navy">{filtered.length} produk</p>
               <Link to="/cari" className="inline-flex items-center gap-1 text-xs font-semibold text-price hover:underline">
                 Cari di semua booth <ArrowRight size={13} />
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
               {filtered.map((p) => (
                 <ProductCard key={p.id} product={p} onAdd={onAdd} onSelect={setSelected} />
               ))}
             </div>
           </div>
         )}
-        <div className="h-14" />
+        <div className="h-8 sm:h-14" />
       </section>
 
       {selected && (

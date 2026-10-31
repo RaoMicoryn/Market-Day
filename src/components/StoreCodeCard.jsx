@@ -18,7 +18,7 @@ export default function StoreCodeCard({ code, slug }) {
   };
 
   const btn =
-    "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full px-4 text-xs font-bold transition duration-300 active:scale-95";
+    "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-full px-4 text-xs font-bold transition duration-300 active:scale-95";
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy-700 to-navy-900 p-5 text-white shadow-soft sm:p-6">

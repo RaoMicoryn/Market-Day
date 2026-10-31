@@ -54,17 +54,17 @@ export default function OrdersPage() {
   };
 
   return (
-    <section className="shell max-w-4xl py-10">
-      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+    <section className="shell max-w-4xl pb-8 pt-4 sm:py-10">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-7 sm:gap-4">
         <div>
           <p className="eyebrow mb-1.5">Riwayat</p>
-          <h1 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">Pesanan saya</h1>
-          <p className="mt-1.5 max-w-xl text-sm text-navy/65">
+          <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">Pesanan saya</h1>
+          <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-navy/65 sm:text-sm">
             Pesanan yang dibuat dari perangkat ini. Status diperbarui langsung saat penjual memproses.
           </p>
         </div>
         {orders?.length > 0 && (
-          <button type="button" onClick={() => openTracker()} className="btn-primary">
+          <button type="button" onClick={() => openTracker()} className="btn-primary w-full sm:w-auto">
             <ReceiptText size={15} /> Buka tiket aktif
           </button>
         )}
@@ -113,9 +113,9 @@ export default function OrdersPage() {
 
                 <div className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:p-5">
                   <div>
-                    <ol className="flex items-center gap-1.5 text-[10px] font-semibold" aria-label="Progres pesanan">
+                    <ol className="flex items-center gap-1 text-[9px] font-semibold sm:gap-1.5 sm:text-[10px]" aria-label="Progres pesanan">
                       {STEPS.map((_, i) => (
-                        <li key={i} className="flex flex-1 items-center gap-1.5 last:flex-none">
+                        <li key={i} className="flex flex-1 items-center gap-1 last:flex-none sm:gap-1.5">
                           <span
                             className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold ${
                               i <= step ? "bg-accent text-white" : "bg-navy-50 text-navy/30"
@@ -152,20 +152,20 @@ export default function OrdersPage() {
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-navy/65">Total</p>
                       <p className="font-display text-lg font-extrabold text-price">{formatRupiah(o.total)}</p>
                     </div>
-                    <div className="flex w-full gap-1.5 sm:w-auto">
+                    <div className="flex w-full gap-2 sm:w-auto">
                       <button
                         type="button"
                         onClick={() => openTracker()}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition hover:bg-navy-700 sm:flex-none"
+                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-navy px-3 text-xs font-bold text-white transition hover:bg-navy-700 active:scale-95 sm:flex-none"
                       >
-                        <ReceiptText size={12} /> Tiket
+                        <ReceiptText size={13} /> Tiket
                       </button>
                       <button
                         type="button"
                         onClick={() => reorder(o)}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-navy/10 px-3 py-2 text-[11px] font-bold text-navy/70 transition hover:border-accent/50 hover:text-price sm:flex-none"
+                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-navy/10 px-3 text-xs font-bold text-navy/70 transition hover:border-accent/50 hover:text-price active:scale-95 sm:flex-none"
                       >
-                        <RotateCcw size={12} /> Pesan lagi
+                        <RotateCcw size={13} /> Pesan lagi
                       </button>
                     </div>
                   </div>

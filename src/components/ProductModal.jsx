@@ -17,7 +17,7 @@ function Choice({ label, options, value, onChange }) {
             type="button"
             aria-pressed={value === o}
             onClick={() => onChange(o)}
-            className={`min-h-9 rounded-full border px-3.5 text-xs font-semibold transition duration-200 ${
+            className={`min-h-10 rounded-full border px-3.5 text-[13px] font-semibold transition duration-200 active:scale-95 sm:min-h-9 sm:text-xs ${
               value === o
                 ? "border-navy bg-navy text-white shadow-sm"
                 : "border-navy/10 bg-white text-navy/65 hover:border-accent/50 hover:text-navy"
@@ -100,25 +100,26 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`relative flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-[28px] bg-white shadow-lift transition duration-[250ms] ease-out sm:rounded-[28px] ${
+        className={`relative flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-[28px] bg-white shadow-lift transition duration-[250ms] ease-out sm:max-h-[88vh] sm:rounded-[28px] ${
           open ? "translate-y-0 scale-100 opacity-100" : "translate-y-8 scale-95 opacity-0"
         }`}
       >
+        <div className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
         <div className="absolute right-3 top-3 z-10 flex gap-2">
-          <HeartButton product={product} />
+          <HeartButton product={product} className="!h-10 !w-10" />
           <button
             type="button"
             onClick={close}
             aria-label="Tutup"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/85 text-navy shadow-soft backdrop-blur transition duration-300 hover:rotate-90 hover:bg-white"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-navy shadow-soft backdrop-blur transition duration-300 hover:rotate-90 hover:bg-white active:scale-90"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="overflow-y-auto">
-          <ProductImage product={product} className="aspect-[16/10]" />
-          <div className="p-5 sm:p-6">
+        <div className="scroll-contain overflow-y-auto">
+          <ProductImage product={product} className="aspect-[4/3] sm:aspect-[16/10]" />
+          <div className="p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="mb-1 inline-flex items-center gap-1 rounded-full bg-navy-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-navy/65">
@@ -184,18 +185,18 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
           </div>
         </div>
 
-        <div className="border-t border-navy/[0.06] bg-white p-4 sm:p-5">
+        <div className="border-t border-navy/[0.06] bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:p-5">
           <div className="mb-3 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 aria-label="Kurangi jumlah"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100 active:scale-90"
               >
-                <Minus size={15} />
+                <Minus size={16} />
               </button>
-              <span className="w-6 text-center text-sm font-extrabold text-navy" aria-live="polite">
+              <span className="w-7 text-center text-base font-extrabold text-navy" aria-live="polite">
                 {qty}
               </span>
               <button
@@ -203,9 +204,9 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
                 onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
                 aria-label="Tambah jumlah"
                 disabled={qty >= maxQty}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy transition hover:bg-navy-100 active:scale-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <Plus size={15} />
+                <Plus size={16} />
               </button>
             </div>
             <div className="text-right">
@@ -220,15 +221,15 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
               disabled={disabled}
               onClick={addToCart}
               aria-label="Tambah ke keranjang"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-glow transition duration-300 hover:scale-105 hover:bg-price disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/65 disabled:shadow-none"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-glow transition duration-300 hover:scale-105 hover:bg-price active:scale-90 disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/65 disabled:shadow-none"
             >
-              <ShoppingBag size={19} />
+              <ShoppingBag size={20} />
             </button>
             <button
               type="button"
               disabled={disabled}
               onClick={buyNow}
-              className="h-11 flex-1 rounded-full bg-navy text-sm font-bold text-white transition duration-300 hover:bg-navy-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/65"
+              className="h-12 flex-1 rounded-full bg-navy text-sm font-bold text-white transition duration-300 hover:bg-navy-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/65"
             >
               {closed ? "Toko tutup" : soldOut ? "Stok habis" : "Beli sekarang"}
             </button>

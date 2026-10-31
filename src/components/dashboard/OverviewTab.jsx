@@ -52,30 +52,30 @@ export default function OverviewTab({ store, orders }) {
   const maxQty = Math.max(...top.map((t) => t.qty), 1);
 
   return (
-    <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4 sm:space-y-5">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className={`rounded-2xl border border-navy/[0.06] p-4 shadow-soft ${c.tone}`}>
-            <div className="flex items-start justify-between">
-              <p className={`text-[11px] font-semibold ${c.tone.includes("bg-navy") ? "text-white/60" : "text-navy/65"}`}>
+          <div key={c.label} className={`rounded-2xl border border-navy/[0.06] p-3.5 shadow-soft sm:p-4 ${c.tone}`}>
+            <div className="flex items-start justify-between gap-2">
+              <p className={`text-[10px] font-semibold leading-tight sm:text-[11px] ${c.tone.includes("bg-navy") ? "text-white/60" : "text-navy/65"}`}>
                 {c.label}
               </p>
-              <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${c.iconTone}`}>
-                <c.Icon size={15} />
+              <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl sm:h-8 sm:w-8 ${c.iconTone}`}>
+                <c.Icon size={14} />
               </span>
             </div>
-            <p className="mt-2 font-display text-xl font-extrabold tracking-tight">{loading ? "…" : c.value}</p>
+            <p className="mt-2 font-display text-lg font-extrabold tracking-tight sm:text-xl">{loading ? "…" : c.value}</p>
             <p className={`mt-0.5 text-[10px] ${c.subTone}`}>{c.sub}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="card p-5">
+        <div className="card p-4 sm:p-5">
           {stats ? <SalesChart labels={stats.days} values={stats.revenueByDay} /> : <div className="skeleton h-48 w-full" />}
         </div>
 
-        <div className="card p-5">
+        <div className="card p-4 sm:p-5">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-bold text-navy">Produk terlaris</h2>
             <span className="text-[10px] font-semibold text-navy/65">Berdasarkan qty terjual</span>
@@ -108,7 +108,7 @@ export default function OverviewTab({ store, orders }) {
       </div>
 
       <div className="card overflow-hidden">
-        <div className="flex items-center justify-between border-b border-navy/[0.06] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-navy/[0.06] px-4 py-3.5 sm:px-5 sm:py-4">
           <h2 className="text-sm font-bold text-navy">Pesanan terbaru</h2>
           <span className="text-[10px] font-semibold text-navy/65">{orders.length} total</span>
         </div>
@@ -117,7 +117,7 @@ export default function OverviewTab({ store, orders }) {
         ) : (
           <ul className="divide-y divide-navy/[0.05]">
             {orders.slice(0, 5).map((o) => (
-              <li key={o.id} className="flex items-center gap-3 px-5 py-3">
+              <li key={o.id} className="flex items-center gap-2.5 px-4 py-3 sm:gap-3 sm:px-5">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy/65">
                   <Receipt size={15} />
                 </span>

@@ -16,7 +16,7 @@ export function StoreLogo({ store, className = "h-14 w-14 text-xl" }) {
 export function OpenBadge({ isOpen, className = "" }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold sm:text-[11px] ${
         isOpen ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
       } ${className}`}
     >
@@ -30,11 +30,11 @@ export default function StoreCard({ store }) {
   return (
     <Link
       to={`/toko/${store.slug}`}
-      className={`group relative flex flex-col overflow-hidden rounded-3xl border border-navy/[0.06] bg-white shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift ${
+      className={`group relative flex gap-3 overflow-hidden rounded-3xl border border-navy/[0.06] bg-white p-3 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift active:scale-[0.99] sm:flex-col sm:p-0 ${
         store.isOpen ? "" : "border-navy/10 bg-navy/[0.02]"
       }`}
     >
-      <div className="relative h-28 overflow-hidden">
+      <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-2xl sm:h-28 sm:w-full sm:rounded-none">
         {store.cover ? (
           <img
             src={store.cover}
@@ -47,36 +47,36 @@ export default function StoreCard({ store }) {
           <div className="h-full w-full bg-gradient-to-br from-navy-600 via-navy to-navy-900" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/10 to-transparent" />
-        <div className="absolute left-4 top-3">
+        <div className="absolute left-2 top-2 sm:left-4 sm:top-3">
           <OpenBadge isOpen={store.isOpen} className="bg-white/90 backdrop-blur" />
         </div>
-        <span className="absolute right-3 top-3 rounded-full bg-white/15 px-2 py-1 text-[10px] font-bold tracking-widest text-white backdrop-blur">
+        <span className="absolute right-2 top-2 rounded-full bg-white/15 px-1.5 py-1 text-[9px] font-bold tracking-widest text-white backdrop-blur sm:right-3 sm:top-3 sm:px-2 sm:text-[10px]">
           {store.code}
         </span>
       </div>
 
-      <div className="relative flex flex-1 flex-col px-5 pb-5">
-        <div className="-mt-7 flex items-end justify-between">
-          <StoreLogo store={store} className="h-14 w-14 text-xl ring-4 ring-white" />
-          <span className="mb-1 inline-flex items-center gap-1 text-xs font-semibold text-navy/65">
+      <div className="relative flex min-w-0 flex-1 flex-col justify-center sm:justify-start sm:px-5 sm:pb-5">
+        <div className="flex items-center gap-2 sm:-mt-7 sm:items-end sm:justify-between">
+          <StoreLogo store={store} className="h-8 w-8 text-sm ring-2 ring-white sm:h-14 sm:w-14 sm:text-xl sm:ring-4" />
+          <span className="mb-0.5 hidden items-center gap-1 text-xs font-semibold text-navy/65 sm:inline-flex">
             <Package size={13} /> {store.productCount ?? 0} produk
           </span>
         </div>
 
-        <h3 className="mt-3 flex items-center gap-1.5 text-base font-bold text-navy">
+        <h3 className="mt-1.5 flex items-center gap-1.5 text-sm font-bold leading-tight text-navy sm:mt-3 sm:text-base">
           <span className="truncate">{store.name}</span>
-          <ArrowUpRight size={15} className="shrink-0 text-navy/20 transition group-hover:text-accent" />
+          <ArrowUpRight size={14} className="shrink-0 text-navy/20 transition group-hover:text-accent sm:h-[15px] sm:w-[15px]" />
         </h3>
-        <p className="mt-1 line-clamp-2 min-h-[2.5rem] text-[13px] leading-relaxed text-navy/65">
+        <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-navy/65 sm:mt-1 sm:min-h-[2.5rem] sm:text-[13px]">
           {store.bio || "Lihat menu dan informasi dari booth ini."}
         </p>
 
-        <div className="mt-3 flex items-center justify-between border-t border-dashed border-navy/[0.08] pt-3 text-[11px] font-semibold text-navy/65">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[10px] font-semibold text-navy/65 sm:mt-3 sm:justify-between sm:border-t sm:border-dashed sm:border-navy/[0.08] sm:pt-3 sm:text-[11px]">
           <span className="inline-flex items-center gap-1">
-            <MapPin size={12} /> {store.kelas}
+            <MapPin size={11} /> {store.kelas}
           </span>
           <span className="inline-flex items-center gap-1">
-            <Users size={12} /> {store.members?.length || 0} anggota
+            <Users size={11} /> {store.members?.length || 0} anggota
           </span>
           <span className="text-emerald-700">{store.soldCount ? `${store.soldCount} terjual` : "Baru"}</span>
         </div>

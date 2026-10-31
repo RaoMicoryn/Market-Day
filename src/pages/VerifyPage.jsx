@@ -155,8 +155,8 @@ export default function VerifyPage() {
   if (!pending || !wa) return <Navigate to="/checkout" replace />;
   if (otp.status === "verified") {
     return (
-      <section className="shell max-w-lg py-14">
-        <div className="card p-8 text-center">
+      <section className="shell max-w-lg py-10 sm:py-14">
+        <div className="card p-6 text-center sm:p-8">
           {placeError ? (
             <>
               <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
@@ -191,11 +191,11 @@ export default function VerifyPage() {
   const errorMessage = localError || otp.error;
 
   return (
-    <section className="shell max-w-lg py-8 sm:py-12">
+    <section className="shell max-w-lg pb-10 pt-4 sm:py-12">
       <button
         type="button"
         onClick={() => navigate("/checkout")}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-navy/65 transition hover:text-price"
+        className="mb-5 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-navy/65 transition hover:text-price"
       >
         <ArrowLeft size={16} /> Kembali ke detail pesanan
       </button>
@@ -204,8 +204,8 @@ export default function VerifyPage() {
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-accent/10 text-accent">
           <ShieldCheck size={26} />
         </span>
-        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy">Verifikasi OTP</h1>
-        <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-navy/65">
+        <h1 className="mt-4 font-display text-[26px] font-extrabold tracking-tight text-navy sm:text-3xl">Verifikasi OTP</h1>
+        <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-navy/65 sm:text-sm">
           {sending
             ? `Kami sedang mengirim kode verifikasi 6 digit ke nomor WhatsApp ${wa}.`
             : sent
@@ -226,7 +226,7 @@ export default function VerifyPage() {
       <form onSubmit={submit} noValidate className="mt-6">
         <fieldset>
           <legend className="sr-only">Kode verifikasi 6 digit</legend>
-          <div className="flex justify-center gap-2 sm:gap-2.5">
+          <div className="mx-auto grid max-w-sm grid-cols-6 gap-2 sm:gap-2.5">
             {digits.map((digit, index) => (
               <input
                 key={index}
@@ -242,7 +242,7 @@ export default function VerifyPage() {
                 autoComplete={index === 0 ? "one-time-code" : "off"}
                 aria-label={`Digit ${index + 1} dari 6`}
                 disabled={otp.status === "verifying"}
-                className={`h-14 w-11 rounded-2xl border-2 bg-navy/[0.03] text-center font-display text-2xl font-extrabold text-navy outline-none transition focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 disabled:opacity-60 sm:h-16 sm:w-14 ${
+                className={`h-14 w-full rounded-xl border-2 bg-navy/[0.03] text-center font-display text-[22px] font-extrabold text-navy outline-none transition focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 disabled:opacity-60 sm:h-16 sm:rounded-2xl sm:text-2xl ${
                   errorMessage ? "border-red-300" : "border-navy/10"
                 }`}
               />
@@ -321,8 +321,8 @@ function OrderSuccess({ orders, customer, onTrack }) {
   }, [waLink]);
 
   return (
-    <section className="shell max-w-2xl py-14">
-      <div className="animate-pop rounded-4xl border border-emerald-100 bg-white p-7 text-center shadow-lift sm:p-10">
+    <section className="shell max-w-2xl py-8 sm:py-14">
+      <div className="animate-pop rounded-4xl border border-emerald-100 bg-white p-5 text-center shadow-lift sm:p-10">
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50 text-emerald-700">
           <CheckCircle2 size={32} />
         </span>
@@ -357,14 +357,14 @@ function OrderSuccess({ orders, customer, onTrack }) {
           </div>
         )}
 
-        <div className="mt-7 flex flex-wrap justify-center gap-2">
-          <button type="button" onClick={onTrack} className="btn-accent">
+        <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row sm:flex-wrap">
+          <button type="button" onClick={onTrack} className="btn-accent w-full sm:w-auto">
             <Ticket size={16} /> Lihat tiket pesanan
           </button>
-          <Link to="/pesanan" className="btn-ghost">
+          <Link to="/pesanan" className="btn-ghost w-full sm:w-auto">
             Semua pesanan saya
           </Link>
-          <Link to="/" className="btn-quiet">
+          <Link to="/" className="btn-quiet w-full sm:w-auto">
             Kembali ke menu
           </Link>
         </div>

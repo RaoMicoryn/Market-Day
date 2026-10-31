@@ -39,7 +39,7 @@ export default function DashboardPage() {
 
   if (session === undefined || loading || !store)
     return (
-      <div className="shell max-w-4xl py-10">
+      <div className="shell max-w-4xl py-4 sm:py-10">
         <div className="skeleton h-24 w-full rounded-3xl" />
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div className="skeleton h-28 rounded-3xl" />
@@ -63,29 +63,37 @@ export default function DashboardPage() {
   };
 
   return (
-    <section className="shell py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-navy/[0.06] bg-white p-4 shadow-soft sm:p-5">
+    <section className="shell py-4 sm:py-8">
+      <div className="mb-4 rounded-3xl border border-navy/[0.06] bg-white p-4 shadow-soft sm:mb-6 sm:p-5">
         <div className="flex items-center gap-3">
-          <StoreLogo store={store} className="h-14 w-14 text-xl" />
-          <div>
+          <StoreLogo store={store} className="h-12 w-12 text-lg sm:h-14 sm:w-14 sm:text-xl" />
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="font-display text-lg font-extrabold text-navy sm:text-xl">{store.name}</h1>
+              <h1 className="truncate font-display text-lg font-extrabold text-navy sm:text-xl">{store.name}</h1>
               <OpenBadge isOpen={store.isOpen} />
             </div>
-            <p className="mt-0.5 text-[11px] font-semibold text-navy/65">
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-navy/65">
               {store.kelas} · {store.code} · {store.members?.length || 0} anggota
             </p>
           </div>
+          <button
+            type="button"
+            onClick={doLogout}
+            aria-label="Keluar"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-navy/10 text-navy/65 transition hover:border-red-300 hover:text-red-700 active:scale-90"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Link to={`/toko/${store.slug}`} className="btn-ghost">
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <Link to={`/toko/${store.slug}`} className="btn-ghost w-full">
             <ExternalLink size={14} /> Lihat toko
           </Link>
           <button
             type="button"
             onClick={toggleOpen}
-            className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${
+            className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition active:scale-[0.98] ${
               store.isOpen
                 ? "border border-navy/10 bg-white text-navy/70 hover:border-red-300 hover:text-red-700"
                 : "bg-emerald-700 text-white shadow-soft hover:bg-emerald-800"
@@ -94,19 +102,11 @@ export default function DashboardPage() {
             <span className={`h-2 w-2 rounded-full ${store.isOpen ? "bg-emerald-500" : "bg-white"}`} />
             {store.isOpen ? "Tutup toko" : "Buka toko"}
           </button>
-          <button
-            type="button"
-            onClick={doLogout}
-            aria-label="Keluar"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-navy/10 text-navy/65 transition hover:border-red-300 hover:text-red-700"
-          >
-            <LogOut size={16} />
-          </button>
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[210px_1fr]">
-        <nav aria-label="Menu dashboard" className="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5 lg:mx-0 lg:flex-col lg:px-0">
+      <div className="grid gap-4 lg:grid-cols-[210px_1fr] lg:gap-5">
+        <nav aria-label="Menu dashboard" className="no-scrollbar sticky top-[60px] z-30 -mx-4 flex gap-1.5 overflow-x-auto border-b border-navy/[0.06] bg-cream/95 px-4 py-2 backdrop-blur-xl lg:static lg:mx-0 lg:flex-col lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
           {TABS.map(({ id, label, Icon }) => {
             const active = tab === id;
             return (
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 type="button"
                 onClick={() => setTab(id)}
                 aria-current={active ? "page" : undefined}
-                className={`inline-flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold transition ${
+                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-2xl px-3.5 text-sm font-semibold transition active:scale-[0.98] sm:px-4 ${
                   active ? "bg-navy text-white shadow-soft" : "text-navy/65 hover:bg-white hover:text-navy"
                 }`}
               >

@@ -3,7 +3,7 @@ import ProductImage from "./ProductImage";
 import { formatRupiah, optionsText } from "../data/products";
 
 const qtyBtn =
-  "flex h-8 w-8 items-center justify-center rounded-full bg-navy-50 text-navy transition duration-200 hover:bg-accent hover:text-white active:scale-90";
+  "flex h-10 w-10 items-center justify-center rounded-full bg-navy-50 text-navy transition duration-200 hover:bg-accent hover:text-white active:scale-90 sm:h-8 sm:w-8";
 
 export default function OrderItem({ item, onChangeQty, onNote }) {
   const { product, qty, options, unit, note } = item;
@@ -44,7 +44,7 @@ export default function OrderItem({ item, onChangeQty, onNote }) {
         maxLength={80}
         placeholder="Catatan untuk item ini (mis. tanpa saus)"
         aria-label={`Catatan untuk ${product.name}`}
-        className="mt-3 w-full rounded-lg border border-navy/[0.08] bg-navy/[0.02] px-3 py-2 text-xs outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10"
+        className="mt-3 min-h-11 w-full rounded-lg border border-navy/[0.08] bg-navy/[0.02] px-3 py-2 text-base outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-xs"
       />
     </li>
   );

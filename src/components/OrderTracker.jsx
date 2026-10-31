@@ -114,7 +114,7 @@ export default function OrderTracker() {
   if (!trackerOpen) return null;
   return (
     <div
-      className="fixed inset-0 z-[250] flex items-center justify-center bg-navy-900/55 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[250] flex items-end justify-center bg-navy-900/55 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={closeTracker}
       role="dialog"
       aria-modal="true"
@@ -122,9 +122,10 @@ export default function OrderTracker() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-h-[90vh] w-full max-w-md animate-rise overflow-y-auto rounded-[28px] bg-cream p-4 shadow-lift sm:p-5"
+        className="scroll-contain relative max-h-[92dvh] w-full max-w-md animate-rise overflow-y-auto rounded-t-[28px] bg-cream px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-lift sm:max-h-[90vh] sm:rounded-[28px] sm:p-5"
       >
-        <div className="mb-4 flex items-start justify-between">
+        <div className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
+        <div className="mb-4 flex items-start justify-between gap-3">
           <div>
             <h3 className="font-display text-lg font-extrabold text-navy">Tiket pesanan</h3>
             <p className="text-[11px] text-navy/65">Status diperbarui otomatis saat penjual memproses.</p>
@@ -133,9 +134,9 @@ export default function OrderTracker() {
             type="button"
             onClick={closeTracker}
             aria-label="Tutup"
-            className="rounded-full bg-white p-2 text-navy/65 shadow-soft transition hover:text-navy"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-navy/65 shadow-soft transition hover:text-navy active:scale-90"
           >
-            <X size={17} />
+            <X size={18} />
           </button>
         </div>
 
@@ -153,9 +154,9 @@ export default function OrderTracker() {
             closeTracker();
             navigate("/pesanan");
           }}
-          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-navy py-3 text-xs font-bold text-white transition hover:bg-navy-700"
+          className="mt-4 flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-navy text-sm font-bold text-white transition hover:bg-navy-700 active:scale-[0.98]"
         >
-          Lihat semua pesanan <ArrowRight size={14} />
+          Lihat semua pesanan <ArrowRight size={15} />
         </button>
       </div>
     </div>

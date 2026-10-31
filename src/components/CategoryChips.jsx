@@ -3,7 +3,7 @@ import { CATEGORIES, CATEGORY_META } from "../data/products";
 export default function CategoryChips({ value, onChange, className = "", includeAll = true }) {
   return (
     <div
-      className={`no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 ${className}`}
+      className={`no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 ${className}`}
       role="group"
       aria-label="Filter kategori"
     >

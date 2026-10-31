@@ -101,21 +101,41 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
     );
 
   return (
-    <section className="shell py-8 sm:py-10">
-      <Link to="/cari" className="mb-5 inline-flex items-center gap-1.5 text-xs font-semibold text-navy/65 transition hover:text-price">
+    <section className="shell pb-32 pt-4 sm:py-10 lg:pb-10">
+      <Link to="/cari" className="mb-4 inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-navy/65 transition hover:text-price">
         <ArrowLeft size={14} /> Lanjut belanja
       </Link>
 
-      <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-7">
         <div>
           <p className="eyebrow mb-1">Langkah terakhir</p>
-          <h1 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">Selesaikan pesananmu</h1>
-          <p className="mt-1 text-sm text-navy/65">Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth. Bayar langsung di booth.</p>
+          <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">Selesaikan pesananmu</h1>
+          <p className="mt-1 text-[13px] leading-relaxed text-navy/65 sm:text-sm">Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth. Bayar langsung di booth.</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700">
           <ShieldCheck size={13} /> Data hanya dipakai untuk pesanan
         </span>
       </div>
+
+      <ol className="mb-5 flex items-center gap-1.5 text-[11px] font-bold sm:mb-7 sm:gap-2 sm:text-xs" aria-label="Tahapan pemesanan">
+        {[
+          { n: 1, label: "Data", state: "on" },
+          { n: 2, label: "Verifikasi WA", state: "next" },
+          { n: 3, label: "Konfirmasi", state: "next" },
+        ].map((s, i) => (
+          <li key={s.n} className="flex flex-1 items-center gap-1.5 sm:gap-2">
+            <span
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] ${
+                s.state === "on" ? "bg-navy text-white" : "bg-white text-navy/40 ring-1 ring-navy/10"
+              }`}
+            >
+              {s.n}
+            </span>
+            <span className={`truncate ${s.state === "on" ? "text-navy" : "text-navy/40"}`}>{s.label}</span>
+            {i < 2 && <span className="h-px flex-1 bg-navy/10" aria-hidden="true" />}
+          </li>
+        ))}
+      </ol>
 
       <div className="grid gap-7 lg:grid-cols-[1.15fr_0.85fr]">
         <form id="checkout-form" onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -217,14 +237,9 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
           </div>
 
           <div className="lg:hidden">
-            <button
-              type="submit"
-              disabled={busy}
-              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-navy text-sm font-bold text-white shadow-soft transition hover:bg-navy-700 active:scale-[0.99] disabled:opacity-60"
-            >
-              {busy ? "Menyimpan..." : `Buat pesanan · ${formatRupiah(total)}`}
-              {!busy && <ArrowRight size={16} />}
-            </button>
+            <p className="text-center text-[11px] leading-relaxed text-navy/65">
+              Dengan memesan, kamu setuju mengambil pesanan sesuai metode yang dipilih.
+            </p>
           </div>
         </form>
 
@@ -244,6 +259,24 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
             </p>
           </div>
         </aside>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-[80] border-t border-navy/[0.08] bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-18px_rgba(11,37,69,.35)] backdrop-blur-xl lg:hidden">
+        <div className="mx-auto flex max-w-2xl items-center gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-navy/55">Total · {cartCount} item</p>
+            <p className="truncate font-display text-lg font-extrabold leading-tight text-price">{formatRupiah(total)}</p>
+          </div>
+          <button
+            type="submit"
+            form="checkout-form"
+            disabled={busy}
+            className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-navy px-4 text-sm font-bold text-white shadow-soft transition hover:bg-navy-700 active:scale-[0.98] disabled:opacity-60"
+          >
+            {busy ? "Menyimpan..." : "Buat pesanan"}
+            {!busy && <ArrowRight size={16} />}
+          </button>
+        </div>
       </div>
     </section>
   );

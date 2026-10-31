@@ -37,7 +37,7 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+      className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition active:scale-95 ${
         active
           ? "border-accent bg-accent-50 text-price"
           : "border-navy/10 bg-white text-navy/65 hover:border-accent/40 hover:text-navy"
@@ -49,8 +49,8 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
   );
 
   return (
-    <section className="shell pb-14 pt-10">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <section className="shell pb-8 pt-6 sm:pb-14 sm:pt-10">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
         <div>
           <h2 className="section-title">{title}</h2>
           <p className="mt-1 text-sm text-navy/65">
@@ -64,7 +64,7 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="cursor-pointer appearance-none rounded-full border border-navy/10 bg-white py-2 pl-3 pr-8 text-xs font-semibold text-navy shadow-sm outline-none transition hover:border-accent/40 focus:border-accent"
+            className="min-h-10 cursor-pointer appearance-none rounded-full border border-navy/10 bg-white py-2 pl-3 pr-8 text-base font-semibold text-navy shadow-sm outline-none transition hover:border-accent/40 focus:border-accent sm:min-h-0 sm:text-xs"
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.id} value={o.id}>
@@ -123,14 +123,14 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
         />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
             {visible.map((p) => (
               <ProductCard key={p.id} product={p} showStore onAdd={onAdd} onSelect={setSelected} />
             ))}
           </div>
           {rows.length > visible.length && (
             <div className="mt-8 text-center">
-              <button type="button" onClick={() => setLimit((n) => n + PAGE)} className="btn-ghost">
+              <button type="button" onClick={() => setLimit((n) => n + PAGE)} className="btn-ghost w-full sm:w-auto">
                 Muat {Math.min(PAGE, rows.length - visible.length)} produk lagi
               </button>
             </div>

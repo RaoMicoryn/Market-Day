@@ -37,7 +37,7 @@ export function ToastProvider({ children }) {
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="pointer-events-none fixed inset-x-0 bottom-4 z-[400] flex flex-col items-center gap-2 px-4 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:items-end sm:px-0"
+        className="pointer-events-none fixed inset-x-0 bottom-[calc(4.9rem+env(safe-area-inset-bottom))] z-[400] flex flex-col items-center gap-2 px-4 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:items-end sm:px-0"
       >
         {toasts.map((t) => {
           const { Icon, tone, bar } = TYPES[t.type] || TYPES.info;
@@ -45,7 +45,7 @@ export function ToastProvider({ children }) {
             <div
               key={t.id}
               role="status"
-              className="pointer-events-auto flex w-full max-w-sm animate-rise items-start gap-3 overflow-hidden rounded-2xl border border-navy/[0.06] bg-white/95 p-3.5 pr-2.5 shadow-lift backdrop-blur"
+              className="pointer-events-auto relative flex w-full max-w-sm animate-rise items-start gap-3 overflow-hidden rounded-2xl border border-navy/[0.06] bg-white/95 p-3.5 pr-2.5 shadow-lift backdrop-blur"
             >
               <span className={`absolute left-0 top-0 h-full w-1 ${bar}`} aria-hidden="true" />
               <Icon size={18} className={`mt-0.5 shrink-0 ${tone}`} aria-hidden="true" />
@@ -57,7 +57,7 @@ export function ToastProvider({ children }) {
                 type="button"
                 onClick={() => dismiss(t.id)}
                 aria-label="Tutup notifikasi"
-                className="rounded-full p-1 text-navy/65 transition hover:bg-navy/5 hover:text-navy"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90"
               >
                 <X size={14} />
               </button>

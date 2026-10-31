@@ -6,15 +6,29 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     @apply bg-cream font-sans text-ink antialiased;
+    min-height: 100dvh;
+    /* Cegah efek "rubber band" berlebih di iOS tanpa mematikan pull-to-refresh. */
+    overscroll-behavior-y: none;
+  }
+  #root {
+    min-height: 100dvh;
   }
   h1,
   h2,
   h3,
   h4 {
     @apply font-display tracking-tight text-navy;
+  }
+  button,
+  a,
+  label,
+  select {
+    touch-action: manipulation;
   }
   ::selection {
     @apply bg-accent/25 text-navy;
@@ -36,7 +50,7 @@
 
 @layer components {
   .shell {
-    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-8;
   }
   .card {
     @apply rounded-3xl border border-navy/[0.06] bg-white shadow-soft;
@@ -45,25 +59,25 @@
     @apply inline-flex select-none items-center justify-center gap-2 rounded-full text-sm font-semibold transition duration-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
   }
   .btn-primary {
-    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded-full bg-navy px-5 text-sm font-semibold text-white shadow-soft transition duration-200 hover:bg-navy-700 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-full bg-navy px-5 text-sm font-semibold text-white shadow-soft transition duration-200 hover:bg-navy-700 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-accent {
-    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-glow transition duration-200 hover:bg-price active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-glow transition duration-200 hover:bg-price active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-ghost {
-    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded-full border border-navy/10 bg-white px-5 text-sm font-semibold text-navy transition duration-200 hover:border-accent/60 hover:text-price active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-full border border-navy/10 bg-white px-5 text-sm font-semibold text-navy transition duration-200 hover:border-accent/60 hover:text-price active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-quiet {
-    @apply inline-flex min-h-9 select-none items-center justify-center gap-2 rounded-full px-3 text-sm font-semibold text-navy/70 transition duration-200 hover:bg-navy/5 hover:text-navy active:scale-[0.97];
+    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded-full px-3 text-sm font-semibold text-navy/70 transition duration-200 hover:bg-navy/5 hover:text-navy active:scale-[0.97];
   }
   .chip {
-    @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-navy/10 bg-white px-4 py-2 text-sm font-semibold text-navy/65 transition duration-200 hover:border-accent/50 hover:text-price active:scale-95;
+    @apply inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-navy/10 bg-white px-4 py-2 text-[13px] font-semibold text-navy/65 transition duration-200 hover:border-accent/50 hover:text-price active:scale-95 sm:min-h-10 sm:text-sm;
   }
   .chip-on {
-    @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-navy bg-navy px-4 py-2 text-sm font-semibold text-white shadow-soft transition duration-200 active:scale-95;
+    @apply inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-navy bg-navy px-4 py-2 text-[13px] font-semibold text-white shadow-soft transition duration-200 active:scale-95 sm:min-h-10 sm:text-sm;
   }
   .field {
-    @apply w-full rounded-xl border border-navy/10 bg-navy/[0.03] px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10;
+    @apply min-h-11 w-full rounded-xl border border-navy/10 bg-navy/[0.03] px-3.5 py-3 text-base text-ink outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:py-2.5 sm:text-sm;
   }
   .eyebrow {
     @apply text-[11px] font-bold uppercase tracking-[0.18em] text-accent;
@@ -72,7 +86,7 @@
     @apply font-semibold text-price underline-offset-4 hover:underline;
   }
   .section-title {
-    @apply font-display text-2xl font-extrabold tracking-tight text-navy sm:text-[28px];
+    @apply font-display text-[22px] font-extrabold tracking-tight text-navy sm:text-[28px];
   }
   .step-num::after {
     content: attr(data-step);
@@ -100,7 +114,24 @@
   .mask-fade-b {
     mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
   }
+  /* Area aman iPhone (notch & home indicator). */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .pb-nav {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+  .scroll-contain {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }

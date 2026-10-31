@@ -50,7 +50,7 @@ export function ConfirmProvider({ children }) {
       {children}
       {state && (
         <div
-          className="fixed inset-0 z-[350] flex items-end justify-center bg-navy-900/50 p-4 backdrop-blur-sm sm:items-center"
+          className="fixed inset-0 z-[350] flex items-end justify-center bg-navy-900/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
           onClick={() => close(false)}
         >
           <div
@@ -58,8 +58,9 @@ export function ConfirmProvider({ children }) {
             aria-modal="true"
             aria-labelledby="confirm-title"
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm animate-pop rounded-3xl bg-white p-6 shadow-lift"
+            className="max-h-[92dvh] w-full max-w-sm animate-pop overflow-y-auto rounded-t-3xl bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 shadow-lift sm:rounded-3xl sm:p-6"
           >
+            <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
             <span
               className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl ${
                 state.danger ? "bg-red-50 text-red-700" : "bg-accent-50 text-accent-600"
@@ -71,15 +72,15 @@ export function ConfirmProvider({ children }) {
               {state.title}
             </h3>
             {state.message && <p className="mt-1.5 text-sm leading-relaxed text-navy/65">{state.message}</p>}
-            <div className="mt-6 flex gap-2">
-              <button type="button" onClick={() => close(false)} className="btn-ghost flex-1">
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row">
+              <button type="button" onClick={() => close(false)} className="btn-ghost w-full flex-1">
                 {state.cancelLabel}
               </button>
               <button
                 type="button"
                 autoFocus
                 onClick={() => close(true)}
-                className={`flex-1 ${state.danger ? "btn-accent" : "btn-primary"}`}
+                className={`w-full flex-1 ${state.danger ? "btn-accent" : "btn-primary"}`}
               >
                 {state.confirmLabel}
               </button>

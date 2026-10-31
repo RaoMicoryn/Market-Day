@@ -97,14 +97,15 @@ export default function ProductForm({ product, onSave, onClose }) {
         onSubmit={submit}
         noValidate
         onClick={(e) => e.stopPropagation()}
-        className="relative my-auto w-full max-w-lg animate-pop space-y-4 rounded-t-[28px] bg-white p-5 shadow-lift sm:rounded-[28px] sm:p-6"
+        className="relative my-auto max-h-[92dvh] w-full max-w-lg animate-pop space-y-4 overflow-y-auto rounded-t-[28px] bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-lift sm:max-h-[88vh] sm:rounded-[28px] sm:p-6"
       >
+        <div className="mx-auto h-1.5 w-10 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="eyebrow mb-1">{product ? "Ubah menu" : "Menu baru"}</p>
             <h3 className="font-display text-xl font-extrabold text-navy">{product ? "Ubah produk" : "Tambah produk"}</h3>
           </div>
-          <button type="button" onClick={onClose} aria-label="Tutup" className="rounded-full p-2 text-navy/65 transition hover:bg-navy/5 hover:text-navy">
+          <button type="button" onClick={onClose} aria-label="Tutup" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90">
             <X size={19} />
           </button>
         </div>
@@ -207,7 +208,7 @@ export default function ProductForm({ product, onSave, onClose }) {
                   maxLength={60}
                   aria-label={`Nama topping ${index + 1}`}
                   placeholder="Nama topping"
-                  className="field text-xs"
+                  className="field sm:text-xs"
                 />
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-navy/65">Rp</span>
@@ -219,7 +220,7 @@ export default function ProductForm({ product, onSave, onClose }) {
                     onChange={(event) => updateTopping(index, "price", event.target.value)}
                     aria-label={`Harga tambahan topping ${index + 1}`}
                     placeholder="Harga"
-                    className="field pl-8 text-xs"
+                    className="field pl-8 sm:text-xs"
                   />
                 </div>
               </div>
@@ -272,11 +273,11 @@ export default function ProductForm({ product, onSave, onClose }) {
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-navy/[0.06] pt-4">
-          <button type="button" onClick={onClose} className="btn-ghost">
+        <div className="sticky bottom-0 -mx-4 flex justify-end gap-2 border-t border-navy/[0.06] bg-white px-4 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 sm:static sm:mx-0 sm:px-0 sm:pb-0">
+          <button type="button" onClick={onClose} className="btn-ghost flex-1 sm:flex-none">
             Batal
           </button>
-          <button type="submit" disabled={saving} className="btn-primary">
+          <button type="submit" disabled={saving} className="btn-primary flex-1 sm:flex-none">
             {saving ? <Loader2 size={15} className="animate-spin" /> : null}
             {saving ? "Menyimpan..." : "Simpan produk"}
           </button>
