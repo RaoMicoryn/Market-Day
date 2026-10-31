@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mobile test harness</title>
+    <style>
+      html, body { margin: 0; background: #111; }
+      body { display: flex; justify-content: center; }
+      iframe { width: 390px; height: 844px; border: 0; background: #fff; }
+    </style>
+  </head>
+  <body>
+    <iframe id="frame" title="preview" src="about:blank"></iframe>
+    <script>
+      window.addEventListener("load", () => {
+        const params = new URLSearchParams(location.search);
+        const frame = document.getElementById("frame");
+        frame.style.width = (params.get("w") || "390") + "px";
+        frame.style.height = (params.get("h") || "844") + "px";
+        setTimeout(() => {
+          frame.src = params.get("path") || "/";
+        }, 0);
+      });
+    </script>
+  </body>
+</html>

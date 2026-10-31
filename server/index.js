@@ -78,6 +78,21 @@ function requireOwner(req, res, storeId) {
   return true;
 }
 
+// Rapikan daftar anggota kelompok: trim, buang duplikat, maks 40 karakter/nama, maks 10 anggota.
+const cleanMembers = (list, max = 10) => {
+  const seen = new Set();
+  const out = [];
+  for (const item of Array.isArray(list) ? list : []) {
+    const name = String(item ?? "").trim().slice(0, 40);
+    const key = name.toLowerCase();
+    if (!name || seen.has(key)) continue;
+    seen.add(key);
+    out.push(name);
+    if (out.length >= max) break;
+  }
+  return out;
+};
+
 const STORE_SELECT = `
   select s.id, s.slug, s.code, s.name, s.kelas, s.bio, s.members, s.logo, s.cover,
     s.is_open as "isOpen", s.joined_at as "joinedAt",
@@ -144,7 +159,7 @@ app.get("/api/session", (req, res) => res.json(req.session.user || null));
 app.use("/api/otp", otpRouter);
 
 app.post("/api/auth/register", async (req, res, next) => {
-  const { nama = "", email = "", password = "", namaToko = "", kelas = "" } = req.body;
+  const { nama = "", email = "", password = "", namaToko = "", kelas = "", members = [] } = req.body;
   const identifier = norm(email);
   if (!nama.trim() || !namaToko.trim() || !kelas.trim()) return fail(res, 400, "Semua kolom wajib diisi.");
   if (identifier.length < 3 || /\s/.test(identifier)) return fail(res, 400, "Email/username minimal 3 karakter tanpa spasi.");
@@ -177,7 +192,7 @@ app.post("/api/auth/register", async (req, res, next) => {
       `insert into stores (owner_id, slug, code, name, kelas, members)
        values ($1, $2, $3, $4, $5, $6) returning id, slug, code, name, kelas, bio, members, logo, cover,
        is_open as "isOpen", joined_at as "joinedAt"`,
-      [accountId, slug, code, namaToko.trim(), kelas.trim(), [nama.trim()]]
+      [accountId, slug, code, namaToko.trim(), kelas.trim(), cleanMembers([nama, ...(Array.isArray(members) ? members : [])])]
     );
     await client.query("commit");
     const store = storeResult.rows[0];
@@ -291,7 +306,7 @@ app.patch("/api/stores/:id", async (req, res, next) => {
        where id = $1 returning id, slug, code, name, kelas, bio, members, logo, cover,
        is_open as "isOpen", joined_at as "joinedAt"`,
       [req.params.id, name.trim(), String(kelas || "").trim(), String(bio || "").slice(0, 240),
-        logo || "", cover || "", Array.isArray(members) ? members.map((member) => String(member).trim()).filter(Boolean).slice(0, 10) : []]
+        logo || "", cover || "", cleanMembers(members)]
     );
     if (!result.rowCount) return fail(res, 404, "Toko tidak ditemukan.");
     sendChange();

@@ -13,17 +13,14 @@ export function ProductCardSkeleton() {
 
 export function StoreCardSkeleton() {
   return (
-    <div className="space-y-3 rounded-3xl border border-navy/[0.06] bg-white p-5">
-      <div className="flex items-center gap-3">
-        <div className="skeleton h-14 w-14 rounded-full" />
-        <div className="flex-1 space-y-2">
-          <div className="skeleton h-4 w-1/2" />
-          <div className="skeleton h-3 w-16" />
-        </div>
+    <div className="flex gap-3.5 overflow-hidden rounded-3xl border border-navy/[0.06] bg-white p-3 sm:flex-col sm:gap-0 sm:p-0">
+      <div className="skeleton h-[104px] w-[104px] shrink-0 rounded-2xl sm:h-32 sm:w-full sm:rounded-none" />
+      <div className="flex-1 space-y-2 py-1 sm:p-5">
+        <div className="skeleton h-3 w-14" />
+        <div className="skeleton h-4 w-1/2" />
+        <div className="skeleton h-3 w-full" />
+        <div className="skeleton h-3 w-2/3" />
       </div>
-      <div className="skeleton h-3 w-full" />
-      <div className="skeleton h-3 w-2/3" />
-      <div className="skeleton h-9 w-full rounded-full" />
     </div>
   );
 }
