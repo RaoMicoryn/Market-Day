@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AlertCircle, PartyPopper } from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
 import FormField from "../components/FormField";
+import MembersInput from "../components/MembersInput";
 import StoreCodeCard from "../components/StoreCodeCard";
 import { register } from "../db/repository";
 import { useSession } from "../db/useDb";
@@ -15,6 +16,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const session = useSession();
   const [f, setF] = useState(empty);
+  const [members, setMembers] = useState([]);
   const [errors, setErrors] = useState({});
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -55,7 +57,7 @@ export default function RegisterPage() {
     if (Object.keys(found).length) return;
     setBusy(true);
     try {
-      setCreated(await register(f));
+      setCreated(await register({ ...f, members }));
     } catch (err) {
       setError(err.message);
       setBusy(false);
@@ -106,6 +108,12 @@ export default function RegisterPage() {
           onChange={set}
           error={errors.namaToko}
           placeholder="Nama toko"
+        />
+        <MembersInput
+          value={members}
+          onChange={setMembers}
+          leading={f.nama.trim() || "Nama akunmu"}
+          hint="Opsional · bisa diubah nanti"
         />
 
         {error && (

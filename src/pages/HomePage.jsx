@@ -19,7 +19,10 @@ export default function HomePage() {
   const { data: stores, loading } = useDb(getStores);
   const [onlyOpen, setOnlyOpen] = useState(false);
 
-  const list = (stores || [])
+  const all = stores || [];
+  const openCount = all.filter((s) => s.isOpen).length;
+
+  const list = all
     .filter((s) => !onlyOpen || s.isOpen)
     .sort((a, b) => Number(b.isOpen) - Number(a.isOpen) || (b.productCount || 0) - (a.productCount || 0));
 
@@ -98,13 +101,31 @@ export default function HomePage() {
           title="Booth yang bisa kamu kunjungi"
           description="Setiap booth dikelola langsung oleh penjual. Cek status buka sebelum memesan."
           action={
-            <div className="flex w-full gap-1.5 sm:w-auto">
-              <button type="button" onClick={() => setOnlyOpen(false)} className={`flex-1 sm:flex-none ${onlyOpen ? "chip" : "chip-on"}`}>
-                Semua
-              </button>
-              <button type="button" onClick={() => setOnlyOpen(true)} className={`flex-1 sm:flex-none ${onlyOpen ? "chip-on" : "chip"}`}>
-                Buka sekarang
-              </button>
+            <div role="group" aria-label="Filter booth" className="grid w-full grid-cols-2 gap-1 rounded-full bg-navy/[0.06] p-1 sm:inline-grid sm:w-auto">
+              {[
+                { key: false, label: "Semua", count: all.length },
+                { key: true, label: "Buka sekarang", count: openCount },
+              ].map((t) => {
+                const active = onlyOpen === t.key;
+                return (
+                  <button
+                    key={String(t.key)}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setOnlyOpen(t.key)}
+                    className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 text-[13px] font-semibold transition duration-200 active:scale-[0.97] sm:text-sm ${
+                      active ? "bg-navy text-white shadow-soft" : "text-navy/65 hover:text-navy"
+                    }`}
+                  >
+                    {t.label}
+                    {!loading && (
+                      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? "bg-white/20 text-white" : "bg-navy/10 text-navy/65"}`}>
+                        {t.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           }
         />
@@ -115,9 +136,16 @@ export default function HomePage() {
             : list.map((s) => <StoreCard key={s.id} store={s} />)}
         </div>
         {!loading && list.length === 0 && (
-          <p className="mt-6 rounded-2xl border border-dashed border-navy/10 bg-white/60 py-10 text-center text-sm text-navy/65">
-            Belum ada booth yang buka. Coba lagi nanti ya.
-          </p>
+          <div className="mt-6 rounded-2xl border border-dashed border-navy/10 bg-white/60 px-4 py-10 text-center">
+            <p className="text-sm text-navy/65">
+              {onlyOpen ? "Belum ada booth yang buka saat ini." : "Belum ada booth yang terdaftar."}
+            </p>
+            {onlyOpen && (
+              <button type="button" onClick={() => setOnlyOpen(false)} className="mt-3 text-sm font-bold text-price hover:underline">
+                Lihat semua booth
+              </button>
+            )}
+          </div>
         )}
       </section>
 

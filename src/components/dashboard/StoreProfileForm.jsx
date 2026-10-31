@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, ImagePlus, Loader2, Save, Trash2, Users } from "lucide-react";
+import { AlertTriangle, ImagePlus, Loader2, Save, Trash2 } from "lucide-react";
 import FormField from "../FormField";
+import MembersInput from "../MembersInput";
 import { useToast } from "../../context/ToastContext";
 import { useConfirm } from "../../context/ConfirmContext";
 import { deleteStore, updateStore } from "../../db/repository";
@@ -15,7 +16,7 @@ export default function StoreProfileForm({ store }) {
     name: store.name || "",
     kelas: store.kelas || "",
     bio: store.bio || "",
-    members: (store.members || []).join(", "),
+    members: store.members || [],
     logo: store.logo || "",
     cover: store.cover || "",
   });
@@ -28,7 +29,7 @@ export default function StoreProfileForm({ store }) {
       name: store.name || "",
       kelas: store.kelas || "",
       bio: store.bio || "",
-      members: (store.members || []).join(", "),
+      members: store.members || [],
       logo: store.logo || "",
       cover: store.cover || "",
     });
@@ -68,7 +69,7 @@ export default function StoreProfileForm({ store }) {
         bio: f.bio,
         logo: f.logo,
         cover: f.cover,
-        members: f.members.split(/[,\n]/).map((m) => m.trim()).filter(Boolean),
+        members: f.members,
       });
       toast("Profil toko disimpan.", { type: "success" });
     } catch (ex) {
@@ -180,24 +181,7 @@ export default function StoreProfileForm({ store }) {
           placeholder="Ceritakan keunikan booth kamu, menu andalan, atau jam buka."
         />
 
-        <div>
-          <div className="mb-1.5 flex items-baseline justify-between">
-            <label htmlFor="members" className="text-[13px] font-bold text-navy">
-              Anggota kelompok
-            </label>
-            <span className="flex items-center gap-1 text-[11px] text-navy/65">
-              <Users size={11} /> pisahkan dengan koma
-            </span>
-          </div>
-          <input
-            id="members"
-            name="members"
-            value={f.members}
-            onChange={set}
-            placeholder="Nama anggota"
-            className="field"
-          />
-        </div>
+        <MembersInput value={f.members} onChange={(members) => setF((v) => ({ ...v, members }))} />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
