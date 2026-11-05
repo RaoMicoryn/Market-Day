@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCheck, Download, Footprints, MapPin, Phone, Search } from "lucide-react";
+import { CheckCheck, ChevronDown, Download, Footprints, MapPin, Phone, Search } from "lucide-react";
 import EmptyState from "../ui/EmptyState";
 import { useConfirm } from "../../context/ConfirmContext";
 import { useToast } from "../../context/ToastContext";
@@ -26,7 +26,6 @@ export default function OrdersTab({ store }) {
   const toast = useToast();
   const [status, setStatus] = useState("all");
   const [q, setQ] = useState("");
-  const [openId, setOpenId] = useState(null);
 
   const all = orders || [];
   const term = q.trim().toLowerCase();
@@ -200,12 +199,6 @@ export default function OrdersTab({ store }) {
                       </li>
                     ))}
                   </ul>
-                  {o.items.length > 2 && (
-                    <button type="button" onClick={() => setOpenId(expanded ? null : o.id)} className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-navy/65 hover:text-price">
-                      {expanded ? "Sembunyikan" : `+${o.items.length - 2} item lainnya`}
-                      <ChevronDown size={11} className={expanded ? "rotate-180 transition" : "transition"} />
-                    </button>
-                  )}
                   {o.note && (
                     <p className="mt-2 rounded-lg bg-amber-50 px-2.5 py-2 text-[10px] leading-relaxed text-amber-800">
                       Catatan: {o.note}
