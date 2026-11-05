@@ -354,19 +354,24 @@ app.patch("/api/stores/:id", async (req, res, next) => {
 app.delete("/api/stores/:id", async (req, res, next) => {
   if (!requireOwner(req, res, req.params.id)) return;
 
-  const client = await pool.connect();
+  let client;
+  let transactionOpen = false;
   try {
+    client = await pool.connect();
     await client.query("begin");
+    transactionOpen = true;
     const storeResult = await client.query(
       "select owner_id as \"ownerId\" from stores where id = $1 for update",
       [req.params.id]
     );
     if (!storeResult.rowCount) {
       await client.query("rollback");
+      transactionOpen = false;
       return fail(res, 404, "Toko tidak ditemukan.");
     }
     if (storeResult.rows[0].ownerId !== req.session.user.accountId) {
       await client.query("rollback");
+      transactionOpen = false;
       return fail(res, 403, "Kamu tidak punya akses ke toko ini.");
     }
 
@@ -378,6 +383,7 @@ app.delete("/api/stores/:id", async (req, res, next) => {
     );
     await client.query("delete from accounts where id = $1", [storeResult.rows[0].ownerId]);
     await client.query("commit");
+    transactionOpen = false;
 
     req.session.destroy((error) => {
       if (error) return next(error);
@@ -390,10 +396,16 @@ app.delete("/api/stores/:id", async (req, res, next) => {
       res.status(204).end();
     });
   } catch (error) {
-    await client.query("rollback");
+    if (transactionOpen) {
+      try {
+        await client.query("rollback");
+      } catch (rollbackError) {
+        console.error("Gagal membatalkan transaksi penghapusan toko:", rollbackError);
+      }
+    }
     next(error);
   } finally {
-    client.release();
+    client?.release();
   }
 });
 

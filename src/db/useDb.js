@@ -4,13 +4,16 @@ import { getSession, subscribe } from "./repository";
 // Jalankan fetcher, lalu jalankan ulang otomatis setiap ada perubahan data (real-time).
 export function useDb(fetcher, deps = [], options) {
   const [state, setState] = useState({ data: null, loading: true, error: null });
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
-    const run = () =>
+    const run = () => {
+      setState((current) => ({ ...current, loading: current.data === null, error: null }));
       fetcher()
         .then((data) => alive && setState({ data, loading: false, error: null }))
-        .catch((error) => alive && setState({ data: null, loading: false, error }));
+        .catch((error) => alive && setState((current) => ({ ...current, loading: false, error })));
+    };
 
     run();
     const off = subscribe(run, options);
@@ -18,9 +21,9 @@ export function useDb(fetcher, deps = [], options) {
       alive = false;
       off();
     };
-  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [...deps, reloadKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return state;
+  return { ...state, reload: () => setReloadKey((key) => key + 1) };
 }
 
 export function useSession() {

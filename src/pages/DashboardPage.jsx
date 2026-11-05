@@ -25,7 +25,7 @@ export default function DashboardPage() {
   usePageTitle("Dashboard penjual");
   const [tab, setTab] = useState("overview");
 
-  const { data: store, loading } = useDb(
+  const { data: store, loading, error, reload } = useDb(
     () => (session ? getStoreById(session.storeId) : Promise.resolve(null)),
     [session?.storeId]
   );
@@ -37,7 +37,7 @@ export default function DashboardPage() {
 
   if (session === null) return <Navigate to="/dashboard/login" replace />;
 
-  if (session === undefined || loading || !store)
+  if (session === undefined || loading)
     return (
       <div className="shell max-w-4xl py-4 sm:py-10">
         <div className="skeleton h-24 w-full rounded-3xl" />
@@ -46,6 +46,28 @@ export default function DashboardPage() {
           <div className="skeleton h-28 rounded-3xl" />
         </div>
       </div>
+    );
+
+  if (error || !store)
+    return (
+      <section className="shell max-w-4xl py-8 sm:py-12">
+        <div className="rounded-3xl border border-navy/[0.08] bg-white p-6 text-center shadow-soft sm:p-10">
+          <h1 className="font-display text-xl font-extrabold text-navy">Dashboard belum bisa dimuat</h1>
+          <p role="alert" className="mt-2 text-sm leading-relaxed text-navy/65">
+            {error?.message || "Data toko tidak ditemukan. Coba muat ulang atau masuk kembali."}
+          </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <button type="button" onClick={reload} className="btn-primary">
+              Coba lagi
+            </button>
+            {!store && (
+              <Link to="/dashboard/login" className="btn-ghost">
+                Masuk kembali
+              </Link>
+            )}
+          </div>
+        </div>
+      </section>
     );
 
   const pending = (orders || []).filter((o) => o.status === "pending").length;
