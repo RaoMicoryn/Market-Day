@@ -33,6 +33,14 @@
   ::selection {
     @apply bg-accent/25 text-navy;
   }
+  /* Mencegah auto-zoom iOS saat mengetik: input/select/textarea minimal 16px di mobile. */
+  @media (max-width: 640px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
   :focus-visible {
     @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-cream;
   }

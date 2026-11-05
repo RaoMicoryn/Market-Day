@@ -30,7 +30,7 @@ export default function Footer() {
           <div className="max-w-xs">
             <Logo light />
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              Temukan menu dari berbagai booth, pesan dengan mudah, dan pantau pesananmu.
+              Temukan menu dari berbagai booth, pesan dengan mudah, dan pantau pesananmu di Tribiz Fest.
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-white/10 pt-6">
-          <p className="text-xs text-white/55">© {new Date().getFullYear()} market day.</p>
+          <p className="text-xs text-white/55">© {new Date().getFullYear()} Tribiz Fest.</p>
         </div>
       </div>
     </footer>

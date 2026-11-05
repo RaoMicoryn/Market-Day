@@ -110,7 +110,7 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
         <div>
           <p className="eyebrow mb-1">Langkah terakhir</p>
           <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">Selesaikan pesananmu</h1>
-          <p className="mt-1 text-[13px] leading-relaxed text-navy/65 sm:text-sm">Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth. Bayar langsung di booth.</p>
+          <p className="mt-1 text-[13px] leading-relaxed text-navy/65 sm:text-sm">Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth. Pembayaran dikonfirmasi langsung ke penjual melalui WhatsApp (sistem PO).</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700">
           <ShieldCheck size={13} /> Data hanya dipakai untuk pesanan
@@ -304,9 +304,9 @@ function Summary({ total, cartCount, groups }) {
           <dd className="font-display text-xl font-extrabold text-price">{formatRupiah(total)}</dd>
         </div>
       </dl>
-      <div className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-[11px] leading-relaxed text-amber-800">
+      <div className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200 p-3 text-[11px] leading-relaxed text-amber-800">
         <Wallet size={13} className="mt-0.5 shrink-0" />
-        Bayar tunai di booth saat mengambil pesanan. Nomor antrean muncul setelah pesanan dikirim.
+        Konfirmasi pembayaran langsung ke penjual melalui WhatsApp (sistem PO). Nomor antrean muncul setelah pesanan dikirim.
       </div>
     </div>
   );

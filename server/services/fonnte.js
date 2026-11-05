@@ -16,7 +16,7 @@ export class FonnteError extends Error {
 export const isFonnteConfigured = () => Boolean(String(process.env.FONNTE_TOKEN || "").trim());
 
 export function buildOtpMessage(otpCode) {
-  return `Kode OTP Market Day: ${otpCode}. Berlaku 5 menit. Jangan bagikan kode ini ke siapapun.`;
+  return `Kode OTP Tribiz Fest: ${otpCode}. Berlaku 5 menit. Jangan bagikan kode ini ke siapapun.`;
 }
 
 /**

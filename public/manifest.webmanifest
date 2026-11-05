@@ -1,7 +1,7 @@
 {
-  "name": "market day — SMK Tri Ratna",
-  "short_name": "market day",
-  "description": "Katalog jajanan dan pesanan booth Market Day SMK Tri Ratna.",
+  "name": "Tribiz Fest | SMK Tri Ratna",
+  "short_name": "Tribiz Fest",
+  "description": "Katalog jajanan dan pesanan booth Tribiz Fest SMK Tri Ratna.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFBF5",

@@ -1,4 +1,4 @@
-# market day — katalog multi-booth
+# Tribiz Fest — katalog multi-booth
 
 Katalog jajanan dari berbagai booth. Pembeli bisa memesan dari beberapa booth sekaligus, mendapat nomor antrean, lalu memantau status pesanan. Penjual punya dashboard untuk mengelola menu, stok, pesanan, dan omzet.
 
@@ -152,7 +152,7 @@ API mengirim kode OTP 6 digit lewat WhatsApp menggunakan [Fonnte](https://fonnte
 
 Nomor boleh ditulis `08…`, `628…`, atau `+62…` (spasi, titik, dan tanda hubung diabaikan). Server menormalkan ke `628…`, membuat kode acak 6 digit, menyimpan hash + waktu kedaluwarsa 5 menit, lalu mengirim pesan:
 
-> Kode OTP Market Day: 728111. Berlaku 5 menit. Jangan bagikan kode ini ke siapapun.
+> Kode OTP Tribiz Fest: 728111. Berlaku 5 menit. Jangan bagikan kode ini ke siapapun.
 
 #### Validasi nomor (anti-troll)
 

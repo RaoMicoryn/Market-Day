@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import CheckoutPage from "./components/CheckoutPage";
 import CartDrawer from "./components/CartDrawer";
 import OrderTracker from "./components/OrderTracker";
+import OrderSoundNotifier from "./components/OrderSoundNotifier";
 import BottomNav from "./components/BottomNav";
 import HomePage from "./pages/HomePage";
 import StorePage from "./pages/StorePage";
@@ -74,6 +75,7 @@ export default function App() {
       </main>
       <CartDrawer />
       <OrderTracker />
+      <OrderSoundNotifier />
       <BottomNav />
     </div>
   );

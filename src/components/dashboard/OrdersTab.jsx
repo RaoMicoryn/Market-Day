@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCheck, ChevronDown, Download, Footprints, MapPin, Phone, Search } from "lucide-react";
+import { CheckCheck, Download, Footprints, MapPin, Phone, Search } from "lucide-react";
 import EmptyState from "../ui/EmptyState";
 import { useConfirm } from "../../context/ConfirmContext";
 import { useToast } from "../../context/ToastContext";
@@ -155,8 +155,7 @@ export default function OrdersTab({ store }) {
         <div className="space-y-3">
           {rows.map((o) => {
             const next = NEXT_STATUS[o.status];
-            const expanded = openId === o.id;
-            const shown = expanded ? o.items : o.items.slice(0, 2);
+            const shown = o.items;
             return (
               <article key={o.id} className="card overflow-hidden">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-dashed border-navy/10 p-4">
@@ -207,7 +206,6 @@ export default function OrdersTab({ store }) {
                       <ChevronDown size={11} className={expanded ? "rotate-180 transition" : "transition"} />
                     </button>
                   )}
-
                   {o.note && (
                     <p className="mt-2 rounded-lg bg-amber-50 px-2.5 py-2 text-[10px] leading-relaxed text-amber-800">
                       Catatan: {o.note}

@@ -197,7 +197,7 @@ export default function Header() {
                 <Store size={16} /> Dashboard penjual
               </Link>
               <p className="pt-1 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-navy/35">
-                market day · SMK Tri Ratna
+                Tribiz Fest · SMK Tri Ratna
               </p>
             </div>
           </div>

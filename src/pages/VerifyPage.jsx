@@ -285,9 +285,10 @@ export default function VerifyPage() {
         </button>
       </p>
 
-      <div className="mt-8 rounded-2xl bg-amber-50 px-4 py-3 text-center text-[11px] leading-relaxed text-amber-800">
-        Total pesanan {formatRupiah(total)} · {cart.reduce((count, item) => count + item.qty, 0)} item. Transaksi
-        dilakukan langsung di tempat saat mengambil pesanan.
+      <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-[11px] leading-relaxed text-amber-800">
+        Total pesanan {formatRupiah(total)} · {cart.reduce((count, item) => count + item.qty, 0)} item.
+        <br />
+        <span className="font-semibold">Peringatan:</span> pembayaran dikonfirmasi langsung ke penjual melalui WhatsApp (sistem PO), bukan di tempat.
       </div>
     </section>
   );
@@ -295,7 +296,7 @@ export default function VerifyPage() {
 
 function buildConfirmationMessage(orders, customer) {
   return [
-    "Halo, saya sudah melakukan pemesanan di Market Day.",
+    "Halo, saya sudah melakukan pemesanan di Tribiz Fest.",
     `Nama: ${customer?.nama || "-"} (${customer?.kelas || "-"})`,
     "",
     ...orders.map((order) => `No. antrean ${order.queueNo} · ${order.storeName} · ${formatRupiah(order.total)}`),
