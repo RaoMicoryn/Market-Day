@@ -95,9 +95,11 @@ function Ticket({ o }) {
 export default function OrderTracker() {
   const { trackerOpen, closeTracker, trackIds } = useCart();
   const navigate = useNavigate();
-  const { data: orders } = useDb(() => getOrdersByIds(trackIds), [trackIds.join(",")], {
-    pollIntervalMs: ORDER_POLL_INTERVAL_MS,
-  }); // live: ikut berubah saat penjual update
+  const { data: orders } = useDb(
+    () => (trackerOpen && trackIds.length ? getOrdersByIds(trackIds) : Promise.resolve([])),
+    [trackIds.join(","), trackerOpen],
+    { pollIntervalMs: ORDER_POLL_INTERVAL_MS }
+  ); // live: ikut berubah saat penjual update (polling hanya saat tiket dibuka)
 
   useEffect(() => {
     if (!trackerOpen) return;
