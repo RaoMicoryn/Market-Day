@@ -15,7 +15,9 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (session) return <Navigate to="/dashboard" replace />;
+  // Hanya sesi penjual (punya storeId) yang boleh langsung ke dashboard.
+  // Sesi admin juga truthy, tapi tidak punya toko — jangan di-redirect.
+  if (session?.storeId) return <Navigate to="/dashboard" replace />;
 
   const set = (e) => {
     setF((v) => ({ ...v, [e.target.name]: e.target.value }));

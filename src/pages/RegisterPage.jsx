@@ -37,7 +37,7 @@ export default function RegisterPage() {
       </AuthLayout>
     );
 
-  if (session) return <Navigate to="/dashboard" replace />;
+  if (session?.storeId) return <Navigate to="/dashboard" replace />;
 
   const set = (e) => {
     setF((v) => ({ ...v, [e.target.name]: e.target.value }));
