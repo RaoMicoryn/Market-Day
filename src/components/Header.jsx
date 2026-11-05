@@ -61,27 +61,34 @@ export default function Header() {
   }, [mobileSearch, menu]);
 
   const iconBtn =
-    "relative flex h-10 w-10 items-center justify-center rounded-full text-navy/70 transition hover:bg-navy/5 hover:text-navy active:scale-90";
+    "relative flex h-10 w-10 items-center justify-center rounded-2xl text-navy/70 transition duration-200 hover:bg-white hover:text-navy hover:shadow-sm active:scale-90";
 
   return (
     <>
       <header
-        className={`sticky top-0 z-50 border-b bg-cream/85 backdrop-blur-xl transition-all duration-300 ${
-          scrolled ? "border-navy/[0.07] shadow-soft" : "border-transparent"
+        className={`sticky top-0 z-50 border-b backdrop-blur-2xl transition-all duration-300 ${
+          scrolled
+            ? "border-navy/[0.07] bg-cream/90 shadow-soft"
+            : "border-transparent bg-cream/70"
         }`}
       >
-        <div className="shell flex h-[60px] items-center gap-1 sm:h-[72px] sm:gap-2">
-          <Logo className="shrink-0" />
+        <div className="shell flex h-16 items-center gap-1 sm:h-[76px] sm:gap-2">
+          <Logo className="shrink-0 transition duration-300 hover:opacity-90" />
 
-          <nav aria-label="Navigasi utama" className="ml-5 hidden items-center gap-0.5 lg:flex">
+          <nav
+            aria-label="Navigasi utama"
+            className="ml-5 hidden items-center gap-1 rounded-full border border-white/60 bg-white/50 p-1 shadow-sm lg:flex"
+          >
             {NAV.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `rounded-full px-3.5 py-2 text-sm font-semibold transition ${
-                    isActive ? "bg-navy text-white" : "text-navy/65 hover:bg-navy/5 hover:text-navy"
+                  `rounded-full px-3.5 py-2 text-sm font-semibold transition duration-200 ${
+                    isActive
+                      ? "bg-navy text-white shadow-soft"
+                      : "text-navy/60 hover:bg-white hover:text-navy hover:shadow-sm"
                   }`
                 }
               >
@@ -122,7 +129,11 @@ export default function Header() {
               )}
             </button>
 
-            <Link to="/dashboard" className="ml-1 hidden items-center gap-1.5 rounded-full bg-navy px-4 py-2.5 text-xs font-bold text-white shadow-soft transition hover:bg-navy-700 sm:inline-flex">
+            <Link
+              to="/dashboard"
+              className="ml-1 hidden items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:shadow-lift active:scale-95 sm:inline-flex"
+              style={{ backgroundImage: "linear-gradient(180deg,#163a63 0%,#0b2545 100%)" }}
+            >
               <Store size={14} /> Jual
             </Link>
 
@@ -135,7 +146,7 @@ export default function Header() {
 
       {mobileSearch && (
         <div
-          className="fixed inset-0 z-[110] min-h-[100dvh] overflow-y-auto bg-cream px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] md:hidden"
+          className="fixed inset-0 z-[110] min-h-[100dvh] overflow-y-auto bg-cream/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] backdrop-blur-2xl md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Pencarian"
@@ -154,7 +165,7 @@ export default function Header() {
       {menu && (
         <div className="fixed inset-0 z-[105] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-sm" onClick={() => setMenu(false)} />
-          <div className="absolute right-0 top-0 flex h-[100dvh] w-[86%] max-w-xs animate-rise flex-col bg-cream px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-lift">
+          <div className="absolute right-0 top-0 flex h-[100dvh] w-[86%] max-w-xs animate-rise flex-col rounded-l-[30px] border-l border-white/60 bg-cream/95 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-lift backdrop-blur-2xl">
             <div className="flex items-center justify-between">
               <Logo />
               <button type="button" onClick={() => setMenu(false)} aria-label="Tutup menu" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-navy shadow-soft active:scale-95">
@@ -169,8 +180,8 @@ export default function Header() {
                   to={item.to}
                   end={item.end}
                   className={({ isActive }) =>
-                    `flex min-h-12 items-center rounded-2xl px-4 text-base font-semibold transition active:scale-[0.99] ${
-                      isActive ? "bg-navy text-white" : "text-navy/70 hover:bg-white"
+                    `flex min-h-12 items-center rounded-2xl px-4 text-base font-semibold transition duration-200 active:scale-[0.99] ${
+                      isActive ? "bg-navy text-white shadow-soft" : "text-navy/70 hover:bg-white hover:shadow-sm"
                     }`
                   }
                 >

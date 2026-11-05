@@ -32,8 +32,8 @@ export default function StoreCard({ store }) {
   return (
     <Link
       to={`/toko/${store.slug}`}
-      className={`group relative flex gap-3.5 overflow-hidden rounded-3xl border bg-white p-3 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift active:scale-[0.99] sm:flex-col sm:gap-0 sm:p-0 ${
-        store.isOpen ? "border-navy/[0.06]" : "border-navy/10 bg-navy/[0.02]"
+      className={`group relative flex gap-3.5 overflow-hidden rounded-[24px] border bg-white p-3 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift active:scale-[0.99] sm:flex-col sm:gap-0 sm:rounded-[26px] sm:p-0 ${
+        store.isOpen ? "border-navy/[0.07]" : "border-navy/10 bg-navy/[0.02]"
       }`}
     >
       {/* Cover */}

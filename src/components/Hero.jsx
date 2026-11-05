@@ -17,7 +17,7 @@ export default function Hero() {
 
   return (
     <section className="shell pt-3 sm:pt-8">
-      <div className="relative overflow-hidden rounded-[26px] bg-navy text-white shadow-lift sm:rounded-[36px]">
+      <div className="relative overflow-hidden rounded-[28px] bg-navy text-white shadow-lift ring-1 ring-white/10 sm:rounded-[40px]">
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" aria-hidden="true" />
         <div className="pointer-events-none absolute -left-20 top-1/3 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />

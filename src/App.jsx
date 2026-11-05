@@ -64,7 +64,7 @@ export default function App() {
       <Header />
       <main
         id="main"
-        className={`flex-1 ${hideNav ? "" : "pb-[calc(4.5rem+env(safe-area-inset-bottom))]"} md:pb-0`}
+        className={`flex-1 ${hideNav ? "" : "pb-[calc(6rem+env(safe-area-inset-bottom))]"} md:pb-0`}
       >
         <Routes>
           <Route path="/" element={<HomePage />} />

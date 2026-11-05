@@ -11,7 +11,7 @@ const POINTS = [
 export default function AuthLayout({ title, subtitle, children, footer, eyebrow = "Dashboard penjual" }) {
   return (
     <section className="shell max-w-5xl py-6 sm:py-14">
-      <div className="grid grid-cols-1 overflow-hidden rounded-[24px] border border-navy/[0.06] bg-white shadow-lift sm:rounded-[28px] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <div className="grid grid-cols-1 overflow-hidden rounded-[26px] border border-navy/[0.07] bg-white shadow-lift sm:rounded-[32px] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div className="relative hidden flex-col justify-between overflow-hidden bg-navy p-8 text-white lg:flex">
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" aria-hidden="true" />
           <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />

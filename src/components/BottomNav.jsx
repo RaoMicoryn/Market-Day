@@ -49,10 +49,10 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Navigasi bawah"
-      className="fixed inset-x-0 bottom-0 z-[90] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-[90] px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
     >
-      <div className="border-t border-navy/[0.07] bg-cream/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_30px_-18px_rgba(11,37,69,.35)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-md items-stretch px-1.5">
+      <div className="mx-auto max-w-md rounded-[26px] border border-white/70 bg-white/85 shadow-float backdrop-blur-2xl">
+        <div className="flex items-stretch px-1.5 py-1">
           <Tab to="/" end icon={Home} label="Beranda" />
           <Tab to="/cari" icon={Compass} label="Jelajahi" />
 
@@ -61,11 +61,12 @@ export default function BottomNav() {
               type="button"
               onClick={openDrawer}
               aria-label={`Buka keranjang, ${cartCount} item`}
-              className="relative -mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-glow ring-4 ring-cream transition active:scale-90"
+              className="relative -mt-5 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-glow ring-4 ring-white/90 transition duration-200 active:scale-90"
+              style={{ backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}
             >
               <ShoppingBag size={22} strokeWidth={2.3} />
               {cartCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1 text-[10px] font-bold text-white ring-2 ring-cream">
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1 text-[10px] font-bold text-white ring-2 ring-white">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}

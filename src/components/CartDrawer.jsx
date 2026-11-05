@@ -59,7 +59,7 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Keranjang belanja"
-        className={`absolute right-0 top-0 flex h-[100dvh] w-full max-w-md flex-col bg-cream shadow-lift transition-transform duration-300 ease-out ${
+        className={`absolute right-0 top-0 flex h-[100dvh] w-full max-w-md flex-col border-l border-white/60 bg-cream/95 shadow-lift backdrop-blur-2xl transition-transform duration-300 ease-out sm:rounded-l-[28px] ${
           drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -127,7 +127,7 @@ export default function CartDrawer() {
                     0
                   );
                   return (
-                    <li key={i.key} className="relative flex gap-3 rounded-2xl border border-navy/[0.05] bg-white p-2.5 shadow-soft">
+                    <li key={i.key} className="relative flex gap-3 rounded-[18px] border border-navy/[0.06] bg-white p-2.5 shadow-card">
                       <ProductImage product={i.product} className="h-16 w-16 shrink-0 rounded-xl" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate pr-5 text-sm font-bold text-navy">{i.product.name}</p>
@@ -188,7 +188,7 @@ export default function CartDrawer() {
               <b className="text-xl font-extrabold text-price">{formatRupiah(total)}</b>
             </div>
             <p className="text-[11px] leading-relaxed text-navy/65">
-              Pembayaran dilakukan di booth. Tidak ada biaya tambahan dari aplikasi.
+              Pesanan ini memakai sistem PO. Pembayaran dikonfirmasi langsung ke penjual lewat WhatsApp.
             </p>
             <button
               type="button"
@@ -196,7 +196,7 @@ export default function CartDrawer() {
                 closeDrawer();
                 navigate("/checkout");
               }}
-              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-navy text-sm font-bold text-white shadow-soft transition duration-300 hover:bg-navy-700 active:scale-[0.98]"
+              className="btn-primary w-full"
             >
               Lanjut ke checkout <ArrowRight size={16} />
             </button>

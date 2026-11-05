@@ -38,15 +38,21 @@ export default {
         market: ["Outfit", "sans-serif"],
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(11,37,69,.05), 0 10px 30px -12px rgba(11,37,69,.18)",
-        lift: "0 2px 4px rgba(11,37,69,.05), 0 24px 48px -20px rgba(11,37,69,.28)",
-        glow: "0 10px 30px -10px rgba(249,115,22,.55)",
+        soft: "0 1px 2px rgba(11,37,69,.04), 0 10px 30px -14px rgba(11,37,69,.16)",
+        card: "0 1px 1px rgba(11,37,69,.03), 0 14px 34px -18px rgba(11,37,69,.2)",
+        lift: "0 2px 4px rgba(11,37,69,.05), 0 28px 56px -24px rgba(11,37,69,.28)",
+        glow: "0 10px 28px -10px rgba(194,65,12,.45)",
+        float: "0 -10px 34px -14px rgba(11,37,69,.16), 0 10px 26px -18px rgba(11,37,69,.22)",
+        "glow-soft": "0 0 0 1px rgba(194,65,12,.12), 0 8px 24px -12px rgba(194,65,12,.4)",
         innerline: "inset 0 0 0 1px rgba(11,37,69,.06)",
+        "top-highlight": "inset 0 1px 0 rgba(255,255,255,.65)",
       },
       borderRadius: {
         "4xl": "2rem",
         "5xl": "2.5rem",
+        "6xl": "3rem",
       },
+
       keyframes: {
         rise: {
           from: { opacity: 0, transform: "translateY(14px)" },

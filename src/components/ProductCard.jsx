@@ -24,7 +24,7 @@ export default function ProductCard({ product, onAdd, onSelect, showStore = fals
           onSelect(product);
         }
       }}
-      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-navy/[0.06] bg-white shadow-soft outline-none transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.99] sm:rounded-3xl"
+      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-[20px] border border-navy/[0.07] bg-white shadow-card outline-none transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.99] sm:rounded-[26px]"
     >
       <div className={`relative ${soldOut ? "opacity-70" : ""}`}>
         <ProductImage product={product} zoom className="aspect-square" />

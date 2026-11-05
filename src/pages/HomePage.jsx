@@ -31,7 +31,7 @@ export default function HomePage() {
       <Hero />
 
       <section className="shell pt-7 sm:pt-8">
-        <div className="relative overflow-hidden rounded-[26px] bg-navy px-5 py-7 text-white shadow-lift sm:rounded-[32px] sm:px-10 sm:py-12">
+        <div className="relative overflow-hidden rounded-[28px] bg-navy px-5 py-7 text-white shadow-lift ring-1 ring-white/10 sm:rounded-[36px] sm:px-10 sm:py-12">
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" aria-hidden="true" />
           <div className="pointer-events-none absolute -right-10 -top-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />
           <div className="relative flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center sm:gap-6">
@@ -78,7 +78,7 @@ export default function HomePage() {
               <Link
                 key={c}
                 to={`/cari?kategori=${encodeURIComponent(c)}`}
-                className={`group relative overflow-hidden rounded-2xl border border-navy/[0.06] bg-gradient-to-br ${meta.tone} p-3.5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift active:scale-[0.98] sm:rounded-3xl sm:p-5`}
+                className={`group relative overflow-hidden rounded-[20px] border border-navy/[0.07] bg-gradient-to-br ${meta.tone} p-3.5 shadow-card transition duration-300 hover:-translate-y-1 hover:border-accent/25 hover:shadow-lift active:scale-[0.98] sm:rounded-[26px] sm:p-5`}
               >
                 <span className="text-2xl transition duration-300 group-hover:scale-110 sm:text-4xl" aria-hidden="true">
                   {meta.emoji}
@@ -136,7 +136,7 @@ export default function HomePage() {
             : list.map((s) => <StoreCard key={s.id} store={s} />)}
         </div>
         {!loading && list.length === 0 && (
-          <div className="mt-6 rounded-2xl border border-dashed border-navy/10 bg-white/60 px-4 py-10 text-center">
+          <div className="mt-6 rounded-[24px] border border-dashed border-navy/10 bg-white/70 px-4 py-10 text-center shadow-card backdrop-blur-sm">
             <p className="text-sm text-navy/65">
               {onlyOpen ? "Belum ada booth yang buka saat ini." : "Belum ada booth yang terdaftar."}
             </p>
