@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
   AlertCircle,
   ArrowLeft,
@@ -12,19 +12,34 @@ import {
 import { useConfirm } from "../context/ConfirmContext";
 import { useToast } from "../context/ToastContext";
 import { getStores, deleteStoreAdmin } from "../db/repository";
-import { useDb } from "../db/useDb";
+import { useDb, useSession } from "../db/useDb";
 import { usePageTitle } from "../hooks/usePageTitle";
 
 /**
  * Halaman admin khusus pembina / pembuat website.
- * Bisa diakses langsung tanpa login penjual. Digunakan untuk membersihkan
- * toko uji / coba (asalan) yang dibuat saat percobaan.
+ * Membutuhkan login admin (isAdmin) sebelum bisa mengakses.
+ * Digunakan untuk membersihkan toko uji / coba (asalan).
  */
 export default function AdminPage() {
   usePageTitle("Admin Pembina");
+  const session = useSession();
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useToast();
+
+  if (session === null) return <Navigate to="/admin/login" replace />;
+  if (session === undefined) {
+    return (
+      <div className="shell max-w-4xl py-4 sm:py-10">
+        <div className="skeleton h-24 w-full rounded-3xl" />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="skeleton h-28 rounded-3xl" />
+          <div className="skeleton h-28 rounded-3xl" />
+        </div>
+      </div>
+    );
+  }
+  if (!session.isAdmin) return <Navigate to="/admin/login" replace />;
 
   const { data: stores, loading } = useDb(getStores, []);
   const [deleting, setDeleting] = useState(null);

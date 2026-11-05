@@ -114,6 +114,10 @@ export const login = (email, password) =>
   request("/auth/login", { method: "POST", body: body({ email, password }) });
 export const logout = () => request("/auth/logout", { method: "POST" });
 
+/* Admin / pembina: login dengan kredensial dari env. */
+export const loginAdmin = (email, password) =>
+  request("/admin/login", { method: "POST", body: body({ email, password }) });
+
 export const getStores = () => request("/stores");
 export const getStoreBySlug = (slug) => request(`/stores/slug/${encodeURIComponent(slug)}`);
 export const getStoreById = (id) => request(`/stores/id/${encodeURIComponent(id)}`);

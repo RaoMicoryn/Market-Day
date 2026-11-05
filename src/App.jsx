@@ -17,6 +17,7 @@ import OrdersPage from "./pages/OrdersPage";
 import VerifyPage from "./pages/VerifyPage";
 import AdminCleanupPage from "./pages/AdminCleanupPage";
 import AdminPage from "./pages/AdminPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { useCart } from "./context/CartContext";
 
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="/dashboard/login" element={<LoginPage />} />
           <Route path="/dashboard/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/hapus-toko" element={<AdminCleanupPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/404" element={<NotFoundPage />} />

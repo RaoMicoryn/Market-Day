@@ -242,6 +242,40 @@ app.post("/api/auth/logout", (req, res, next) => {
   });
 });
 
+/* ==== ADMIN LOGIN ==== */
+// Login khusus pembina/pembuat website. Kredensial dibaca dari env:
+// ADMIN_EMAIL dan ADMIN_PASSWORD_HASH (bcrypt hash).
+app.post("/api/admin/login", async (req, res, next) => {
+  const { email, password } = req.body || {};
+  const adminEmail = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+  const adminHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
+
+  if (!adminEmail || !adminHash) {
+    return fail(res, 500, "Admin belum dikonfigurasi di server.");
+  }
+  if (!email || !password) {
+    return fail(res, 400, "Email dan password wajib diisi.");
+  }
+
+  if (String(email).trim().toLowerCase() !== adminEmail) {
+    return fail(res, 401, "Email atau password salah.");
+  }
+
+  let match = false;
+  try {
+    match = await bcrypt.compare(password, adminHash);
+  } catch {
+    match = false;
+  }
+  if (!match) return fail(res, 401, "Email atau password salah.");
+
+  req.session.user = { accountId: "admin", isAdmin: true };
+  req.session.save((error) => {
+    if (error) return next(error);
+    res.json({ ok: true, isAdmin: true });
+  });
+});
+
 app.get("/api/stores", async (req, res, next) => {
   try {
     const result = await pool.query(`${STORE_SELECT} order by s.joined_at desc`);
