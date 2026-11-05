@@ -24,7 +24,7 @@ export default function AdminCleanupPage() {
   const toast = useToast();
 
   const { data: stores, loading } = useDb(getStores, []);
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(null);
 
   if (session === null) return <Navigate to="/dashboard/login" replace />;
   if (loading) {
