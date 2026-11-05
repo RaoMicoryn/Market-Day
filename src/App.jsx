@@ -15,6 +15,7 @@ import DashboardPage from "./pages/DashboardPage";
 import WishlistPage from "./pages/WishlistPage";
 import OrdersPage from "./pages/OrdersPage";
 import VerifyPage from "./pages/VerifyPage";
+import AdminCleanupPage from "./pages/AdminCleanupPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { useCart } from "./context/CartContext";
 
@@ -40,7 +41,12 @@ function CheckoutRoute() {
 
 export default function App() {
   const { pathname } = useLocation();
-  const hideNav = ["/checkout", "/verifikasi", "/dashboard"].some(
+  const hideNav = [
+    "/checkout",
+    "/verifikasi",
+    "/dashboard",
+    "/admin",
+  ].some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
   );
 
@@ -69,6 +75,7 @@ export default function App() {
           <Route path="/dashboard/login" element={<LoginPage />} />
           <Route path="/dashboard/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/admin/hapus-toko" element={<AdminCleanupPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

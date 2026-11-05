@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { ClipboardList, ExternalLink, LayoutDashboard, LogOut, Package, Store } from "lucide-react";
+import { ClipboardList, ExternalLink, LayoutDashboard, LogOut, Package, Store, AlertTriangle } from "lucide-react";
 import { OpenBadge, StoreLogo } from "../components/StoreCard";
 import OverviewTab from "../components/dashboard/OverviewTab";
 import OrdersTab from "../components/dashboard/OrdersTab";
@@ -102,6 +102,15 @@ export default function DashboardPage() {
             <span className={`h-2 w-2 rounded-full ${store.isOpen ? "bg-emerald-500" : "bg-white"}`} />
             {store.isOpen ? "Tutup toko" : "Buka toko"}
           </button>
+        </div>
+
+        <div className="mt-3">
+          <Link
+            to="/admin/hapus-toko"
+            className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 text-[11px] font-bold text-red-700 transition hover:bg-red-100 hover:text-red-800 sm:text-sm"
+          >
+            <AlertTriangle size={13} className="text-red-600" /> Hapus toko uji / coba
+          </Link>
         </div>
       </div>
 
