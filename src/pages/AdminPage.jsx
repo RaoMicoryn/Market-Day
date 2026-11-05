@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useConfirm } from "../context/ConfirmContext";
 import { useToast } from "../context/ToastContext";
-import { getStores, deleteStoreAdmin } from "../db/repository";
+import { getStores, deleteStoreAdmin, logout } from "../db/repository";
 import { useDb, useSession } from "../db/useDb";
 import { usePageTitle } from "../hooks/usePageTitle";
 
@@ -26,8 +26,15 @@ export default function AdminPage() {
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useToast();
+  const isAdmin = Boolean(session && session.isAdmin);
 
-  if (session === null) return <Navigate to="/admin/login" replace />;
+  // Semua hook wajib dipanggil sebelum return kondisi apa pun (aturan React).
+  const { data: stores, loading } = useDb(
+    () => (isAdmin ? getStores() : Promise.resolve([])),
+    [isAdmin],
+  );
+  const [deleting, setDeleting] = useState(null);
+
   if (session === undefined) {
     return (
       <div className="shell max-w-4xl py-4 sm:py-10">
@@ -39,10 +46,7 @@ export default function AdminPage() {
       </div>
     );
   }
-  if (!session.isAdmin) return <Navigate to="/admin/login" replace />;
-
-  const { data: stores, loading } = useDb(getStores, []);
-  const [deleting, setDeleting] = useState(null);
+  if (!isAdmin) return <Navigate to="/admin/login" replace />;
 
   if (loading) {
     return (
@@ -80,6 +84,14 @@ export default function AdminPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate("/admin/login", { replace: true });
+    }
+  };
+
   return (
     <section className="shell pb-8 pt-4 sm:py-10">
       <Link to="/" className="mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-navy/65 transition hover:text-price">
@@ -96,9 +108,18 @@ export default function AdminPage() {
             Halaman khusus pembina website. Hapus toko uji / coba yang dibuat saat percobaan.
           </p>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-bold text-red-700">
-          <AlertCircle size={12} /> Hanya untuk pembina website
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-bold text-red-700">
+            <AlertCircle size={12} /> Hanya untuk pembina website
+          </span>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-navy/10 px-3 py-1.5 text-[11px] font-bold text-navy/65 transition hover:border-red-200 hover:text-red-700"
+          >
+            Keluar
+          </button>
+        </div>
       </div>
 
       {list.length === 0 ? (
