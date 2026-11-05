@@ -26,18 +26,30 @@ export default function DashboardPage() {
   const [tab, setTab] = useState("overview");
 
   const { data: store, loading, error, reload } = useDb(
-    () => (session ? getStoreById(session.storeId) : Promise.resolve(null)),
+    () => (session?.storeId ? getStoreById(session.storeId) : Promise.resolve(null)),
     [session?.storeId]
   );
   const { data: orders } = useDb(
-    () => (session ? getOrders(session.storeId) : Promise.resolve([])),
+    () => (session?.storeId ? getOrders(session.storeId) : Promise.resolve([])),
     [session?.storeId],
     { pollIntervalMs: ORDER_POLL_INTERVAL_MS }
   );
 
-  if (session === null) return <Navigate to="/dashboard/login" replace />;
+  if (session === undefined)
+    return (
+      <div className="shell max-w-4xl py-4 sm:py-10">
+        <div className="skeleton h-24 w-full rounded-3xl" />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="skeleton h-28 rounded-3xl" />
+          <div className="skeleton h-28 rounded-3xl" />
+        </div>
+      </div>
+    );
 
-  if (session === undefined || loading)
+  // Belum login, atau yang login adalah admin (tanpa storeId): arahkan ke login penjual.
+  if (!session || !session.storeId) return <Navigate to="/dashboard/login" replace />;
+
+  if (loading)
     return (
       <div className="shell max-w-4xl py-4 sm:py-10">
         <div className="skeleton h-24 w-full rounded-3xl" />

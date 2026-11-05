@@ -27,6 +27,8 @@ export default function AdminCleanupPage() {
   const [deleting, setDeleting] = useState(null);
 
   if (session === null) return <Navigate to="/dashboard/login" replace />;
+  // Sesi admin (tanpa storeId) tidak boleh memakai halaman ini.
+  if (session && !session.storeId) return <Navigate to="/dashboard/login" replace />;
   if (loading) {
     return (
       <div className="shell max-w-4xl py-4 sm:py-10">
