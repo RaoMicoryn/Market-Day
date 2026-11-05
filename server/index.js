@@ -363,6 +363,34 @@ app.delete("/api/stores/:id", async (req, res, next) => {
   }
 });
 
+/* ==== ADMIN / PEMBINA ==== */
+// Endpoint khusus pembina/pembuat website: hapus toko apapun tanpa cek owner.
+app.delete("/api/admin/stores/:id", async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query("begin");
+    const storeResult = await client.query(
+      "select id, name, slug from stores where id = $1 for update",
+      [req.params.id]
+    );
+    if (!storeResult.rowCount) {
+      await client.query("rollback");
+      return fail(res, 404, "Toko tidak ditemukan.");
+    }
+    const store = storeResult.rows[0];
+    await client.query("delete from orders where store_id = $1", [req.params.id]);
+    await client.query("delete from stores where id = $1", [req.params.id]);
+    await client.query("commit");
+    sendChange();
+    return res.json({ ok: true, store });
+  } catch (error) {
+    await client.query("rollback");
+    return fail(res, 500, "Gagal menghapus toko.");
+  } finally {
+    client.release();
+  }
+});
+
 app.get("/api/products", async (req, res, next) => {
   try {
     if (req.query.ids) {
