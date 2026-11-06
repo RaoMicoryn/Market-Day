@@ -107,7 +107,7 @@ export default function StoreProfileForm({ store }) {
           {f.cover && <img src={f.cover} alt="" className="h-full w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
           <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
-            <label className="relative inline-flex cursor-pointer items-center gap-1.5 overflow-hidden rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-bold text-navy shadow-soft backdrop-blur transition hover:bg-white">
+            <label className="relative inline-flex cursor-pointer items-center gap-1.5 overflow-hidden rounded-full border border-white/70 bg-white/90 px-3 py-1.5 text-[11px] font-bold text-navy shadow-soft backdrop-blur transition duration-200 hover:bg-white">
               <ImagePlus size={12} /> Ganti cover
               <input
                 type="file"
@@ -118,7 +118,7 @@ export default function StoreProfileForm({ store }) {
               />
             </label>
             {f.cover && (
-              <button type="button" onClick={() => setF((v) => ({ ...v, cover: "" }))} aria-label="Hapus cover" className="rounded-full bg-white/90 p-1.5 text-navy/65 shadow-soft transition hover:text-red-700">
+              <button type="button" onClick={() => setF((v) => ({ ...v, cover: "" }))} aria-label="Hapus cover" className="rounded-full border border-white/70 bg-white/90 p-1.5 text-navy/55 shadow-soft transition hover:text-red-700">
                 <Trash2 size={12} />
               </button>
             )}
@@ -148,19 +148,19 @@ export default function StoreProfileForm({ store }) {
             </div>
             <div className="pb-1">
               <p className="text-sm font-bold text-navy">{f.name || "Nama toko"}</p>
-              <p className="text-[11px] text-navy/65">
+              <p className="text-[11px] text-navy/60">
                 {store.code} · {f.kelas || "Kelas"}
               </p>
             </div>
             {f.logo && (
-              <button type="button" onClick={() => setF((v) => ({ ...v, logo: "" }))} className="mb-1 ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-navy/65 hover:text-red-700">
+              <button type="button" onClick={() => setF((v) => ({ ...v, logo: "" }))} className="mb-1 ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-navy/60 hover:text-red-700">
                 <Trash2 size={11} /> Hapus logo
               </button>
             )}
           </div>
           {err.logo && <p className="mt-2 text-[11px] font-semibold text-red-700">{err.logo}</p>}
           {err.cover && <p className="mt-2 text-[11px] font-semibold text-red-700">{err.cover}</p>}
-          <p className="mt-2 text-[10px] text-navy/65">Logo dan banner maksimal 2 MB per file; gambar dikompres otomatis.</p>
+          <p className="mt-2 text-[10px] text-navy/60">Logo dan banner maksimal 2 MB per file; gambar dikompres otomatis.</p>
         </div>
       </div>
 
@@ -210,10 +210,10 @@ export default function StoreProfileForm({ store }) {
         </div>
       </div>
     </form>
-    <section className="card flex flex-col gap-3 border border-red-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+    <section className="flex flex-col gap-3 rounded-[22px] border border-red-200 bg-red-50/50 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5">
       <div>
         <h2 className="text-sm font-bold text-red-800">Hapus toko</h2>
-        <p className="mt-1 max-w-xl text-xs leading-relaxed text-navy/65">
+        <p className="mt-1 max-w-xl text-xs leading-relaxed text-navy/60">
           Menghapus akun, produk, dan riwayat pesanan secara permanen. Tindakan ini tidak bisa dibatalkan.
         </p>
       </div>
@@ -221,7 +221,7 @@ export default function StoreProfileForm({ store }) {
         type="button"
         onClick={removeStore}
         disabled={saving || deleting}
-        className="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-bold text-white transition hover:bg-red-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-bold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:bg-red-800 hover:shadow-lift active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {deleting ? <Loader2 size={15} className="animate-spin" /> : <AlertTriangle size={15} />}
         {deleting ? "Menghapus..." : "Hapus toko"}

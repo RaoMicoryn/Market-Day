@@ -50,7 +50,7 @@ export function ConfirmProvider({ children }) {
       {children}
       {state && (
         <div
-          className="fixed inset-0 z-[350] flex items-end justify-center bg-navy-900/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+          className="fixed inset-0 z-[350] flex items-end justify-center bg-navy-900/60 p-0 backdrop-blur-md sm:items-center sm:p-4"
           onClick={() => close(false)}
         >
           <div
@@ -58,20 +58,22 @@ export function ConfirmProvider({ children }) {
             aria-modal="true"
             aria-labelledby="confirm-title"
             onClick={(e) => e.stopPropagation()}
-            className="max-h-[92dvh] w-full max-w-sm animate-pop overflow-y-auto rounded-t-3xl bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 shadow-lift sm:rounded-3xl sm:p-6"
+            className="max-h-[92dvh] w-full max-w-sm animate-pop overflow-y-auto rounded-t-[30px] border border-white/60 bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 shadow-lift ring-1 ring-navy/[0.04] sm:rounded-[28px] sm:p-6"
           >
             <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
             <span
-              className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl ${
-                state.danger ? "bg-red-50 text-red-700" : "bg-accent-50 text-accent-600"
+              className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl ring-1 ${
+                state.danger
+                  ? "bg-red-50 text-red-700 ring-red-100"
+                  : "bg-accent-50 text-accent-600 ring-accent/10"
               }`}
             >
               <AlertTriangle size={20} />
             </span>
-            <h3 id="confirm-title" className="text-lg font-extrabold">
+            <h3 id="confirm-title" className="font-display text-lg font-extrabold tracking-tight text-navy">
               {state.title}
             </h3>
-            {state.message && <p className="mt-1.5 text-sm leading-relaxed text-navy/65">{state.message}</p>}
+            {state.message && <p className="mt-1.5 text-sm leading-relaxed text-navy/60">{state.message}</p>}
             <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row">
               <button type="button" onClick={() => close(false)} className="btn-ghost w-full flex-1">
                 {state.cancelLabel}
@@ -80,7 +82,11 @@ export function ConfirmProvider({ children }) {
                 type="button"
                 autoFocus
                 onClick={() => close(true)}
-                className={`w-full flex-1 ${state.danger ? "btn-accent" : "btn-primary"}`}
+                className={`w-full flex-1 ${
+                  state.danger
+                    ? "inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-red-700 px-4 text-sm font-semibold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:bg-red-800 hover:shadow-lift active:scale-[0.98]"
+                    : "btn-primary"
+                }`}
               >
                 {state.confirmLabel}
               </button>

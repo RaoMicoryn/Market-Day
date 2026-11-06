@@ -32,7 +32,7 @@ export default function StoreCard({ store }) {
   return (
     <Link
       to={`/toko/${store.slug}`}
-      className={`group relative flex gap-3.5 overflow-hidden rounded-[24px] border bg-white p-3 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift active:scale-[0.99] sm:flex-col sm:gap-0 sm:rounded-[26px] sm:p-0 ${
+      className={`group relative flex gap-3.5 overflow-hidden rounded-[24px] border bg-white p-3 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-accent/25 hover:shadow-lift active:scale-[0.99] sm:flex-col sm:gap-0 sm:rounded-[26px] sm:p-0 ${
         store.isOpen ? "border-navy/[0.07]" : "border-navy/10 bg-navy/[0.02]"
       }`}
     >
@@ -62,35 +62,35 @@ export default function StoreCard({ store }) {
         </div>
 
         {/* Kode toko: di desktop tampil di cover, di mobile pindah ke kolom info */}
-        <span className="absolute right-3 top-3 hidden rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold tracking-widest text-white backdrop-blur sm:block">
+        <span className="tnum absolute right-3 top-3 hidden rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-[10px] font-bold tracking-widest text-white shadow-sm backdrop-blur-md sm:block">
           {store.code}
         </span>
 
         {/* Logo kecil menempel di sudut cover (mobile) */}
-        <StoreLogo store={store} className="absolute -bottom-1.5 -right-1.5 h-9 w-9 text-sm ring-[3px] ring-white sm:hidden" />
+        <StoreLogo store={store} className="absolute -bottom-1.5 -right-1.5 h-9 w-9 text-sm shadow-soft ring-[3px] ring-white sm:hidden" />
       </div>
 
       {/* Info */}
       <div className="relative flex min-w-0 flex-1 flex-col py-0.5 sm:px-5 sm:pb-5 sm:pt-0">
         <div className="hidden items-end justify-between gap-2 sm:-mt-7 sm:flex">
-          <StoreLogo store={store} className="h-14 w-14 text-xl ring-4 ring-white" />
-          <span className="mb-0.5 inline-flex items-center gap-1 text-xs font-semibold text-navy/65">
+          <StoreLogo store={store} className="h-14 w-14 text-xl shadow-soft ring-4 ring-white" />
+          <span className="tnum mb-0.5 inline-flex items-center gap-1 text-xs font-semibold text-navy/50">
             <Package size={13} /> {store.productCount ?? 0} produk
           </span>
         </div>
 
-        <p className="text-[10px] font-bold tracking-[0.14em] text-navy/40 sm:hidden">{store.code}</p>
+        <p className="tnum text-[10px] font-bold tracking-[0.14em] text-navy/40 sm:hidden">{store.code}</p>
 
         <h3 className="mt-0.5 flex items-center gap-1.5 font-display text-base font-extrabold leading-tight text-navy sm:mt-3">
           <span className="truncate">{store.name}</span>
           <ArrowUpRight size={15} className="shrink-0 text-navy/20 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
         </h3>
 
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-navy/65 sm:min-h-[2.5rem] sm:text-[13px]">
+        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-navy/60 sm:min-h-[2.5rem] sm:text-[13px]">
           {store.bio || "Lihat menu dan informasi dari booth ini."}
         </p>
 
-        <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-2.5 text-[11px] font-semibold text-navy/65 sm:mt-3 sm:justify-between sm:border-t sm:border-dashed sm:border-navy/[0.08] sm:pt-3">
+        <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-2.5 text-[11px] font-semibold text-navy/60 sm:mt-3 sm:justify-between sm:border-t sm:border-dashed sm:border-navy/[0.08] sm:pt-3">
           <span className="inline-flex items-center gap-1">
             <MapPin size={12} className="text-navy/40" /> {store.kelas}
           </span>

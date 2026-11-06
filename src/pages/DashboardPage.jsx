@@ -65,7 +65,7 @@ export default function DashboardPage() {
       <section className="shell max-w-4xl py-8 sm:py-12">
         <div className="rounded-3xl border border-navy/[0.08] bg-white p-6 text-center shadow-soft sm:p-10">
           <h1 className="font-display text-xl font-extrabold text-navy">Dashboard belum bisa dimuat</h1>
-          <p role="alert" className="mt-2 text-sm leading-relaxed text-navy/65">
+          <p role="alert" className="mt-2 text-sm leading-relaxed text-navy/60">
             {error?.message || "Data toko tidak ditemukan. Coba muat ulang atau masuk kembali."}
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
@@ -98,15 +98,15 @@ export default function DashboardPage() {
 
   return (
     <section className="shell py-4 sm:py-8">
-      <div className="mb-4 rounded-3xl border border-navy/[0.06] bg-white p-4 shadow-soft sm:mb-6 sm:p-5">
+      <div className="mb-4 overflow-hidden rounded-[24px] border border-navy/[0.07] bg-white p-4 shadow-card sm:mb-6 sm:rounded-[28px] sm:p-5">
         <div className="flex items-center gap-3">
-          <StoreLogo store={store} className="h-12 w-12 text-lg sm:h-14 sm:w-14 sm:text-xl" />
+          <StoreLogo store={store} className="h-12 w-12 text-lg shadow-sm ring-2 ring-white sm:h-14 sm:w-14 sm:text-xl" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="truncate font-display text-lg font-extrabold text-navy sm:text-xl">{store.name}</h1>
+              <h1 className="truncate font-display text-lg font-extrabold tracking-tight text-navy sm:text-xl">{store.name}</h1>
               <OpenBadge isOpen={store.isOpen} />
             </div>
-            <p className="mt-0.5 truncate text-[11px] font-semibold text-navy/65">
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-navy/55">
               {store.kelas} · {store.code} · {store.members?.length || 0} anggota
             </p>
           </div>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
             type="button"
             onClick={doLogout}
             aria-label="Keluar"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-navy/10 text-navy/65 transition hover:border-red-300 hover:text-red-700 active:scale-90"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-navy/10 bg-white text-navy/55 shadow-sm transition duration-200 hover:border-red-300 hover:bg-red-50 hover:text-red-700 active:scale-90"
           >
             <LogOut size={16} />
           </button>
@@ -127,13 +127,13 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={toggleOpen}
-            className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition active:scale-[0.98] ${
+            className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition duration-200 active:scale-[0.98] ${
               store.isOpen
-                ? "border border-navy/10 bg-white text-navy/70 hover:border-red-300 hover:text-red-700"
+                ? "border border-navy/10 bg-white text-navy/70 shadow-sm hover:border-red-300 hover:text-red-700"
                 : "bg-emerald-700 text-white shadow-soft hover:bg-emerald-800"
             }`}
           >
-            <span className={`h-2 w-2 rounded-full ${store.isOpen ? "bg-emerald-500" : "bg-white"}`} />
+            <span className={`h-2 w-2 rounded-full ${store.isOpen ? "animate-pulse bg-emerald-500" : "bg-white"}`} />
             {store.isOpen ? "Tutup toko" : "Buka toko"}
           </button>
         </div>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
         <div className="mt-3">
           <Link
             to="/admin/hapus-toko"
-            className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 text-[11px] font-bold text-red-700 transition hover:bg-red-100 hover:text-red-800 sm:text-sm"
+            className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-full border border-red-200 bg-red-50/70 px-3 text-[11px] font-bold text-red-700 transition duration-200 hover:bg-red-100 hover:text-red-800 sm:text-sm"
           >
             <AlertTriangle size={13} className="text-red-600" /> Hapus toko
           </Link>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[210px_1fr] lg:gap-5">
-        <nav aria-label="Menu dashboard" className="no-scrollbar sticky top-[60px] z-30 -mx-4 flex gap-1.5 overflow-x-auto border-b border-navy/[0.06] bg-cream/95 px-4 py-2 backdrop-blur-xl lg:static lg:mx-0 lg:flex-col lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+        <nav aria-label="Menu dashboard" className="no-scrollbar glass-bar sticky top-16 z-30 -mx-4 flex gap-1.5 overflow-x-auto border-b px-4 py-2 sm:top-[76px] lg:static lg:mx-0 lg:flex-col lg:gap-1 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
           {TABS.map(({ id, label, Icon }) => {
             const active = tab === id;
             return (
@@ -158,8 +158,8 @@ export default function DashboardPage() {
                 type="button"
                 onClick={() => setTab(id)}
                 aria-current={active ? "page" : undefined}
-                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-2xl px-3.5 text-sm font-semibold transition active:scale-[0.98] sm:px-4 ${
-                  active ? "bg-navy text-white shadow-soft" : "text-navy/65 hover:bg-white hover:text-navy"
+                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-2xl px-3.5 text-sm font-semibold transition duration-200 active:scale-[0.98] sm:px-4 ${
+                  active ? "bg-navy text-white shadow-soft" : "text-navy/60 hover:bg-white hover:text-navy hover:shadow-sm"
                 }`}
               >
                 <Icon size={16} />

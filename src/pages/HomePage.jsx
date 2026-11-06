@@ -47,10 +47,10 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
-              <Link to="/dashboard/register" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-bold text-white shadow-glow transition hover:bg-price active:scale-[0.98] sm:min-h-11 sm:w-auto">
+              <Link to="/dashboard/register" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-bold text-white shadow-glow transition duration-300 hover:-translate-y-0.5 hover:shadow-lift active:scale-[0.98] sm:min-h-11 sm:w-auto" style={{ backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}>
                 <Store size={16} /> Daftarkan booth
               </Link>
-              <Link to="/dashboard/login" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/20 px-5 text-sm font-semibold text-white/85 transition hover:bg-white/10 active:scale-[0.98] sm:min-h-11 sm:w-auto">
+              <Link to="/dashboard/login" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white/85 backdrop-blur transition duration-200 hover:bg-white/15 hover:text-white active:scale-[0.98] sm:min-h-11 sm:w-auto">
                 Masuk dashboard
               </Link>
             </div>
@@ -78,13 +78,13 @@ export default function HomePage() {
               <Link
                 key={c}
                 to={`/cari?kategori=${encodeURIComponent(c)}`}
-                className={`group relative overflow-hidden rounded-[20px] border border-navy/[0.07] bg-gradient-to-br ${meta.tone} p-3.5 shadow-card transition duration-300 hover:-translate-y-1 hover:border-accent/25 hover:shadow-lift active:scale-[0.98] sm:rounded-[26px] sm:p-5`}
+                className={`group relative overflow-hidden rounded-[20px] border border-white/60 bg-gradient-to-br ${meta.tone} p-3.5 shadow-card transition duration-300 hover:-translate-y-1 hover:border-accent/25 hover:shadow-lift active:scale-[0.98] sm:rounded-[26px] sm:p-5`}
               >
                 <span className="text-2xl transition duration-300 group-hover:scale-110 sm:text-4xl" aria-hidden="true">
                   {meta.emoji}
                 </span>
                 <p className="mt-2 font-display text-[13px] font-extrabold leading-tight text-navy sm:mt-3 sm:text-base">{meta.short}</p>
-                <p className="mt-0.5 line-clamp-1 text-[10px] text-navy/65 sm:text-[11px]">{meta.desc}</p>
+                <p className="mt-0.5 line-clamp-1 text-[10px] text-navy/60 sm:text-[11px]">{meta.desc}</p>
                 <ArrowRight
                   size={15}
                   className="absolute right-3 top-3 hidden text-navy/20 transition group-hover:translate-x-0.5 group-hover:text-accent sm:block sm:right-4 sm:top-4"
@@ -101,7 +101,7 @@ export default function HomePage() {
           title="Booth yang bisa kamu kunjungi"
           description="Setiap booth dikelola langsung oleh penjual. Cek status buka sebelum memesan."
           action={
-            <div role="group" aria-label="Filter booth" className="grid w-full grid-cols-2 gap-1 rounded-full bg-navy/[0.06] p-1 sm:inline-grid sm:w-auto">
+            <div role="group" aria-label="Filter booth" className="grid w-full grid-cols-2 gap-1 rounded-full border border-white/60 bg-white/60 p-1 shadow-sm sm:inline-grid sm:w-auto">
               {[
                 { key: false, label: "Semua", count: all.length },
                 { key: true, label: "Buka sekarang", count: openCount },
@@ -114,12 +114,12 @@ export default function HomePage() {
                     aria-pressed={active}
                     onClick={() => setOnlyOpen(t.key)}
                     className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 text-[13px] font-semibold transition duration-200 active:scale-[0.97] sm:text-sm ${
-                      active ? "bg-navy text-white shadow-soft" : "text-navy/65 hover:text-navy"
+                      active ? "bg-navy text-white shadow-soft" : "text-navy/55 hover:bg-white hover:text-navy"
                     }`}
                   >
                     {t.label}
                     {!loading && (
-                      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? "bg-white/20 text-white" : "bg-navy/10 text-navy/65"}`}>
+                      <span className={`tnum rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? "bg-white/20 text-white" : "bg-navy/10 text-navy/55"}`}>
                         {t.count}
                       </span>
                     )}
@@ -137,7 +137,7 @@ export default function HomePage() {
         </div>
         {!loading && list.length === 0 && (
           <div className="mt-6 rounded-[24px] border border-dashed border-navy/10 bg-white/70 px-4 py-10 text-center shadow-card backdrop-blur-sm">
-            <p className="text-sm text-navy/65">
+            <p className="text-sm text-navy/60">
               {onlyOpen ? "Belum ada booth yang buka saat ini." : "Belum ada booth yang terdaftar."}
             </p>
             {onlyOpen && (

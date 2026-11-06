@@ -58,8 +58,8 @@ export default function OrdersPage() {
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-7 sm:gap-4">
         <div>
           <p className="eyebrow mb-1.5">Riwayat</p>
-          <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">Pesanan saya</h1>
-          <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-navy/65 sm:text-sm">
+          <h1 className="font-display text-[22px] font-extrabold tracking-tight text-navy sm:text-3xl">Pesanan saya</h1>
+          <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-navy/60 sm:text-sm">
             Pesanan yang dibuat dari perangkat ini. Status diperbarui langsung saat penjual memproses.
           </p>
         </div>
@@ -82,21 +82,26 @@ export default function OrdersPage() {
           }
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {orders.map((o) => {
             const step = o.status === "done" ? 2 : o.status === "processing" ? 1 : 0;
             const stepLabels = ["Diantre", "Dimasak", o.method === "delivery" ? "Diantar" : "Siap ambil"];
+            const active = o.status !== "done";
             return (
-              <article key={o.id} className="card overflow-hidden">
+              <article key={o.id} className="card group relative overflow-hidden">
+                <span
+                  className={`absolute inset-x-0 top-0 h-[3px] ${active ? "bg-gradient-to-r from-accent via-amber-400 to-accent/30" : "bg-emerald-500/70"}`}
+                  aria-hidden="true"
+                />
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-dashed border-navy/10 p-4 sm:p-5">
                   <div className="flex items-start gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-navy text-accent-300">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy-600 to-navy text-accent-300 shadow-soft">
                       <Store size={18} />
                     </span>
                     <div>
-                      <p className="text-[11px] font-semibold text-navy/65">{o.storeName}</p>
-                      <p className="font-display text-xl font-extrabold tracking-wide text-navy">{o.queueNo}</p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-navy/65">
+                      <p className="text-[11px] font-semibold text-navy/60">{o.storeName}</p>
+                      <p className="tnum font-display text-xl font-extrabold tracking-wider text-navy">{o.queueNo}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-navy/60">
                         <span className="inline-flex items-center gap-1">
                           <Clock3 size={10} /> {timeAgo(o.createdAt)}
                         </span>
@@ -106,7 +111,8 @@ export default function OrdersPage() {
                       </p>
                     </div>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${STATUS_TONE[o.status] || ""}`}>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold ${STATUS_TONE[o.status] || ""}`}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden="true" />
                     {ORDER_STATUS[o.status] || o.status}
                   </span>
                 </div>
@@ -117,53 +123,53 @@ export default function OrdersPage() {
                       {STEPS.map((_, i) => (
                         <li key={i} className="flex flex-1 items-center gap-1 last:flex-none sm:gap-1.5">
                           <span
-                            className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold ${
-                              i <= step ? "bg-accent text-white" : "bg-navy-50 text-navy/30"
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold transition ${
+                              i <= step ? "bg-accent text-white shadow-glow" : "bg-navy-50 text-navy/30"
                             }`}
                           >
                             {i < step ? "✓" : i + 1}
                           </span>
-                          <span className={i <= step ? "text-navy" : "text-navy/65"}>{stepLabels[i]}</span>
+                          <span className={`truncate ${i <= step ? "text-navy" : "text-navy/45"}`}>{stepLabels[i]}</span>
                           {i < STEPS.length - 1 && (
-                            <span className={`h-0.5 flex-1 rounded ${i < step ? "bg-accent" : "bg-navy-50"}`} />
+                            <span className={`h-0.5 flex-1 rounded-full ${i < step ? "bg-accent/60" : "bg-navy-50"}`} />
                           )}
                         </li>
                       ))}
                     </ol>
 
-                    <ul className="mt-3 space-y-1 text-xs">
+                    <ul className="mt-3 space-y-1.5 text-xs">
                       {o.items.map((it, idx) => (
                         <li key={idx} className="flex justify-between gap-3">
-                          <span className="min-w-0 text-navy/65">
-                            {it.name} <span className="text-navy/65">× {it.qty}</span>
+                          <span className="min-w-0 text-navy/60">
+                            {it.name} <span className="text-navy/45">× {it.qty}</span>
                             {optionsText(it.optionsObj) && (
-                              <span className="block text-[10px] text-navy/65">{optionsText(it.optionsObj)}</span>
+                              <span className="block text-[10px] text-navy/45">{optionsText(it.optionsObj)}</span>
                             )}
                           </span>
-                          <span className="shrink-0 font-semibold text-navy/65">{formatRupiah(it.price * it.qty)}</span>
+                          <span className="tnum shrink-0 font-semibold text-navy/70">{formatRupiah(it.price * it.qty)}</span>
                         </li>
                       ))}
                     </ul>
-                    <p className="mt-2 text-[10px] text-navy/65">{formatDateTime(o.createdAt)}</p>
+                    <p className="mt-2 text-[10px] text-navy/45">{formatDateTime(o.createdAt)}</p>
                   </div>
 
                   <div className="flex flex-col items-start justify-between gap-3 border-t border-dashed border-navy/10 pt-3 sm:min-w-[10rem] sm:items-end sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
                     <div className="sm:text-right">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-navy/65">Total</p>
-                      <p className="font-display text-lg font-extrabold text-price">{formatRupiah(o.total)}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-navy/50">Total</p>
+                      <p className="tnum font-display text-lg font-extrabold text-price">{formatRupiah(o.total)}</p>
                     </div>
                     <div className="flex w-full gap-2 sm:w-auto">
                       <button
                         type="button"
                         onClick={() => openTracker()}
-                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-navy px-3 text-xs font-bold text-white transition hover:bg-navy-700 active:scale-95 sm:flex-none"
+                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-navy px-3 text-xs font-bold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:shadow-lift active:scale-95 sm:flex-none"
                       >
                         <ReceiptText size={13} /> Tiket
                       </button>
                       <button
                         type="button"
                         onClick={() => reorder(o)}
-                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-navy/10 px-3 text-xs font-bold text-navy/70 transition hover:border-accent/50 hover:text-price active:scale-95 sm:flex-none"
+                        className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-navy/10 bg-white px-3 text-xs font-bold text-navy/70 transition duration-200 hover:border-accent/50 hover:text-price active:scale-95 sm:flex-none"
                       >
                         <RotateCcw size={13} /> Pesan lagi
                       </button>
@@ -176,7 +182,7 @@ export default function OrdersPage() {
         </div>
       )}
 
-      <p className="mt-6 text-center text-[11px] leading-relaxed text-navy/65">
+      <p className="mt-6 text-center text-[11px] leading-relaxed text-navy/50">
         Tiket pesanan tersimpan di perangkat ini. Hapus data browser akan menghapus daftar tiket.
       </p>
     </section>

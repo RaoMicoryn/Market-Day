@@ -29,7 +29,10 @@ export default function RegisterPage() {
         title="Toko berhasil dibuat!"
         subtitle={`Selamat, ${created.name} siap berjualan. Simpan kode tokomu ya.`}
       >
-        <PartyPopper className="mx-auto mb-4 text-accent" size={38} />
+        <div className="rounded-[22px] border border-emerald-100 bg-emerald-50/60 py-5 text-center shadow-sm">
+          <PartyPopper className="mx-auto text-emerald-700" size={34} />
+          <p className="mt-2 text-[11px] font-semibold uppercase tracking-widest text-emerald-800">Booth siap</p>
+        </div>
         <StoreCodeCard code={created.code} slug={created.slug} />
         <button type="button" onClick={() => navigate("/dashboard")} className="btn-primary mt-4 w-full">
           Ke dashboard toko
@@ -117,7 +120,7 @@ export default function RegisterPage() {
         />
 
         {error && (
-          <p role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-700">
+          <p role="alert" className="flex items-start gap-2 rounded-2xl border border-red-100 bg-red-50 px-3.5 py-3 text-xs font-semibold text-red-700">
             <AlertCircle size={14} className="mt-0.5 shrink-0" /> {error}
           </p>
         )}
@@ -125,7 +128,7 @@ export default function RegisterPage() {
         <button type="submit" disabled={busy} className="btn-primary w-full">
           {busy ? "Membuat toko..." : "Buat toko"}
         </button>
-        <p className="text-center text-[11px] leading-relaxed text-navy/65">
+        <p className="text-center text-[11px] leading-relaxed text-navy/50">
           Dengan mendaftar, kamu menjadi penanggung jawab konten toko. Data tersimpan di server Tribiz Fest.
         </p>
       </form>

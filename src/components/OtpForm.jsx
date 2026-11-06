@@ -78,14 +78,14 @@ export default function OtpForm({
   return (
     <section className={`card p-5 sm:p-6 ${className}`} aria-labelledby={titleId}>
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent/10 text-accent" aria-hidden="true">
+        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent/15 to-amber-100 text-accent shadow-sm ring-1 ring-accent/10" aria-hidden="true">
           <ShieldCheck size={20} />
         </span>
         <div className="min-w-0">
-          <h2 id={titleId} className="font-display text-lg font-extrabold text-navy">
+          <h2 id={titleId} className="font-display text-lg font-extrabold tracking-tight text-navy">
             {title}
           </h2>
-          <p className="mt-1 text-sm leading-relaxed text-navy/65">{description}</p>
+          <p className="mt-1 text-sm leading-relaxed text-navy/55">{description}</p>
         </div>
       </div>
 
@@ -94,7 +94,7 @@ export default function OtpForm({
       </p>
 
       {status === "verified" ? (
-        <p className="mt-4 flex items-start gap-2 rounded-xl bg-emerald-50 px-3 py-2.5 text-sm font-semibold text-emerald-800">
+        <p className="mt-4 flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-3.5 py-3 text-sm font-semibold text-emerald-800">
           <CheckCircle2 size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
           Nomor WhatsApp berhasil diverifikasi.
         </p>
@@ -116,8 +116,8 @@ export default function OtpForm({
           )}
 
           {!showPhoneField && phone.trim() && (
-            <p className="rounded-xl bg-navy/[0.04] px-3 py-2 text-xs font-semibold text-navy/70">
-              Kode dikirim ke <span className="text-navy">{phone}</span>.
+            <p className="rounded-2xl border border-navy/[0.06] bg-navy/[0.03] px-3 py-2 text-xs font-semibold text-navy/60">
+              Kode dikirim ke <span className="tnum text-navy">{phone}</span>.
             </p>
           )}
 
@@ -143,7 +143,7 @@ export default function OtpForm({
                   aria-describedby={error ? `${hintId} ${errorId}` : hintId}
                   className={`field tracking-[0.5em] ${error ? "border-red-400 bg-red-50/40" : ""}`}
                 />
-                <p id={hintId} className="mt-1.5 text-[11px] text-navy/65">
+                <p id={hintId} className="mt-1.5 text-[11px] text-navy/60">
                   {expired
                     ? "Kode sudah tidak berlaku. Minta kode baru."
                     : `Kode berlaku ${formatCountdown(expiresIn)}.`}

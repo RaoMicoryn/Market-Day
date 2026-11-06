@@ -158,13 +158,13 @@ export default function Header() {
             </button>
           </div>
           <SearchBox autoFocus onNavigate={() => setMobileSearch(false)} />
-          <p className="mt-4 text-center text-xs text-navy/65">Tekan Enter untuk melihat semua hasil</p>
+          <p className="mt-4 text-center text-xs text-navy/60">Tekan Enter untuk melihat semua hasil</p>
         </div>
       )}
 
       {menu && (
         <div className="fixed inset-0 z-[105] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
-          <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-sm" onClick={() => setMenu(false)} />
+          <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-md" onClick={() => setMenu(false)} />
           <div className="absolute right-0 top-0 flex h-[100dvh] w-[86%] max-w-xs animate-rise flex-col rounded-l-[30px] border-l border-white/60 bg-cream/95 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-lift backdrop-blur-2xl">
             <div className="flex items-center justify-between">
               <Logo />

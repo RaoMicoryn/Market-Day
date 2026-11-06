@@ -56,7 +56,7 @@ export default function WishlistPage() {
           <h1 className="flex items-center gap-2 font-display text-[22px] font-extrabold text-navy sm:text-3xl">
             Wishlist <Heart size={20} className="text-red-700" fill="currentColor" />
           </h1>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-navy/65 sm:text-sm">
+          <p className="mt-1.5 text-[13px] leading-relaxed text-navy/55 sm:text-sm">
             {count > 0 ? `${count} produk kamu simpan. Jangan sampai kehabisan!` : "Simpan menu favorit supaya mudah ditemukan nanti."}
           </p>
         </div>
@@ -67,13 +67,13 @@ export default function WishlistPage() {
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               aria-label="Urutkan wishlist"
-              className="h-10 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
+              className="h-10 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy shadow-sm outline-none hover:border-navy/20 focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
             >
               <option value="newest">Terbaru</option>
               <option value="price-asc">Harga terendah</option>
               <option value="price-desc">Harga tertinggi</option>
             </select>
-            <button type="button" onClick={clearAll} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 transition hover:bg-red-100 active:scale-95">
+            <button type="button" onClick={clearAll} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 transition duration-200 hover:bg-red-100 active:scale-95">
               <Trash2 size={13} /> Hapus semua
             </button>
           </div>
@@ -96,7 +96,7 @@ export default function WishlistPage() {
       ) : (
         <>
           <h2 className="sr-only">Produk tersimpan</h2>
-          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
             {rows.map((p) => (
               <ProductCard key={p.id} product={p} showStore onAdd={onAdd} onSelect={setSelected} />
             ))}

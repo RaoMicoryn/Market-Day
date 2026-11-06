@@ -21,10 +21,10 @@ export default function HeartButton({ product, className = "", size = 16 }) {
           duration: 2200,
         });
       }}
-      className={`flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur transition duration-200 active:scale-90 ${
+      className={`flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur transition duration-200 hover:scale-105 active:scale-90 ${
         active
           ? "border-red-100 bg-white text-red-700 shadow-soft"
-          : "border-white/40 bg-white/80 text-navy/65 hover:text-red-700"
+          : "border-white/40 bg-white/80 text-navy/50 hover:text-red-700"
       } ${className}`}
     >
       <Heart size={size} fill={active ? "currentColor" : "none"} strokeWidth={2.2} />

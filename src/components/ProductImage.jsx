@@ -25,7 +25,7 @@ export default function ProductImage({ product, className = "", zoom = false }) 
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1" aria-hidden="true">
           <span className="text-4xl drop-shadow-sm sm:text-5xl">{meta?.emoji || "🍽️"}</span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-navy/65">{meta?.short || "Menu"}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-navy/60">{meta?.short || "Menu"}</span>
         </div>
       )}
     </div>

@@ -22,10 +22,10 @@ function StockSwitch({ product, onToggle }) {
       onClick={() => onToggle(product)}
       className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      <span className={`relative h-6 w-10 rounded-full transition-colors duration-300 ${on ? "bg-emerald-500" : "bg-navy/20"}`}>
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all duration-300 ${on ? "left-[18px]" : "left-0.5"}`} />
+      <span className={`relative h-6 w-10 rounded-full transition-colors duration-300 ${on ? "bg-emerald-500 shadow-[inset_0_1px_2px_rgba(0,0,0,.12)]" : "bg-navy/15 shadow-[inset_0_1px_2px_rgba(0,0,0,.08)]"}`}>
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all duration-300 ${on ? "left-[18px]" : "left-0.5"}`} />
       </span>
-      <span className={`hidden w-14 text-left text-[10px] font-bold sm:block ${on ? "text-emerald-700" : "text-navy/65"}`}>
+      <span className={`hidden w-14 text-left text-[10px] font-bold sm:block ${on ? "text-emerald-700" : "text-navy/60"}`}>
         {on ? "Tersedia" : "Habis"}
       </span>
     </button>
@@ -78,7 +78,7 @@ export default function ProductsTab({ store }) {
 
   return (
     <div className="space-y-4">
-      <div className="card space-y-2 p-3 sm:flex sm:flex-wrap sm:items-center sm:gap-2 sm:space-y-0 sm:p-4">
+      <div className="card space-y-2 p-3 sm:flex sm:flex-wrap sm:items-center sm:gap-2 sm:space-y-0 sm:p-3.5">
         <label className="relative block min-w-0 sm:max-w-xs sm:flex-1">
           <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy/30" />
           <input
@@ -86,7 +86,7 @@ export default function ProductsTab({ store }) {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Cari produk..."
             aria-label="Cari produk"
-            className="h-10 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-base outline-none transition placeholder:text-navy/65 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-9 sm:text-xs"
+            className="h-10 w-full rounded-full border border-navy/10 bg-navy/[0.02] pl-9 pr-3 text-base outline-none transition placeholder:text-navy/55 hover:border-navy/20 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-9 sm:text-xs"
           />
         </label>
         <div className="flex items-center gap-2">
@@ -94,14 +94,14 @@ export default function ProductsTab({ store }) {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             aria-label="Filter kategori"
-            className="h-10 min-w-0 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
+            className="h-10 min-w-0 flex-1 cursor-pointer rounded-full border border-navy/10 bg-white px-3 text-base font-semibold text-navy outline-none hover:border-navy/20 focus:border-accent sm:h-9 sm:flex-none sm:text-xs"
           >
             <option value="">Semua kategori</option>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
-          <span className="hidden shrink-0 text-[11px] font-semibold text-navy/65 sm:block">{rows.length} produk</span>
+          <span className="tnum hidden shrink-0 text-[11px] font-semibold text-navy/50 sm:block">{rows.length} produk</span>
           <button type="button" onClick={() => setEditing("new")} className="btn-accent shrink-0 sm:ml-auto">
             <Plus size={15} /> Tambah
           </button>
@@ -121,15 +121,15 @@ export default function ProductsTab({ store }) {
       ) : (
         <ul className="space-y-2.5">
           {rows.map((p) => (
-            <li key={p.id} className="card flex items-center gap-2.5 p-2.5 sm:gap-3 sm:p-3">
-              <ProductImage product={p} className={`h-14 w-14 shrink-0 rounded-xl sm:h-16 sm:w-16 ${p.inStock === false ? "opacity-50 grayscale" : ""}`} />
+            <li key={p.id} className="card flex items-center gap-2.5 p-2.5 transition duration-200 hover:border-accent/20 hover:shadow-lift sm:gap-3 sm:p-3">
+              <ProductImage product={p} className={`h-14 w-14 shrink-0 rounded-xl object-cover ring-1 ring-navy/[0.06] sm:h-16 sm:w-16 sm:rounded-2xl ${p.inStock === false ? "opacity-50 grayscale" : ""}`} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-navy">{p.name}</p>
-                <p className="text-[10px] font-semibold text-navy/65">
+                <p className="text-[10px] font-semibold text-navy/55">
                   {CATEGORY_META[p.category]?.emoji} {p.category}
                 </p>
-                <p className="text-sm font-extrabold text-price">{formatRupiah(p.price)}</p>
-                <p className="text-[10px] font-medium text-navy/65">
+                <p className="tnum text-sm font-extrabold text-price">{formatRupiah(p.price)}</p>
+                <p className="tnum text-[10px] font-medium text-navy/50">
                   {p.stockQuantity == null ? "Stok tidak dibatasi" : `Stok: ${p.stockQuantity}`}
                 </p>
               </div>
@@ -139,7 +139,7 @@ export default function ProductsTab({ store }) {
                   type="button"
                   onClick={() => setEditing(p)}
                   aria-label={`Ubah ${p.name}`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy-50 hover:text-navy active:scale-90"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-navy/55 transition duration-200 hover:bg-navy-50 hover:text-navy active:scale-90"
                 >
                   <Pencil size={15} />
                 </button>
@@ -147,7 +147,7 @@ export default function ProductsTab({ store }) {
                   type="button"
                   onClick={() => remove(p)}
                   aria-label={`Hapus ${p.name}`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-red-400 transition hover:bg-red-50 hover:text-red-700 active:scale-90"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-red-400 transition duration-200 hover:bg-red-50 hover:text-red-700 active:scale-90"
                 >
                   <Trash2 size={15} />
                 </button>

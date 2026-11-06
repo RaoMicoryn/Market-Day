@@ -9,7 +9,7 @@ export default function FormField({ label, name, value, onChange, error, hint, m
         <label htmlFor={name} className="text-[13px] font-bold text-navy">
           {label}
         </label>
-        {hint && <span className="text-[11px] text-navy/65">{hint}</span>}
+        {hint && <span className="text-[11px] text-navy/60">{hint}</span>}
       </div>
       <Tag
         id={name}

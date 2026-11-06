@@ -92,20 +92,20 @@ export default function ProductForm({ product, onSave, onClose }) {
     setF((current) => ({ ...current, toppings: current.toppings.filter((_, i) => i !== index) }));
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-end justify-center overflow-y-auto bg-navy-900/55 p-0 backdrop-blur-sm sm:items-center sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[150] flex items-end justify-center overflow-y-auto bg-navy-900/60 p-0 backdrop-blur-md sm:items-center sm:p-4" onClick={onClose}>
       <form
         onSubmit={submit}
         noValidate
         onClick={(e) => e.stopPropagation()}
-        className="relative my-auto max-h-[92dvh] w-full max-w-lg animate-pop space-y-4 overflow-y-auto rounded-t-[28px] bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-lift sm:max-h-[88vh] sm:rounded-[28px] sm:p-6"
+        className="relative my-auto max-h-[92dvh] w-full max-w-lg animate-pop space-y-4 overflow-y-auto rounded-t-[30px] border border-white/60 bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-lift ring-1 ring-navy/[0.04] sm:max-h-[88vh] sm:rounded-[30px] sm:p-6"
       >
         <div className="mx-auto h-1.5 w-10 rounded-full bg-navy/15 sm:hidden" aria-hidden="true" />
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="eyebrow mb-1">{product ? "Ubah menu" : "Menu baru"}</p>
-            <h3 className="font-display text-xl font-extrabold text-navy">{product ? "Ubah produk" : "Tambah produk"}</h3>
+            <h3 className="font-display text-xl font-extrabold tracking-tight text-navy">{product ? "Ubah produk" : "Tambah produk"}</h3>
           </div>
-          <button type="button" onClick={onClose} aria-label="Tutup" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90">
+          <button type="button" onClick={onClose} aria-label="Tutup" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/70 bg-white/85 text-navy/50 shadow-soft backdrop-blur transition duration-300 hover:rotate-90 hover:text-navy active:scale-90">
             <X size={19} />
           </button>
         </div>
@@ -118,7 +118,7 @@ export default function ProductForm({ product, onSave, onClose }) {
               Harga
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-navy/65">Rp</span>
+              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-navy/45">Rp</span>
               <input
                 id="price"
                 name="price"
@@ -134,7 +134,7 @@ export default function ProductForm({ product, onSave, onClose }) {
             {err.price ? (
               <p role="alert" className="mt-1.5 text-[11px] font-semibold text-red-700">{err.price}</p>
             ) : (
-              f.price > 0 && <p className="mt-1.5 text-[11px] text-navy/65">{formatRupiah(f.price)}</p>
+              f.price > 0 && <p className="tnum mt-1.5 text-[11px] font-semibold text-navy/55">{formatRupiah(f.price)}</p>
             )}
           </div>
 
@@ -172,7 +172,7 @@ export default function ProductForm({ product, onSave, onClose }) {
           {err.stockQuantity ? (
             <p role="alert" className="mt-1.5 text-[11px] font-semibold text-red-700">{err.stockQuantity}</p>
           ) : (
-            <p id="stockQuantity-hint" className="mt-1.5 text-[11px] text-navy/65">
+            <p id="stockQuantity-hint" className="mt-1.5 text-[11px] text-navy/55">
               Kosongkan untuk stok tidak dibatasi. Isi 0 jika sedang habis.
             </p>
           )}
@@ -192,11 +192,11 @@ export default function ProductForm({ product, onSave, onClose }) {
         <fieldset className="space-y-2">
           <div className="flex items-center justify-between gap-3">
             <legend className="text-[13px] font-bold text-navy">Pilihan topping</legend>
-            <button type="button" onClick={addTopping} className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold text-price transition hover:bg-accent-50">
+            <button type="button" onClick={addTopping} className="inline-flex min-h-9 items-center gap-1 rounded-full border border-accent/20 bg-accent-50 px-3 text-xs font-bold text-price transition duration-200 hover:bg-accent-100 active:scale-95">
               <Plus size={14} /> Tambah topping
             </button>
           </div>
-          <p className="text-[11px] leading-relaxed text-navy/65">
+          <p className="text-[11px] leading-relaxed text-navy/55">
             Tambahkan topping dan harga tambahan sesuai kebutuhan. Tidak ada batas jumlah topping.
           </p>
           {f.toppings.map((topping, index) => (
@@ -211,7 +211,7 @@ export default function ProductForm({ product, onSave, onClose }) {
                   className="field sm:text-xs"
                 />
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-navy/65">Rp</span>
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-navy/45">Rp</span>
                   <input
                     type="number"
                     min="0"
@@ -228,7 +228,7 @@ export default function ProductForm({ product, onSave, onClose }) {
                 type="button"
                 onClick={() => removeTopping(index)}
                 aria-label={`Hapus topping ${index + 1}`}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-red-500 transition hover:bg-red-50"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-red-400 transition duration-200 hover:bg-red-50 hover:text-red-700 active:scale-90"
               >
                 <Trash2 size={15} />
               </button>
@@ -236,12 +236,16 @@ export default function ProductForm({ product, onSave, onClose }) {
           ))}
           {err.toppings && <p role="alert" className="text-[11px] font-semibold text-red-700">{err.toppings}</p>}
         </fieldset>
-        {err.form && <p role="alert" className="text-xs font-semibold text-red-700">{err.form}</p>}
+        {err.form && (
+          <p role="alert" className="rounded-2xl border border-red-100 bg-red-50 px-3.5 py-3 text-xs font-semibold text-red-700">
+            {err.form}
+          </p>
+        )}
 
         <div>
           <p className="mb-1.5 text-[13px] font-bold text-navy">Foto produk</p>
           <div className="flex items-center gap-3">
-            <div className={`flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br ${meta.tone}`}>
+            <div className={`flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br shadow-sm ring-1 ring-navy/[0.06] ${meta.tone}`}>
               {f.image ? (
                 <img src={f.image} alt="Preview" className="h-full w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
               ) : (
@@ -258,22 +262,22 @@ export default function ProductForm({ product, onSave, onClose }) {
                 error={err.image}
               />
               <div className="flex flex-wrap items-center gap-2">
-                <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-navy/10 bg-white px-3 py-1.5 text-[11px] font-semibold text-navy/65 transition hover:border-accent/40 hover:text-price">
+                <label className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full border border-navy/10 bg-white px-3 text-[11px] font-semibold text-navy/60 shadow-sm transition duration-200 hover:border-accent/40 hover:text-price active:scale-95">
                   <ImagePlus size={13} /> Unggah foto
                   <input type="file" accept="image/*" onChange={pickFile} className="sr-only" />
                 </label>
                 {f.image && (
-                  <button type="button" onClick={() => setF((v) => ({ ...v, image: "" }))} className="inline-flex items-center gap-1 text-[11px] font-semibold text-navy/65 hover:text-red-700">
+                  <button type="button" onClick={() => setF((v) => ({ ...v, image: "" }))} className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold text-navy/50 transition duration-200 hover:bg-red-50 hover:text-red-700">
                     <Trash2 size={12} /> Hapus
                   </button>
                 )}
-                <span className="text-[10px] text-navy/65">Maks. 2 MB · otomatis dikompres</span>
+                <span className="text-[10px] text-navy/45">Maks. 2 MB · otomatis dikompres</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="sticky bottom-0 -mx-4 flex justify-end gap-2 border-t border-navy/[0.06] bg-white px-4 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 sm:static sm:mx-0 sm:px-0 sm:pb-0">
+        <div className="sticky bottom-0 -mx-4 flex justify-end gap-2 border-t border-navy/[0.06] bg-white/95 px-4 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:backdrop-blur-none">
           <button type="button" onClick={onClose} className="btn-ghost flex-1 sm:flex-none">
             Batal
           </button>

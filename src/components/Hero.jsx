@@ -53,7 +53,8 @@ export default function Hero() {
             <div className="mt-5 flex gap-2 sm:mt-7 sm:flex-wrap sm:gap-2.5">
               <Link
                 to="/cari"
-                className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-bold text-white shadow-glow transition duration-300 hover:bg-price active:scale-[0.98] sm:min-h-11 sm:flex-none sm:px-6"
+                className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-5 text-sm font-bold text-white shadow-glow transition duration-300 hover:-translate-y-0.5 hover:shadow-lift active:scale-[0.98] sm:min-h-11 sm:flex-none sm:px-6"
+                style={{ backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}
               >
                 Jelajahi menu <ArrowRight size={16} />
               </Link>
@@ -72,7 +73,7 @@ export default function Hero() {
                 { label: "Terjual", value: stats?.sold ?? "—" },
               ].map((s) => (
                 <div key={s.label}>
-                  <dd className="font-display text-xl font-extrabold text-white sm:text-3xl">{s.value}</dd>
+                  <dd className="tnum font-display text-xl font-extrabold text-white sm:text-3xl">{s.value}</dd>
                   <dt className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55 sm:text-[10px]">{s.label}</dt>
                 </div>
               ))}
@@ -96,7 +97,7 @@ export default function Hero() {
                         <p className="truncate text-[10px] text-white/60 sm:text-[11px]">{product.storeName}</p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-[13px] font-extrabold text-accent-300 sm:text-sm">{formatRupiah(product.price)}</p>
+                        <p className="tnum text-[13px] font-extrabold text-accent-300 sm:text-sm">{formatRupiah(product.price)}</p>
                         <p className="text-[9px] font-semibold text-white/60 sm:text-[10px]">{product.category}</p>
                       </div>
                     </div>

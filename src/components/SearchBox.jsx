@@ -121,7 +121,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
     }
   };
 
-  const highlight = (index) => (active === index ? "bg-navy-50" : "hover:bg-navy-50");
+  const highlight = (index) => (active === index ? "bg-accent-50/70 ring-1 ring-inset ring-accent/10" : "hover:bg-navy-50");
 
   return (
     <div ref={boxRef} className={`relative ${className}`}>
@@ -133,7 +133,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
           else goTerm(q);
         }}
       >
-        <Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-navy/65" />
+        <Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-navy/50" />
         <input
           ref={inputRef}
           value={q}
@@ -152,7 +152,7 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-          className="h-12 w-full rounded-full border border-navy/10 bg-navy/[0.04] pl-11 pr-11 text-base text-ink outline-none transition placeholder:text-navy/65 focus:border-accent/60 focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-11 sm:text-sm"
+          className="h-12 w-full rounded-full border border-navy/10 bg-navy/[0.04] pl-11 pr-11 text-base text-ink shadow-sm outline-none transition placeholder:text-navy/55 hover:border-navy/20 focus:border-accent/60 focus:bg-white focus:ring-4 focus:ring-accent/10 sm:h-11 sm:text-sm"
         />
         {q ? (
           <button
@@ -163,12 +163,12 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
               inputRef.current?.focus();
             }}
             aria-label="Hapus pencarian"
-            className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90"
+            className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-navy/55 transition hover:bg-navy/5 hover:text-navy active:scale-90"
           >
             <X size={15} />
           </button>
         ) : (
-          <span className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-navy/10 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-navy/65 sm:block">
+          <span className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-navy/10 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-navy/50 sm:block">
             ⌘K
           </span>
         )}
@@ -178,31 +178,31 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
         <div
           id={listId}
           role="listbox"
-          className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[60dvh] animate-pop overflow-y-auto rounded-2xl border border-navy/[0.07] bg-white p-2 shadow-lift sm:max-h-[70vh]"
+          className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[60dvh] animate-pop overflow-y-auto rounded-[22px] border border-white/70 bg-white/95 p-2 shadow-lift ring-1 ring-navy/[0.06] backdrop-blur-xl sm:max-h-[70vh]"
         >
           {!q.trim() ? (
             <div className="p-2">
               <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-navy/65">Pencarian terakhir</p>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-navy/50">Pencarian terakhir</p>
                 <button
                   type="button"
                   onClick={() => {
                     localStorage.removeItem(RECENT_KEY);
                     setRecent([]);
                   }}
-                  className="text-[11px] font-semibold text-navy/65 hover:text-price"
+                  className="rounded-full px-2 py-1 text-[11px] font-semibold text-navy/50 transition hover:bg-red-50 hover:text-price"
                 >
                   Hapus
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-1.5">
-                {recent.length === 0 && <p className="text-xs text-navy/65">Pencarian yang kamu gunakan akan tampil di sini.</p>}
+                {recent.length === 0 && <p className="text-xs text-navy/50">Pencarian yang kamu gunakan akan tampil di sini.</p>}
                 {recent.map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => goTerm(r)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-navy-50 px-3 py-1.5 text-xs font-semibold text-navy/70 transition hover:bg-navy-100 hover:text-navy"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-navy/[0.06] bg-navy-50 px-3 py-1.5 text-xs font-semibold text-navy/70 transition duration-200 hover:border-accent/30 hover:bg-accent-50 hover:text-price"
                   >
                     <Clock size={12} /> {r}
                   </button>
@@ -210,19 +210,19 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
               </div>
             </div>
           ) : loading ? (
-            <div className="flex items-center gap-2 px-3 py-6 text-sm text-navy/65">
+            <div className="flex items-center gap-2 px-3 py-6 text-sm text-navy/55">
               <Loader2 size={15} className="animate-spin" /> Mencari “{q}”...
             </div>
           ) : items.length === 0 ? (
             <div className="px-3 py-6 text-center">
               <p className="text-sm font-semibold text-navy">Tidak ada hasil untuk “{q}”</p>
-              <p className="mt-1 text-xs text-navy/65">Coba kata kunci lain atau cek kode toko yang kamu punya.</p>
+              <p className="mt-1 text-xs text-navy/50">Coba kata kunci lain atau cek kode toko yang kamu punya.</p>
             </div>
           ) : (
             <>
               {products.length > 0 && (
                 <div className="mb-1">
-                  <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-widest text-navy/65">Produk</p>
+                  <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-widest text-navy/45">Produk</p>
                   {products.map((p, i) => (
                     <button
                       key={p.id}
@@ -232,23 +232,23 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
                       aria-selected={active === i}
                       onMouseEnter={() => setActive(i)}
                       onClick={() => goProduct(p)}
-                      className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(i)}`}
+                      className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition duration-150 ${highlight(i)}`}
                     >
-                      <ProductImage product={p} className="h-10 w-10 shrink-0 rounded-lg" />
+                      <ProductImage product={p} className="h-10 w-10 shrink-0 rounded-xl ring-1 ring-navy/[0.06]" />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-semibold text-navy">{p.name}</span>
-                        <span className="block truncate text-xs text-navy/65">
+                        <span className="block truncate text-xs text-navy/50">
                           {p.storeName} · {p.category}
                         </span>
                       </span>
-                      <span className="shrink-0 text-sm font-bold text-price">{formatRupiah(p.price)}</span>
+                      <span className="tnum shrink-0 text-sm font-bold text-price">{formatRupiah(p.price)}</span>
                     </button>
                   ))}
                 </div>
               )}
               {stores.length > 0 && (
                 <div>
-                  <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-widest text-navy/65">Toko</p>
+                  <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-widest text-navy/45">Toko</p>
                   {stores.map((s, i) => {
                     const index = products.length + i;
                     return (
@@ -260,12 +260,12 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
                         aria-selected={active === index}
                         onMouseEnter={() => setActive(index)}
                         onClick={() => goStore(s)}
-                        className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${highlight(index)}`}
+                        className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition duration-150 ${highlight(index)}`}
                       >
                         <StoreLogo store={s} className="h-10 w-10 text-sm" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-sm font-semibold text-navy">{s.name}</span>
-                          <span className="block truncate text-xs text-navy/65">
+                          <span className="block truncate text-xs text-navy/50">
                             {s.kelas} · {s.code}
                           </span>
                         </span>
@@ -278,7 +278,8 @@ export default function SearchBox({ autoFocus = false, onNavigate, className = "
               <button
                 type="button"
                 onClick={() => goTerm(q)}
-                className="mt-1 flex w-full items-center justify-between rounded-xl bg-navy px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-700"
+                className="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-white shadow-soft transition duration-200 hover:shadow-lift"
+                style={{ backgroundImage: "linear-gradient(180deg,#163a63 0%,#0b2545 100%)" }}
               >
                 Lihat semua hasil untuk “{q.trim()}” <ArrowRight size={15} />
               </button>

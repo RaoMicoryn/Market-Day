@@ -24,16 +24,16 @@ export default function CodeSearch() {
 
   return (
     <section id="kode-toko" className="shell pt-7 sm:pt-10">
-      <div className="relative overflow-hidden rounded-3xl border border-accent/20 bg-gradient-to-r from-accent-50 via-white to-amber-50 p-4 shadow-soft sm:p-6">
+      <div className="relative overflow-hidden rounded-[24px] border border-accent/20 bg-gradient-to-r from-accent-50 via-white to-amber-50 p-4 shadow-card sm:rounded-[28px] sm:p-6">
         <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-2xl" aria-hidden="true" />
         <form onSubmit={submit} className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <div className="flex items-start gap-3 sm:flex-1">
-            <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-white shadow-glow sm:flex">
+            <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-glow sm:flex" style={{ backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}>
               <KeyRound size={19} />
             </span>
             <div>
-              <h2 className="font-display text-base font-extrabold text-navy sm:text-lg">Punya kode dari penjual?</h2>
-              <p className="mt-0.5 text-xs leading-relaxed text-navy/65 sm:text-sm">
+              <h2 className="font-display text-base font-extrabold tracking-tight text-navy sm:text-lg">Punya kode dari penjual?</h2>
+              <p className="mt-0.5 text-xs leading-relaxed text-navy/60 sm:text-sm">
                 Masukkan kode toko untuk langsung membuka katalognya tanpa scroll.
               </p>
             </div>
@@ -50,12 +50,13 @@ export default function CodeSearch() {
                 placeholder="Masukkan kode"
                 aria-label="Kode toko"
                 maxLength={8}
-                className="min-h-11 min-w-0 flex-1 rounded-full border border-navy/10 bg-white px-4 py-2.5 text-base font-bold uppercase tracking-[0.15em] text-navy outline-none transition placeholder:font-medium placeholder:tracking-widest placeholder:text-navy/65 focus:border-accent focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-sm"
+                className="min-h-11 min-w-0 flex-1 rounded-full border border-navy/10 bg-white px-4 py-2.5 text-base font-bold uppercase tracking-[0.15em] text-navy shadow-sm outline-none transition placeholder:font-medium placeholder:tracking-widest placeholder:text-navy/45 hover:border-navy/20 focus:border-accent focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-sm"
               />
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-navy px-4 text-sm font-semibold text-white transition duration-300 hover:bg-accent active:scale-95 disabled:opacity-60 sm:min-h-10"
+                className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-white shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-lift active:scale-95 disabled:opacity-60 sm:min-h-10"
+                style={{ backgroundImage: "linear-gradient(180deg,#163a63 0%,#0b2545 100%)" }}
               >
                 <Search size={15} /> Cek
               </button>
@@ -65,7 +66,7 @@ export default function CodeSearch() {
                 {error}
               </p>
             ) : (
-              <p className="mt-1.5 pl-2 text-[10px] text-navy/65">
+              <p className="mt-1.5 pl-2 text-[10px] text-navy/50">
                 Kode toko terdiri dari MD- dan 4 angka.
               </p>
             )}

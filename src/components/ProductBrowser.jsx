@@ -37,10 +37,10 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition active:scale-95 ${
+      className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold shadow-sm transition duration-200 active:scale-95 ${
         active
-          ? "border-accent bg-accent-50 text-price"
-          : "border-navy/10 bg-white text-navy/65 hover:border-accent/40 hover:text-navy"
+          ? "border-accent/40 bg-accent-50 text-price shadow-[0_0_0_3px_rgba(194,65,12,.06)]"
+          : "border-navy/10 bg-white text-navy/55 hover:border-accent/40 hover:text-navy"
       }`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-accent" : "bg-navy/20"}`} />
@@ -53,18 +53,18 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-5">
         <div>
           <h2 className="section-title">{title}</h2>
-          <p className="mt-1 text-sm text-navy/65">
+          <p className="mt-1 text-sm text-navy/55">
             {loading ? "Memuat produk..." : `${rows.length} produk dari ${new Set(rows.map((p) => p.storeName)).size || 0} toko`}
           </p>
         </div>
 
-        <label className="relative inline-flex items-center gap-2 text-xs font-semibold text-navy/65">
-          <ArrowDownWideNarrow size={14} className="text-navy/65" />
+        <label className="relative inline-flex items-center gap-2 text-xs font-semibold text-navy/55">
+          <ArrowDownWideNarrow size={14} className="text-navy/45" />
           <span className="sr-only">Urutkan produk</span>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="min-h-10 cursor-pointer appearance-none rounded-full border border-navy/10 bg-white py-2 pl-3 pr-8 text-base font-semibold text-navy shadow-sm outline-none transition hover:border-accent/40 focus:border-accent sm:min-h-0 sm:text-xs"
+            className="min-h-10 cursor-pointer appearance-none rounded-full border border-navy/10 bg-white py-2 pl-3 pr-8 text-base font-semibold text-navy shadow-sm outline-none transition duration-200 hover:border-accent/40 focus:border-accent focus:ring-4 focus:ring-accent/10 sm:min-h-0 sm:text-xs"
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.id} value={o.id}>
@@ -72,14 +72,14 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
               </option>
             ))}
           </select>
-          <span className="pointer-events-none absolute right-3 text-[9px] text-navy/65">▼</span>
+          <span className="pointer-events-none absolute right-3 text-[9px] text-navy/45">▼</span>
         </label>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <CategoryChips value={category} onChange={setCategory} />
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="hidden items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-navy/65 sm:inline-flex">
+          <span className="hidden items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-navy/45 sm:inline-flex">
             <SlidersHorizontal size={12} /> Filter
           </span>
           {toggle(onlyAvailable, () => setOnlyAvailable((v) => !v), "Tersedia")}
@@ -92,7 +92,7 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
                 setOnlyOpen(false);
                 setOnlyAvailable(false);
               }}
-              className="text-xs font-semibold text-price hover:underline"
+              className="rounded-full px-2.5 py-1.5 text-xs font-semibold text-price transition duration-200 hover:bg-accent-50"
             >
               Reset
             </button>
@@ -123,7 +123,7 @@ export default function ProductBrowser({ title, q = "", initialCategory = "" }) 
         />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
             {visible.map((p) => (
               <ProductCard key={p.id} product={p} showStore onAdd={onAdd} onSelect={setSelected} />
             ))}

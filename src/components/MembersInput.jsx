@@ -69,15 +69,15 @@ export default function MembersInput({
         <label htmlFor="members-input" className="text-[13px] font-bold text-navy">
           {label}
         </label>
-        <span className="flex items-center gap-1 text-[11px] text-navy/65">
+        <span className="tnum flex items-center gap-1 text-[11px] text-navy/50">
           <Users size={11} /> {hint ?? `${total}/${max} anggota`}
         </span>
       </div>
 
-      <div className="rounded-xl border border-navy/10 bg-navy/[0.03] p-2.5 transition focus-within:border-accent focus-within:bg-white focus-within:ring-4 focus-within:ring-accent/10">
+      <div className="rounded-2xl border border-navy/10 bg-navy/[0.03] p-2.5 transition duration-200 focus-within:border-accent focus-within:bg-white focus-within:ring-4 focus-within:ring-accent/10">
         <ul className="flex flex-wrap gap-1.5">
           {leading && (
-            <li className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1.5 text-xs font-semibold text-white">
+            <li className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-navy-600 to-navy px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
               {leading}
               <span className="rounded-full bg-white/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide">Kamu</span>
             </li>
@@ -85,14 +85,14 @@ export default function MembersInput({
           {value.map((name, i) => (
             <li
               key={`${name}-${i}`}
-              className="inline-flex items-center gap-1 rounded-full border border-navy/10 bg-white py-1 pl-3 pr-1 text-xs font-semibold text-navy shadow-sm"
+              className="inline-flex items-center gap-1 rounded-full border border-navy/10 bg-white py-1 pl-3 pr-1 text-xs font-semibold text-navy shadow-sm transition duration-200 hover:border-accent/30"
             >
               <span className="max-w-[12rem] truncate">{name}</span>
               <button
                 type="button"
                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
                 aria-label={`Hapus ${name}`}
-                className="flex h-6 w-6 items-center justify-center rounded-full text-navy/50 transition hover:bg-red-50 hover:text-red-700"
+                className="flex h-6 w-6 items-center justify-center rounded-full text-navy/40 transition duration-200 hover:bg-red-50 hover:text-red-700 active:scale-90"
               >
                 <X size={13} />
               </button>
@@ -118,7 +118,8 @@ export default function MembersInput({
             type="button"
             onClick={commit}
             disabled={full || !draft.trim()}
-            className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full bg-accent px-3 text-xs font-bold text-white transition hover:bg-price active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/55 disabled:shadow-none"
+            style={full || !draft.trim() ? undefined : { backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}
           >
             <Plus size={13} /> Tambah
           </button>

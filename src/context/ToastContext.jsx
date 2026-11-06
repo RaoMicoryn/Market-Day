@@ -45,7 +45,7 @@ export function ToastProvider({ children }) {
             <div
               key={t.id}
               role="status"
-              className="pointer-events-auto relative flex w-full max-w-sm animate-rise items-start gap-3 overflow-hidden rounded-2xl border border-navy/[0.06] bg-white/95 p-3.5 pr-2.5 shadow-lift backdrop-blur"
+              className="pointer-events-auto relative flex w-full max-w-sm animate-rise items-start gap-3 overflow-hidden rounded-[18px] border border-white/70 bg-white/95 p-3.5 pr-2.5 shadow-lift ring-1 ring-navy/[0.06] backdrop-blur-xl"
             >
               <span className={`absolute left-0 top-0 h-full w-1 ${bar}`} aria-hidden="true" />
               <Icon size={18} className={`mt-0.5 shrink-0 ${tone}`} aria-hidden="true" />
@@ -57,7 +57,7 @@ export function ToastProvider({ children }) {
                 type="button"
                 onClick={() => dismiss(t.id)}
                 aria-label="Tutup notifikasi"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-navy/65 transition hover:bg-navy/5 hover:text-navy active:scale-90"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-navy/50 transition duration-200 hover:bg-navy/5 hover:text-navy active:scale-90"
               >
                 <X size={14} />
               </button>

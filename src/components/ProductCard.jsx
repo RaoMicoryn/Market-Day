@@ -59,24 +59,25 @@ export default function ProductCard({ product, onAdd, onSelect, showStore = fals
       <div className="flex flex-1 flex-col p-2.5 sm:p-4">
         <h3 className="line-clamp-2 text-[13px] font-bold leading-snug text-navy sm:line-clamp-1 sm:text-[15px]">{product.name}</h3>
         {showStore && product.storeName && (
-          <p className="mt-0.5 flex items-center gap-1 truncate text-[10px] font-medium text-navy/65 sm:text-[11px]">
+          <p className="mt-0.5 flex items-center gap-1 truncate text-[10px] font-medium text-navy/60 sm:text-[11px]">
             <Store size={10} /> {product.storeName}
           </p>
         )}
         {product.stockQuantity != null && (
-          <p className="mt-0.5 text-[9px] font-semibold text-navy/65 sm:mt-1 sm:text-[10px]">
+          <p className="mt-0.5 text-[9px] font-semibold text-navy/60 sm:mt-1 sm:text-[10px]">
             {product.stockQuantity > 0 ? `Sisa ${product.stockQuantity}` : "Stok habis"}
           </p>
         )}
 
         <div className="mt-auto flex items-end justify-between gap-1.5 pt-2 sm:pt-2.5">
-          <p className="text-[13px] font-extrabold leading-none text-price sm:text-base">{formatRupiah(product.price)}</p>
+          <p className="tnum text-[13px] font-extrabold leading-none text-price sm:text-base">{formatRupiah(product.price)}</p>
           <button
             type="button"
             disabled={soldOut}
             onClick={stop(onAdd)}
             aria-label={`Tambah ${product.name} ke keranjang`}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-glow transition duration-200 hover:bg-price active:scale-90 disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/65 disabled:shadow-none sm:h-10 sm:w-auto sm:gap-1.5 sm:px-4"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white shadow-glow transition duration-200 hover:-translate-y-0.5 active:scale-90 disabled:cursor-not-allowed disabled:bg-navy/15 disabled:text-navy/55 disabled:shadow-none sm:h-10 sm:w-auto sm:gap-1.5 sm:px-4"
+            style={soldOut ? undefined : { backgroundImage: "linear-gradient(180deg,#ea580c 0%,#c2410c 62%,#9a3412 100%)" }}
           >
             <ShoppingBag size={14} className="hidden sm:block" />
             <span className="hidden sm:inline">{soldOut ? "Habis" : "Tambah"}</span>

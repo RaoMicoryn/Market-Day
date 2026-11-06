@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
         />
 
         {error && (
-          <p role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-700">
+          <p role="alert" className="flex items-start gap-2 rounded-2xl border border-red-100 bg-red-50 px-3.5 py-3 text-xs font-semibold text-red-700">
             <AlertCircle size={14} className="mt-0.5 shrink-0" /> {error}
           </p>
         )}
@@ -76,9 +76,9 @@ export default function AdminLoginPage() {
           {busy ? "Memeriksa..." : "Masuk"} {!busy && <ArrowRight size={15} />}
         </button>
 
-        <p className="mt-3 text-center text-[11px] text-navy/55">
+        <p className="mt-3 text-center text-[11px] leading-relaxed text-navy/50">
           Halaman ini hanya untuk pembina website. Data admin diatur lewat
-          environment variable (ADMIN_EMAIL & ADMIN_PASSWORD_HASH).
+          environment variable (ADMIN_EMAIL &amp; ADMIN_PASSWORD_HASH).
         </p>
       </form>
     </AuthLayout>
