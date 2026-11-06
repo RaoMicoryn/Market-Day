@@ -95,6 +95,7 @@ const cleanMembers = (list, max = 10) => {
 
 const STORE_SELECT = `
   select s.id, s.slug, s.code, s.name, s.kelas, s.bio, s.members, s.logo, s.cover,
+    s.seller_phone as "sellerPhone",
     s.is_open as "isOpen", s.joined_at as "joinedAt",
     (select count(*)::int from products p where p.store_id = s.id) as "productCount",
     (select count(*)::int from orders o where o.store_id = s.id) as "orderCount",
@@ -110,7 +111,8 @@ const ORDER_SELECT = `
       where ahead.store_id = o.store_id and ahead.created_at < o.created_at and ahead.status <> 'done') as ahead,
     coalesce(json_agg(json_build_object(
       'id', oi.id, 'productId', oi.product_id, 'name', oi.name, 'price', oi.price, 'qty', oi.qty,
-      'options', oi.options, 'optionsObj', oi.options_obj, 'note', oi.note, 'sellerPhone', p.seller_phone
+      'options', oi.options, 'optionsObj', oi.options_obj, 'note', oi.note,
+      'sellerPhone', coalesce(nullif(p.seller_phone, ''), (select st.seller_phone from stores st where st.id = o.store_id))
     )) filter (where oi.id is not null), '[]'::json) as items
   from orders o
   join stores s on s.id = o.store_id
@@ -160,12 +162,15 @@ app.get("/api/session", (req, res) => res.json(req.session.user || null));
 app.use("/api/otp", otpRouter);
 
 app.post("/api/auth/register", async (req, res, next) => {
-  const { nama = "", email = "", password = "", namaToko = "", kelas = "", members = [] } = req.body;
+  const { nama = "", email = "", password = "", namaToko = "", kelas = "", members = [], sellerPhone = "" } = req.body;
   const identifier = norm(email);
   if (!nama.trim() || !namaToko.trim() || !kelas.trim()) return fail(res, 400, "Semua kolom wajib diisi.");
   if (identifier.length < 3 || /\s/.test(identifier)) return fail(res, 400, "Email/username minimal 3 karakter tanpa spasi.");
   if (identifier.includes("@") && !/^\S+@\S+\.\S+$/.test(identifier)) return fail(res, 400, "Format email tidak valid.");
   if (password.length < 6) return fail(res, 400, "Password minimal 6 karakter.");
+  const seller = String(sellerPhone || "").trim();
+  const sellerCheck = seller ? validateWhatsAppNumber(seller) : { valid: true, local: "" };
+  if (!sellerCheck.valid) return fail(res, 400, sellerCheck.message);
 
   const client = await pool.connect();
   try {
@@ -190,10 +195,10 @@ app.post("/api/auth/register", async (req, res, next) => {
     const slugResult = await client.query("select 1 from stores where slug = $1", [baseSlug]);
     const slug = slugResult.rowCount ? `${baseSlug}-${code.slice(3)}` : baseSlug;
     const storeResult = await client.query(
-      `insert into stores (owner_id, slug, code, name, kelas, members)
-       values ($1, $2, $3, $4, $5, $6) returning id, slug, code, name, kelas, bio, members, logo, cover,
-       is_open as "isOpen", joined_at as "joinedAt"`,
-      [accountId, slug, code, namaToko.trim(), kelas.trim(), cleanMembers([nama, ...(Array.isArray(members) ? members : [])])]
+      `insert into stores (owner_id, slug, code, name, kelas, members, seller_phone)
+       values ($1, $2, $3, $4, $5, $6, $7) returning id, slug, code, name, kelas, bio, members, logo, cover,
+       seller_phone as "sellerPhone", is_open as "isOpen", joined_at as "joinedAt"`,
+      [accountId, slug, code, namaToko.trim(), kelas.trim(), cleanMembers([nama, ...(Array.isArray(members) ? members : [])]), sellerCheck.local]
     );
     await client.query("commit");
     const store = storeResult.rows[0];
@@ -332,16 +337,19 @@ app.patch("/api/stores/:id/open", async (req, res, next) => {
 
 app.patch("/api/stores/:id", async (req, res, next) => {
   if (!requireOwner(req, res, req.params.id)) return;
-  const { name, kelas, bio, logo, cover, members } = req.body;
+  const { name, kelas, bio, logo, cover, members, sellerPhone = "" } = req.body;
   if (typeof name !== "string" || !name.trim()) return fail(res, 400, "Nama toko wajib diisi.");
   if (name.trim().length > 40) return fail(res, 400, "Nama toko maksimal 40 karakter.");
+  const seller = String(sellerPhone || "").trim();
+  const sellerCheck = seller ? validateWhatsAppNumber(seller) : { valid: true, local: "" };
+  if (!sellerCheck.valid) return fail(res, 400, sellerCheck.message);
   try {
     const result = await pool.query(
-      `update stores set name = $2, kelas = $3, bio = $4, logo = $5, cover = $6, members = $7
+      `update stores set name = $2, kelas = $3, bio = $4, logo = $5, cover = $6, members = $7, seller_phone = $8
        where id = $1 returning id, slug, code, name, kelas, bio, members, logo, cover,
-       is_open as "isOpen", joined_at as "joinedAt"`,
+       seller_phone as "sellerPhone", is_open as "isOpen", joined_at as "joinedAt"`,
       [req.params.id, name.trim(), String(kelas || "").trim(), String(bio || "").slice(0, 240),
-        logo || "", cover || "", cleanMembers(members)]
+        logo || "", cover || "", cleanMembers(members), sellerCheck.local]
     );
     if (!result.rowCount) return fail(res, 404, "Toko tidak ditemukan.");
     sendChange();

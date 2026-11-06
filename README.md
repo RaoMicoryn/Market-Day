@@ -12,7 +12,7 @@ Dibangun dengan **React 18 + Vite 8 + Express + Neon PostgreSQL + Tailwind CSS 3
 2. Salin `.env.example` menjadi `.env`.
 3. Isi `DATABASE_URL` dengan connection string Neon dan tetapkan `SESSION_SECRET` dengan string acak yang panjang.
 4. Isi `FONNTE_TOKEN` dengan token perangkat Fonnte agar OTP WhatsApp bisa dikirim (lihat [Verifikasi OTP WhatsApp](#verifikasi-otp-whatsapp-fonnte)).
-5. Opsional: isi `VITE_SELLER_WHATSAPP` dengan nomor WhatsApp cadangan. Penjual juga bisa mengisi nomor WhatsApp-nya langsung di form produk, dan nomor itu yang dipakai lebih dulu saat pembeli mengonfirmasi pesanan.
+5. Opsional: isi `VITE_SELLER_WHATSAPP` dengan nomor WhatsApp cadangan. Penjual juga bisa mengisi nomor WhatsApp saat mendaftar (opsional, bisa diubah di profil toko) atau per produk, dan nomor itu yang dipakai lebih dulu saat pembeli mengonfirmasi pesanan.
 6. Pasang dependensi, siapkan skema, lalu jalankan aplikasi:
 
    ```bash
@@ -232,7 +232,7 @@ Alur checkout memakai halaman khusus `/verifikasi` (`src/pages/VerifyPage.jsx`):
 2. `/verifikasi` mengirim OTP otomatis saat dibuka (dilewati bila kode terakhir dikirim < 60 detik lalu), menampilkan 6 kotak digit, dan menyediakan kirim ulang.
 3. Setelah OTP valid, pesanan baru dikirim ke `POST /api/orders`, keranjang dikosongkan, dan nomor antrean ditampilkan.
 4. Kalau pengguna kembali ke `/checkout`, form terisi lagi dari data sementara.
-5. Layar sukses menampilkan tombol konfirmasi dan otomatis membuka WhatsApp penjual (5 detik) dengan pesan berisi nama, nomor antrean, dan total. Nomor tujuan diambil dari kolom "Nomor WhatsApp penjual" pada produk yang dipesan; bila kosong, dipakai `VITE_SELLER_WHATSAPP` sebagai cadangan.
+5. Layar sukses menampilkan tombol konfirmasi dan otomatis membuka WhatsApp penjual (5 detik) dengan pesan berisi nama, nomor antrean, dan total. Nomor tujuan diambil dari nomor penjual pada produk yang dipesan, lalu nomor toko yang diisi saat mendaftar; bila keduanya kosong, dipakai `VITE_SELLER_WHATSAPP` sebagai cadangan.
 
 Komponen `src/components/OtpForm.jsx` juga tersedia bila butuh form verifikasi mandiri (input nomor, kirim kode, hitung mundur, kirim ulang, verifikasi):
 

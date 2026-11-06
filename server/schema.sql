@@ -19,9 +19,11 @@ create table if not exists stores (
   members text[] not null default '{}',
   logo text not null default '',
   cover text not null default '',
+  seller_phone text not null default '',
   is_open boolean not null default true,
   joined_at timestamptz not null default now()
 );
+alter table stores add column if not exists seller_phone text not null default '';
 
 create table if not exists products (
   id uuid primary key default gen_random_uuid(),

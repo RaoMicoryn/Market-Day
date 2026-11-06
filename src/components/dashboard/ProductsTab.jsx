@@ -163,7 +163,7 @@ export default function ProductsTab({ store }) {
       )}
 
       {editing && (
-        <ProductForm product={editing === "new" ? null : editing} onSave={save} onClose={() => setEditing(null)} />
+        <ProductForm product={editing === "new" ? null : editing} onSave={save} onClose={() => setEditing(null)} defaultSellerPhone={store.sellerPhone} />
       )}
     </div>
   );

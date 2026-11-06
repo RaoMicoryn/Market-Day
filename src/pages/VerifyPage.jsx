@@ -309,7 +309,7 @@ function buildConfirmationMessage(orders, customer) {
 }
 
 function OrderSuccess({ orders, customer, onTrack }) {
-  // Utamakan nomor penjual yang diisi di form produk; VITE_SELLER_WHATSAPP jadi cadangan.
+  // Nomor penjual dari produk (fallback ke nomor toko) diutamakan; VITE_SELLER_WHATSAPP jadi cadangan.
   const productSellerPhone = orders
     .flatMap((order) => order.items || [])
     .map((item) => sanitizePhone(item.sellerPhone || ""))

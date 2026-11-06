@@ -7,6 +7,7 @@ import { useToast } from "../../context/ToastContext";
 import { useConfirm } from "../../context/ConfirmContext";
 import { deleteStore, updateStore } from "../../db/repository";
 import { imageFileToDataUrl } from "../../utils/imageUpload";
+import { sanitizePhone, validatePhone } from "../../utils/phone";
 
 export default function StoreProfileForm({ store }) {
   const toast = useToast();
@@ -19,6 +20,7 @@ export default function StoreProfileForm({ store }) {
     members: store.members || [],
     logo: store.logo || "",
     cover: store.cover || "",
+    sellerPhone: store.sellerPhone || "",
   });
   const [err, setErr] = useState({});
   const [saving, setSaving] = useState(false);
@@ -32,8 +34,9 @@ export default function StoreProfileForm({ store }) {
       members: store.members || [],
       logo: store.logo || "",
       cover: store.cover || "",
+      sellerPhone: store.sellerPhone || "",
     });
-  }, [store.id, store.name, store.kelas, store.bio, store.logo, store.cover, store.members]);
+  }, [store.id, store.name, store.kelas, store.bio, store.logo, store.cover, store.members, store.sellerPhone]);
 
   const set = (e) => {
     setF((v) => ({ ...v, [e.target.name]: e.target.value }));
@@ -58,6 +61,11 @@ export default function StoreProfileForm({ store }) {
     const found = {};
     if (!f.name.trim()) found.name = "Nama toko wajib diisi";
     if (!f.kelas.trim()) found.kelas = "Kelas wajib diisi";
+    const sellerPhone = sanitizePhone(f.sellerPhone);
+    if (sellerPhone) {
+      const phoneCheck = validatePhone(sellerPhone);
+      if (!phoneCheck.valid) found.sellerPhone = phoneCheck.message;
+    }
     setErr(found);
     if (Object.keys(found).length) return;
 
@@ -70,6 +78,7 @@ export default function StoreProfileForm({ store }) {
         logo: f.logo,
         cover: f.cover,
         members: f.members,
+        sellerPhone,
       });
       toast("Profil toko disimpan.", { type: "success" });
     } catch (ex) {
@@ -169,6 +178,19 @@ export default function StoreProfileForm({ store }) {
           <FormField label="Nama toko" name="name" value={f.name} onChange={set} error={err.name} maxLength={40} />
           <FormField label="Kelas / jurusan" name="kelas" value={f.kelas} onChange={set} error={err.kelas} placeholder="Kelas / jurusan" />
         </div>
+
+        <FormField
+          label="Nomor WhatsApp penjual"
+          name="sellerPhone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          value={f.sellerPhone}
+          onChange={set}
+          error={err.sellerPhone}
+          hint="Opsional"
+          placeholder="0812 3456 7890"
+        />
 
         <FormField
           label="Deskripsi toko"

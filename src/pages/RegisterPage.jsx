@@ -8,8 +8,9 @@ import StoreCodeCard from "../components/StoreCodeCard";
 import { register } from "../db/repository";
 import { useSession } from "../db/useDb";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { sanitizePhone, validatePhone } from "../utils/phone";
 
-const empty = { nama: "", email: "", password: "", namaToko: "", kelas: "" };
+const empty = { nama: "", email: "", password: "", namaToko: "", kelas: "", sellerPhone: "" };
 
 export default function RegisterPage() {
   usePageTitle("Daftar penjual");
@@ -56,11 +57,16 @@ export default function RegisterPage() {
     if (f.password.length < 6) found.password = "Password minimal 6 karakter";
     if (!f.namaToko.trim()) found.namaToko = "Nama toko wajib diisi";
     if (!f.kelas.trim()) found.kelas = "Kelas/jurusan wajib diisi";
+    const sellerPhone = sanitizePhone(f.sellerPhone);
+    if (sellerPhone) {
+      const phoneCheck = validatePhone(sellerPhone);
+      if (!phoneCheck.valid) found.sellerPhone = phoneCheck.message;
+    }
     setErrors(found);
     if (Object.keys(found).length) return;
     setBusy(true);
     try {
-      setCreated(await register({ ...f, members }));
+      setCreated(await register({ ...f, sellerPhone, members }));
     } catch (err) {
       setError(err.message);
       setBusy(false);
@@ -111,6 +117,18 @@ export default function RegisterPage() {
           onChange={set}
           error={errors.namaToko}
           placeholder="Nama toko"
+        />
+        <FormField
+          label="Nomor WhatsApp penjual"
+          name="sellerPhone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          value={f.sellerPhone}
+          onChange={set}
+          error={errors.sellerPhone}
+          hint="Opsional"
+          placeholder="0812 3456 7890"
         />
         <MembersInput
           value={members}

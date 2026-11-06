@@ -5,7 +5,7 @@ import { CATEGORIES, CATEGORY_META, formatRupiah } from "../../data/products";
 import { imageFileToDataUrl } from "../../utils/imageUpload";
 import { sanitizePhone, validatePhone } from "../../utils/phone";
 
-export default function ProductForm({ product, onSave, onClose }) {
+export default function ProductForm({ product, onSave, onClose, defaultSellerPhone = "" }) {
   const [f, setF] = useState({
     name: product?.name ?? "",
     price: product?.price ?? "",
@@ -13,7 +13,7 @@ export default function ProductForm({ product, onSave, onClose }) {
     category: product?.category ?? CATEGORIES[0],
     description: product?.description ?? "",
     image: product?.image ?? "",
-    sellerPhone: product?.sellerPhone ?? "",
+    sellerPhone: product?.sellerPhone || defaultSellerPhone || "",
     toppings: product?.toppings ?? [],
   });
   const [err, setErr] = useState({});
