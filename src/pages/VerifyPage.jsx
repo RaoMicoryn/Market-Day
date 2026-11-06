@@ -309,8 +309,12 @@ function buildConfirmationMessage(orders, customer) {
 }
 
 function OrderSuccess({ orders, customer, onTrack }) {
-  // Nomor admin/penjual diatur lewat VITE_SELLER_WHATSAPP (lihat .env.example).
-  const sellerPhone = sanitizePhone(import.meta.env.VITE_SELLER_WHATSAPP || "");
+  // Utamakan nomor penjual yang diisi di form produk; VITE_SELLER_WHATSAPP jadi cadangan.
+  const productSellerPhone = orders
+    .flatMap((order) => order.items || [])
+    .map((item) => sanitizePhone(item.sellerPhone || ""))
+    .find(Boolean);
+  const sellerPhone = productSellerPhone || sanitizePhone(import.meta.env.VITE_SELLER_WHATSAPP || "");
   const waLink = sellerPhone
     ? `https://wa.me/62${sellerPhone.slice(1)}?text=${encodeURIComponent(buildConfirmationMessage(orders, customer))}`
     : "";

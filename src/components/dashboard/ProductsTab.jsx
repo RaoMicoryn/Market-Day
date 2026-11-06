@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Pencil, Phone, Plus, Search, Trash2 } from "lucide-react";
 import ProductForm from "./ProductForm";
 import ProductImage from "../ProductImage";
 import EmptyState from "../ui/EmptyState";
@@ -132,6 +132,11 @@ export default function ProductsTab({ store }) {
                 <p className="tnum text-[10px] font-medium text-navy/50">
                   {p.stockQuantity == null ? "Stok tidak dibatasi" : `Stok: ${p.stockQuantity}`}
                 </p>
+                {p.sellerPhone && (
+                  <p className="tnum inline-flex items-center gap-1 text-[10px] font-medium text-navy/45">
+                    <Phone size={9} /> {p.sellerPhone}
+                  </p>
+                )}
               </div>
               <StockSwitch product={p} onToggle={toggleStock} />
               <div className="flex items-center gap-0.5 sm:gap-1">

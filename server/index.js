@@ -110,12 +110,13 @@ const ORDER_SELECT = `
       where ahead.store_id = o.store_id and ahead.created_at < o.created_at and ahead.status <> 'done') as ahead,
     coalesce(json_agg(json_build_object(
       'id', oi.id, 'productId', oi.product_id, 'name', oi.name, 'price', oi.price, 'qty', oi.qty,
-      'options', oi.options, 'optionsObj', oi.options_obj, 'note', oi.note
+      'options', oi.options, 'optionsObj', oi.options_obj, 'note', oi.note, 'sellerPhone', p.seller_phone
     )) filter (where oi.id is not null), '[]'::json) as items
   from orders o
   join stores s on s.id = o.store_id
   join customers c on c.id = o.customer_id
-  left join order_items oi on oi.order_id = o.id`;
+  left join order_items oi on oi.order_id = o.id
+  left join products p on p.id = oi.product_id`;
 
 function withCustomer(order) {
   return {
@@ -443,6 +444,7 @@ app.get("/api/products", async (req, res, next) => {
       const ids = String(req.query.ids).split(",").filter(Boolean);
       const result = await pool.query(
         `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
+          p.seller_phone as "sellerPhone",
           p.stock_quantity as "stockQuantity",
           (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
           p.created_at as "createdAt" from products p where p.id = any($1::uuid[])`,
@@ -452,6 +454,7 @@ app.get("/api/products", async (req, res, next) => {
     }
     const result = await pool.query(
       `select id, store_id as "storeId", name, category, price, toppings, description, image,
+        seller_phone as "sellerPhone",
         stock_quantity as "stockQuantity",
         (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
         created_at as "createdAt" from products where store_id = $1 order by created_at desc`,
@@ -475,6 +478,7 @@ app.get("/api/products/search", async (req, res, next) => {
   try {
     const result = await pool.query(
       `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
+        p.seller_phone as "sellerPhone",
         p.stock_quantity as "stockQuantity",
         (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
         p.created_at as "createdAt", s.name as "storeName", s.slug as "storeSlug",
@@ -497,24 +501,28 @@ app.get("/api/products/search", async (req, res, next) => {
 
 app.post("/api/stores/:storeId/products", async (req, res, next) => {
   if (!requireOwner(req, res, req.params.storeId)) return;
-  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity } = req.body;
+  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity, sellerPhone = "" } = req.body;
   if (!name.trim()) return fail(res, 400, "Nama produk wajib diisi.");
   if (!(Number(price) > 0)) return fail(res, 400, "Harga harus lebih dari 0.");
   if (!CATEGORIES.includes(category)) return fail(res, 400, "Kategori tidak valid.");
   const stock = parseStockQuantity(stockQuantity);
   if (!stock.valid) return fail(res, 400, "Stok harus berupa bilangan bulat 0 atau lebih.");
+  const seller = String(sellerPhone || "").trim();
+  const sellerCheck = seller ? validateWhatsAppNumber(seller) : { valid: true, local: "" };
+  if (!sellerCheck.valid) return fail(res, 400, sellerCheck.message);
   const validatedToppings = validateToppings(toppings);
   if (!validatedToppings) return fail(res, 400, "Periksa kembali nama dan harga topping.");
   try {
     const result = await pool.query(
-      `insert into products (store_id, name, price, category, description, image, toppings, stock_quantity)
-       values ($1, $2, $3, $4, $5, $6, $7, $8)
+      `insert into products (store_id, name, price, category, description, image, toppings, stock_quantity, seller_phone)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        returning id, store_id as "storeId", name, price, category, description, image, toppings,
+         seller_phone as "sellerPhone",
          stock_quantity as "stockQuantity",
          (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
          created_at as "createdAt"`,
       [req.params.storeId, name.trim().slice(0, 60), Math.round(Number(price)), category,
-        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value]
+        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value, sellerCheck.local]
     );
     sendChange();
     res.status(201).json(result.rows[0]);
@@ -524,12 +532,15 @@ app.post("/api/stores/:storeId/products", async (req, res, next) => {
 });
 
 app.patch("/api/products/:id", async (req, res, next) => {
-  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity } = req.body;
+  const { name = "", price, category, description = "", image = "", toppings = [], stockQuantity, sellerPhone = "" } = req.body;
   if (!name.trim()) return fail(res, 400, "Nama produk wajib diisi.");
   if (!(Number(price) > 0)) return fail(res, 400, "Harga harus lebih dari 0.");
   if (!CATEGORIES.includes(category)) return fail(res, 400, "Kategori tidak valid.");
   const stock = parseStockQuantity(stockQuantity);
   if (!stock.valid) return fail(res, 400, "Stok harus berupa bilangan bulat 0 atau lebih.");
+  const seller = String(sellerPhone || "").trim();
+  const sellerCheck = seller ? validateWhatsAppNumber(seller) : { valid: true, local: "" };
+  if (!sellerCheck.valid) return fail(res, 400, sellerCheck.message);
   const validatedToppings = validateToppings(toppings);
   if (!validatedToppings) return fail(res, 400, "Periksa kembali nama dan harga topping.");
   try {
@@ -538,13 +549,14 @@ app.patch("/api/products/:id", async (req, res, next) => {
     if (!requireOwner(req, res, owner.rows[0].store_id)) return;
     const result = await pool.query(
       `update products set name = $2, price = $3, category = $4, description = $5, image = $6, toppings = $7,
-         stock_quantity = $8
+         stock_quantity = $8, seller_phone = $9
        where id = $1 returning id, store_id as "storeId", name, price, category, description, image, toppings,
+         seller_phone as "sellerPhone",
          stock_quantity as "stockQuantity",
          (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
          created_at as "createdAt"`,
       [req.params.id, name.trim().slice(0, 60), Math.round(Number(price)), category,
-        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value]
+        description.trim().slice(0, 400), image, JSON.stringify(validatedToppings), stock.value, sellerCheck.local]
     );
     sendChange();
     res.json(result.rows[0]);

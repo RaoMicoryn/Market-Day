@@ -3,6 +3,7 @@ import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import FormField from "../FormField";
 import { CATEGORIES, CATEGORY_META, formatRupiah } from "../../data/products";
 import { imageFileToDataUrl } from "../../utils/imageUpload";
+import { sanitizePhone, validatePhone } from "../../utils/phone";
 
 export default function ProductForm({ product, onSave, onClose }) {
   const [f, setF] = useState({
@@ -12,6 +13,7 @@ export default function ProductForm({ product, onSave, onClose }) {
     category: product?.category ?? CATEGORIES[0],
     description: product?.description ?? "",
     image: product?.image ?? "",
+    sellerPhone: product?.sellerPhone ?? "",
     toppings: product?.toppings ?? [],
   });
   const [err, setErr] = useState({});
@@ -62,6 +64,11 @@ export default function ProductForm({ product, onSave, onClose }) {
     } else if (new Set(activeToppings.map((topping) => topping.name.trim().toLowerCase())).size !== activeToppings.length) {
       found.toppings = "Nama topping tidak boleh duplikat.";
     }
+    const sellerPhone = sanitizePhone(f.sellerPhone);
+    if (sellerPhone) {
+      const phoneCheck = validatePhone(sellerPhone);
+      if (!phoneCheck.valid) found.sellerPhone = phoneCheck.message;
+    }
     setErr(found);
     if (Object.keys(found).length) return;
     setSaving(true);
@@ -70,6 +77,7 @@ export default function ProductForm({ product, onSave, onClose }) {
         ...f,
         price: Number(f.price),
         stockQuantity: f.stockQuantity === "" ? null : Number(f.stockQuantity),
+        sellerPhone,
         toppings: activeToppings.map((topping) => ({
           name: topping.name.trim(),
           price: Number(topping.price),
@@ -174,6 +182,33 @@ export default function ProductForm({ product, onSave, onClose }) {
           ) : (
             <p id="stockQuantity-hint" className="mt-1.5 text-[11px] text-navy/55">
               Kosongkan untuk stok tidak dibatasi. Isi 0 jika sedang habis.
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="sellerPhone" className="mb-1.5 block text-[13px] font-bold text-navy">
+            Nomor WhatsApp penjual
+          </label>
+          <div className="relative">
+            <input
+              id="sellerPhone"
+              name="sellerPhone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={f.sellerPhone}
+              onChange={set}
+              placeholder="0812 3456 7890"
+              aria-describedby="sellerPhone-hint"
+              className={`field ${err.sellerPhone ? "border-red-400 bg-red-50/40" : ""}`}
+            />
+          </div>
+          {err.sellerPhone ? (
+            <p role="alert" className="mt-1.5 text-[11px] font-semibold text-red-700">{err.sellerPhone}</p>
+          ) : (
+            <p id="sellerPhone-hint" className="mt-1.5 text-[11px] leading-relaxed text-navy/55">
+              Dipakai pembeli untuk konfirmasi pembayaran PO lewat WhatsApp. Boleh kosongkan jika memakai nomor default sekolah.
             </p>
           )}
         </div>
