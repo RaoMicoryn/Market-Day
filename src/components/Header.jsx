@@ -73,7 +73,7 @@ export default function Header() {
         }`}
       >
         <div className="shell flex h-16 items-center gap-1 sm:h-[76px] sm:gap-2">
-          <Logo className="shrink-0 transition duration-300 hover:opacity-90" />
+          <Logo badge className="shrink-0 transition duration-300 hover:opacity-90" />
 
           <nav
             aria-label="Navigasi utama"
@@ -167,7 +167,7 @@ export default function Header() {
           <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-md" onClick={() => setMenu(false)} />
           <div className="absolute right-0 top-0 flex h-[100dvh] w-[86%] max-w-xs animate-rise flex-col rounded-l-[30px] border-l border-white/60 bg-cream/95 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] shadow-lift backdrop-blur-2xl">
             <div className="flex items-center justify-between">
-              <Logo />
+              <Logo badge />
               <button type="button" onClick={() => setMenu(false)} aria-label="Tutup menu" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-navy shadow-soft active:scale-95">
                 <X size={19} />
               </button>

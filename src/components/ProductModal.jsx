@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Minus, Plus, ShoppingBag, Store, X } from "lucide-react";
 import ProductImage from "./ProductImage";
 import HeartButton from "./ui/HeartButton";
-import { ICE_LEVELS, SPICY_LEVELS, formatRupiah, hasIce, hasSpicy, unitPrice } from "../data/products";
+import { ICE_LEVELS, formatRupiah, hasIce, unitPrice } from "../data/products";
 
 const DURATION = 250;
 
@@ -34,7 +34,6 @@ function Choice({ label, options, value, onChange }) {
 export default function ProductModal({ product, onClose, onAdd, onBuy }) {
   const [open, setOpen] = useState(false);
   const [ice, setIce] = useState(ICE_LEVELS[0]);
-  const [spicy, setSpicy] = useState(SPICY_LEVELS[0]);
   const [toppings, setToppings] = useState([]);
   const [qty, setQty] = useState(1);
   const soldOut = product.inStock === false;
@@ -44,7 +43,6 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
 
   const options = {
     ...(hasIce(product.category) ? { ice } : {}),
-    ...(hasSpicy(product.category) ? { spicy } : {}),
     toppings,
   };
   const lineTotal = unitPrice(product.price, options) * qty;
@@ -152,9 +150,6 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
             )}
 
             {hasIce(product.category) && <Choice label="Level es" options={ICE_LEVELS} value={ice} onChange={setIce} />}
-            {hasSpicy(product.category) && (
-              <Choice label="Level pedas" options={SPICY_LEVELS} value={spicy} onChange={setSpicy} />
-            )}
 
             {toppingList.length > 0 && (
               <fieldset className="mt-4">

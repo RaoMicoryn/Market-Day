@@ -33,9 +33,7 @@ export const CATEGORY_EMOJI = Object.fromEntries(
 
 // Pilihan rasa tetap tersedia; topping dikonfigurasi pemilik untuk setiap produk.
 export const ICE_LEVELS = ["Normal", "Sedikit Es", "Tanpa Es"];
-export const SPICY_LEVELS = ["Tidak Pedas", "Sedang", "Pedas", "Extra Pedas"];
 export const hasIce = (cat) => cat === "Minuman";
-export const hasSpicy = (cat) => cat === "Makanan Berat" || cat === "Snack";
 
 export const unitPrice = (price, options = {}) =>
   price + (options.toppings || []).reduce((n, t) => n + t.price, 0);
