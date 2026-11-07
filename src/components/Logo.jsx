@@ -20,7 +20,7 @@ export default function Logo({ light = false, badge = false, className = "" }) {
               light ? "text-white/25" : "text-navy/25"
             }`}
           >
-            | |
+            |
           </span>
         </>
       )}
