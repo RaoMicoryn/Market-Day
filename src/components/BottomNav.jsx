@@ -13,7 +13,7 @@ function Tab({ to, end, icon: Icon, label, badge }) {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `relative flex flex-1 flex-col items-center gap-0.5 pb-1.5 pt-2 text-[10px] font-bold transition ${
+        `group relative flex flex-1 flex-col items-center gap-0.5 pb-1.5 pt-2 text-[10px] font-bold transition ${
           isActive ? "text-navy" : "text-navy/50 active:text-navy"
         }`
       }
@@ -21,8 +21,10 @@ function Tab({ to, end, icon: Icon, label, badge }) {
       {({ isActive }) => (
         <>
           <span
-            className={`relative flex h-8 min-w-[2.75rem] items-center justify-center rounded-full transition-all duration-300 ${
-              isActive ? "bg-navy text-white shadow-soft" : "text-navy/55"
+            className={`relative flex h-8 min-w-[2.75rem] items-center justify-center rounded-full transition-all duration-200 group-active:animate-press ${
+              isActive
+                ? "bg-navy text-white shadow-soft group-active:bg-navy-700"
+                : "text-navy/55 group-active:bg-navy/10 group-active:text-navy"
             }`}
           >
             <Icon size={18} strokeWidth={2.2} />
@@ -32,7 +34,7 @@ function Tab({ to, end, icon: Icon, label, badge }) {
               </span>
             )}
           </span>
-          <span>{label}</span>
+          <span className="transition-colors duration-150 group-active:text-navy">{label}</span>
         </>
       )}
     </NavLink>
@@ -48,7 +50,7 @@ function CartTab({ count, onClick }) {
       className="group relative flex flex-1 flex-col items-center gap-0.5 pb-1.5 pt-1 text-[10px] font-bold text-navy/60 transition active:text-navy"
     >
       <span
-        className={`relative -mt-1.5 flex h-11 w-11 items-center justify-center rounded-full ${
+        className={`relative -mt-1.5 flex h-11 w-11 items-center justify-center rounded-full group-active:animate-press ${
           count > 0 ? "animate-glow" : ""
         }`}
       >
@@ -61,7 +63,7 @@ function CartTab({ count, onClick }) {
           aria-hidden="true"
           className="absolute inset-0 rounded-full ring-4 ring-accent/20"
         />
-        <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-glow ring-2 ring-white transition duration-200 group-active:scale-90">
+        <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-glow ring-2 ring-white transition duration-200 group-active:from-orange-600 group-active:via-orange-700 group-active:to-orange-800">
           <ShoppingBag size={20} strokeWidth={2.3} />
           {count > 0 && (
             <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-navy px-1 text-[9px] font-bold text-white ring-2 ring-white">
@@ -70,7 +72,7 @@ function CartTab({ count, onClick }) {
           )}
         </span>
       </span>
-      <span>Keranjang</span>
+      <span className="transition-colors duration-150 group-active:text-navy">Keranjang</span>
     </button>
   );
 }

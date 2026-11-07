@@ -66,6 +66,12 @@ export default {
           "0%": { opacity: 0, transform: "scale(.94)" },
           "100%": { opacity: 1, transform: "scale(1)" },
         },
+        press: {
+          "0%": { transform: "scale(1)" },
+          "40%": { transform: "scale(.82)" },
+          "70%": { transform: "scale(1.06)" },
+          "100%": { transform: "scale(1)" },
+        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
@@ -87,6 +93,7 @@ export default {
         rise: "rise .5s cubic-bezier(.22,1,.36,1) both",
         fade: "fade .4s ease-out both",
         pop: "pop .25s cubic-bezier(.22,1,.36,1) both",
+        press: "press .3s cubic-bezier(.34,1.56,.64,1)",
         float: "float 6s ease-in-out infinite",
         shimmer: "shimmer 1.6s linear infinite",
         glow: "glow 1.8s ease-in-out infinite",
