@@ -2,38 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Minus, Plus, ShoppingBag, Store, X } from "lucide-react";
 import ProductImage from "./ProductImage";
 import HeartButton from "./ui/HeartButton";
-import { ICE_LEVELS, formatRupiah, hasIce, unitPrice } from "../data/products";
+import { formatRupiah, unitPrice } from "../data/products";
 
 const DURATION = 250;
 
-function Choice({ label, options, value, onChange }) {
-  return (
-    <fieldset className="mt-4">
-      <legend className="mb-2 text-[13px] font-bold text-navy">{label}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o}
-            type="button"
-            aria-pressed={value === o}
-            onClick={() => onChange(o)}
-            className={`min-h-10 rounded-full border px-3.5 text-[13px] font-semibold transition duration-200 active:scale-95 sm:min-h-9 sm:text-xs ${
-              value === o
-                ? "border-navy bg-navy text-white shadow-sm"
-                : "border-navy/10 bg-white text-navy/60 hover:border-accent/50 hover:text-navy"
-            }`}
-          >
-            {o}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 export default function ProductModal({ product, onClose, onAdd, onBuy }) {
   const [open, setOpen] = useState(false);
-  const [ice, setIce] = useState(ICE_LEVELS[0]);
   const [toppings, setToppings] = useState([]);
   const [qty, setQty] = useState(1);
   const soldOut = product.inStock === false;
@@ -41,10 +15,7 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
   const disabled = soldOut || closed;
   const maxQty = product.stockQuantity == null ? 99 : Math.min(99, product.stockQuantity);
 
-  const options = {
-    ...(hasIce(product.category) ? { ice } : {}),
-    toppings,
-  };
+  const options = { toppings };
   const lineTotal = unitPrice(product.price, options) * qty;
   const toppingList = product.toppings || [];
 
@@ -148,8 +119,6 @@ export default function ProductModal({ product, onClose, onAdd, onBuy }) {
                 Toko sedang tutup. Kamu masih bisa melihat menu, tapi belum bisa memesan.
               </p>
             )}
-
-            {hasIce(product.category) && <Choice label="Level es" options={ICE_LEVELS} value={ice} onChange={setIce} />}
 
             {toppingList.length > 0 && (
               <fieldset className="mt-4">
