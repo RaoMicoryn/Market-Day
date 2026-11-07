@@ -13,7 +13,7 @@ function Tab({ to, end, icon: Icon, label, badge }) {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `relative flex flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5 text-[10px] font-bold transition ${
+        `relative flex flex-1 flex-col items-center gap-0.5 pb-1.5 pt-2 text-[10px] font-bold transition ${
           isActive ? "text-navy" : "text-navy/50 active:text-navy"
         }`
       }
@@ -45,15 +45,30 @@ function CartTab({ count, onClick }) {
       type="button"
       onClick={onClick}
       aria-label={`Buka keranjang, ${count} item`}
-      className="relative flex flex-1 flex-col items-center gap-0.5 pb-2 pt-2.5 text-[10px] font-bold text-navy/50 transition active:text-navy"
+      className="group relative flex flex-1 flex-col items-center gap-0.5 pb-1.5 pt-1 text-[10px] font-bold text-navy/60 transition active:text-navy"
     >
-      <span className="relative flex h-8 min-w-[2.75rem] items-center justify-center rounded-full text-navy/55">
-        <ShoppingBag size={18} strokeWidth={2.2} />
-        {count > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-white ring-2 ring-white">
-            {count > 9 ? "9+" : count}
-          </span>
-        )}
+      <span
+        className={`relative -mt-1.5 flex h-11 w-11 items-center justify-center rounded-full ${
+          count > 0 ? "animate-glow" : ""
+        }`}
+      >
+        {/* Aksen oranye yang mengelilingi keranjang */}
+        <span
+          aria-hidden="true"
+          className="absolute -inset-1.5 rounded-full bg-gradient-to-b from-accent/45 via-accent/25 to-orange-200/10 blur-[7px] transition duration-300 group-hover:from-accent/60 group-hover:via-accent/35"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full ring-4 ring-accent/20"
+        />
+        <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-glow ring-2 ring-white transition duration-200 group-active:scale-90">
+          <ShoppingBag size={20} strokeWidth={2.3} />
+          {count > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-navy px-1 text-[9px] font-bold text-white ring-2 ring-white">
+              {count > 9 ? "9+" : count}
+            </span>
+          )}
+        </span>
       </span>
       <span>Keranjang</span>
     </button>
