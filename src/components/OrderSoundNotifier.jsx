@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { getSession, getOrders } from "../db/repository";
+import { useLocation } from "react-router-dom";
+import { getSession, getOrders, subscribe, ORDER_POLL_INTERVAL_MS } from "../db/repository";
 
 const RING_URL = "/ring-tuturu.mp3";
-const POLL_INTERVAL_MS = 5000;
+// Notifikasi tidak perlu secepat tracker pesanan; polling berhenti otomatis saat tab tersembunyi.
+const NOTIFIER_POLL_MS = Math.max(ORDER_POLL_INTERVAL_MS, 10_000);
 
 /**
  * OrderSoundNotifier dipasang secara global (App.jsx) agar penjual/owner
@@ -10,86 +12,84 @@ const POLL_INTERVAL_MS = 5000;
  * membuka halaman dashboard. Audio hanya aktif untuk sesi penjual
  * (session.storeId terdefinisi) dan dibuka (unlock) saat interaksi pertama
  * pengguna karena kebijakan autoplay browser.
+ *
+ * Sesi hanya dicek saat berpindah halaman (bukan tiap beberapa detik), dan
+ * pesanan hanya di-polling selama ada sesi penjual dan tab sedang terlihat.
  */
 export default function OrderSoundNotifier() {
   const audioRef = useRef(null);
-  const [enabled, setEnabled] = useState(false);
-  const storeIdRef = useRef(null);
+  const enabledRef = useRef(false);
   const seenIdsRef = useRef(new Set());
   const baselinedRef = useRef(false);
-  const timerRef = useRef(null);
+  const { pathname } = useLocation();
+  const [storeId, setStoreId] = useState(null);
 
   useEffect(() => {
     const unlock = () => {
-      if (!enabled) {
-        setEnabled(true);
-        try {
-          if (audioRef.current) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play().then(() => audioRef.current.pause()).catch(() => {});
-          }
-        } catch {}
-      }
+      if (enabledRef.current) return;
+      enabledRef.current = true;
+      try {
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().then(() => audioRef.current.pause()).catch(() => {});
+        }
+      } catch {}
     };
     document.addEventListener("pointerdown", unlock, { once: true, passive: true });
     return () => document.removeEventListener("pointerdown", unlock);
-  }, [enabled]);
+  }, []);
 
-  const playRing = () => {
-    if (!enabled || !audioRef.current) return;
-    audioRef.current.currentTime = 0;
-    audioRef.current.play().catch(() => {});
-  };
+  // Cek sesi penjual: sekali saat dimuat, lalu hanya saat pindah halaman (login/logout selalu berpindah halaman).
+  useEffect(() => {
+    let active = true;
+    getSession()
+      .then((session) => {
+        if (active) setStoreId(session?.storeId || null);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
 
   useEffect(() => {
-    let mounted = true;
+    if (!storeId) return undefined;
+    let active = true;
+    seenIdsRef.current = new Set();
+    baselinedRef.current = false;
 
-    const loop = async () => {
-      try {
-        const session = await getSession();
-        if (!mounted) return;
-        if (!session || !session.storeId) {
-          storeIdRef.current = null;
-          baselinedRef.current = false;
-          seenIdsRef.current = new Set();
-          return;
-        }
+    const playRing = () => {
+      if (!enabledRef.current || !audioRef.current) return;
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+    };
 
-        if (session.storeId !== storeIdRef.current) {
-          storeIdRef.current = session.storeId;
-          baselinedRef.current = false;
-          seenIdsRef.current = new Set();
-        }
+    const check = async () => {
+      const orders = await getOrders(storeId); // error dilempar agar subscribe() menerapkan backoff
+      if (!active) return;
+      const ids = new Set((orders || []).map((order) => String(order.id)));
 
-        const orders = await getOrders(session.storeId);
-        if (!mounted) return;
-        const ids = new Set((orders || []).map((o) => String(o.id)));
-
-        if (!baselinedRef.current) {
-          seenIdsRef.current = ids;
-          baselinedRef.current = true;
-          return;
-        }
-
-        for (const id of ids) {
-          if (!seenIdsRef.current.has(id)) {
-            playRing();
-            break;
-          }
-        }
+      if (!baselinedRef.current) {
         seenIdsRef.current = ids;
-      } catch {
-        // Gagal mengambil pesanan: diam saja, coba lagi pada siklus berikutnya.
+        baselinedRef.current = true;
+        return;
       }
+      for (const id of ids) {
+        if (!seenIdsRef.current.has(id)) {
+          playRing();
+          break;
+        }
+      }
+      seenIdsRef.current = ids;
     };
 
-    loop();
-    timerRef.current = setInterval(loop, POLL_INTERVAL_MS);
+    check().catch(() => {});
+    const off = subscribe(check, { pollIntervalMs: NOTIFIER_POLL_MS });
     return () => {
-      mounted = false;
-      if (timerRef.current) clearInterval(timerRef.current);
+      active = false;
+      off();
     };
-  }, [enabled]);
+  }, [storeId]);
 
-  return <audio ref={audioRef} src={RING_URL} preload="auto" />;
+  return <audio ref={audioRef} src={RING_URL} preload="none" />;
 }

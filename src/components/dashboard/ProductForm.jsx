@@ -291,7 +291,7 @@ export default function ProductForm({ product, onSave, onClose, defaultSellerPho
               <FormField
                 label="URL foto"
                 name="image"
-                value={f.image.startsWith("data:") ? "" : f.image}
+                value={f.image.startsWith("data:") || f.image.startsWith("/api/img/") ? "" : f.image}
                 onChange={set}
                 placeholder="https://..."
                 error={err.image}

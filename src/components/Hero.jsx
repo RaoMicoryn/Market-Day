@@ -8,7 +8,7 @@ import { useDb } from "../db/useDb";
 export default function Hero() {
   const { data } = useDb(async () => {
     const [products, stats] = await Promise.all([
-      searchProducts({ onlyOpen: true, onlyAvailable: true }),
+      searchProducts({ onlyOpen: true, onlyAvailable: true, limit: 1 }),
       getMarketStats(),
     ]);
     return { product: products[0] || null, stats };

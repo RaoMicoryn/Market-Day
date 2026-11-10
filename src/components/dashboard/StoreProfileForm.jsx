@@ -209,7 +209,7 @@ export default function StoreProfileForm({ store }) {
           <FormField
             label="URL logo"
             name="logo"
-            value={f.logo.startsWith("data:") ? "" : f.logo}
+            value={f.logo.startsWith("data:") || f.logo.startsWith("/api/img/") ? "" : f.logo}
             onChange={set}
             placeholder="https://..."
             hint="Opsional"
@@ -217,7 +217,7 @@ export default function StoreProfileForm({ store }) {
           <FormField
             label="URL cover"
             name="cover"
-            value={f.cover.startsWith("data:") ? "" : f.cover}
+            value={f.cover.startsWith("data:") || f.cover.startsWith("/api/img/") ? "" : f.cover}
             onChange={set}
             placeholder="https://..."
             hint="Opsional"

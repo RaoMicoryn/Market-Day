@@ -23,21 +23,71 @@ if (!process.env.SESSION_SECRET) {
 app.disable("x-powered-by");
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 app.use(express.json({ limit: "4mb" }));
-app.use(
-  session({
-    store: new PgSession({ pool, tableName: "user_sessions", createTableIfMissing: true }),
-    name: "market.sid",
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-  })
+// Gambar toko/produk disimpan sebagai data URL base64 di database (bisa ratusan KB per baris).
+// Jangan kirim base64 itu di setiap respons daftar: daftar hanya memuat URL pendek
+// (/api/img/...?v=<hash>), dan gambarnya dilayani sekali lalu di-cache lama oleh browser/CDN.
+// Route ini sengaja dipasang SEBELUM middleware session supaya tidak memicu query sesi ke Neon.
+const IMAGE_SOURCES = {
+  product: { table: "products", column: "image" },
+  logo: { table: "stores", column: "logo" },
+  cover: { table: "stores", column: "cover" },
+};
+const IMAGE_MIME = new Set(["image/png", "image/jpeg", "image/webp", "image/gif", "image/avif", "image/svg+xml"]);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+app.get("/api/img/:kind/:id", async (req, res, next) => {
+  const source = IMAGE_SOURCES[req.params.kind];
+  if (!source || !UUID_PATTERN.test(req.params.id)) return res.status(404).end();
+  try {
+    const result = await pool.query(`select ${source.column} as img from ${source.table} where id = $1`, [req.params.id]);
+    const img = result.rows[0]?.img;
+    if (!img) return res.status(404).end();
+
+    const comma = img.indexOf(",");
+    const header = img.startsWith("data:") && comma > 0 ? img.slice(5, comma) : "";
+    const [mime, encoding] = header.split(";");
+    if (!header || !IMAGE_MIME.has(mime) || encoding !== "base64") {
+      return /^https?:\/\//i.test(img) ? res.redirect(302, img) : res.status(404).end();
+    }
+
+    res.set({
+      "Content-Type": mime,
+      "Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable",
+      "X-Content-Type-Options": "nosniff",
+      "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+    });
+    res.send(Buffer.from(img.slice(comma + 1), "base64"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+const sessionMiddleware = session({
+  store: new PgSession({ pool, tableName: "user_sessions", createTableIfMissing: true }),
+  name: "market.sid",
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+});
+
+// Endpoint publik read-only tidak butuh sesi. Tanpa ini, setiap request yang membawa cookie
+// memicu SELECT (dan UPDATE "touch") ke tabel user_sessions di Neon.
+const SESSION_FREE_GET = new Set(["/api/stores", "/api/stats", "/api/products", "/api/products/search"]);
+app.use((req, res, next) =>
+  req.method === "GET" && SESSION_FREE_GET.has(req.path) ? next() : sessionMiddleware(req, res, next)
 );
+
+// Data katalog boleh di-cache di CDN Vercel selama 30 detik (stale-while-revalidate 2 menit).
+const publicCache = (res) => res.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+
+const imageUrl = (kind, table, column) =>
+  `case when ${table}.${column} like 'data:%' then '/api/img/${kind}/' || ${table}.id::text || '?v=' || left(md5(${table}.${column}), 8) else ${table}.${column} end`;
 
 const sendChange = () => {
   for (const response of subscribers) response.write("event: change\ndata: {}\n\n");
@@ -94,7 +144,8 @@ const cleanMembers = (list, max = 10) => {
 };
 
 const STORE_SELECT = `
-  select s.id, s.slug, s.code, s.name, s.kelas, s.bio, s.members, s.logo, s.cover,
+  select s.id, s.slug, s.code, s.name, s.kelas, s.bio, s.members,
+    ${imageUrl("logo", "s", "logo")} as logo, ${imageUrl("cover", "s", "cover")} as cover,
     s.seller_phone as "sellerPhone",
     s.is_open as "isOpen", s.joined_at as "joinedAt",
     (select count(*)::int from products p where p.store_id = s.id) as "productCount",
@@ -285,6 +336,7 @@ app.post("/api/admin/login", async (req, res, next) => {
 app.get("/api/stores", async (req, res, next) => {
   try {
     const result = await pool.query(`${STORE_SELECT} order by s.joined_at desc`);
+    publicCache(res);
     res.json(result.rows);
   } catch (error) {
     next(error);
@@ -345,7 +397,10 @@ app.patch("/api/stores/:id", async (req, res, next) => {
   if (!sellerCheck.valid) return fail(res, 400, sellerCheck.message);
   try {
     const result = await pool.query(
-      `update stores set name = $2, kelas = $3, bio = $4, logo = $5, cover = $6, members = $7, seller_phone = $8
+      `update stores set name = $2, kelas = $3, bio = $4,
+         logo = case when $5::text like '/api/img/%' then logo else $5::text end,
+         cover = case when $6::text like '/api/img/%' then cover else $6::text end,
+         members = $7, seller_phone = $8
        where id = $1 returning id, slug, code, name, kelas, bio, members, logo, cover,
        seller_phone as "sellerPhone", is_open as "isOpen", joined_at as "joinedAt"`,
       [req.params.id, name.trim(), String(kelas || "").trim(), String(bio || "").slice(0, 240),
@@ -451,7 +506,8 @@ app.get("/api/products", async (req, res, next) => {
     if (req.query.ids) {
       const ids = String(req.query.ids).split(",").filter(Boolean);
       const result = await pool.query(
-        `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
+        `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description,
+          ${imageUrl("product", "p", "image")} as image,
           p.seller_phone as "sellerPhone",
           p.stock_quantity as "stockQuantity",
           (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
@@ -461,7 +517,8 @@ app.get("/api/products", async (req, res, next) => {
       return res.json(result.rows);
     }
     const result = await pool.query(
-      `select id, store_id as "storeId", name, category, price, toppings, description, image,
+      `select id, store_id as "storeId", name, category, price, toppings, description,
+        ${imageUrl("product", "products", "image")} as image,
         seller_phone as "sellerPhone",
         stock_quantity as "stockQuantity",
         (in_stock and (stock_quantity is null or stock_quantity > 0)) as "inStock",
@@ -475,7 +532,9 @@ app.get("/api/products", async (req, res, next) => {
 });
 
 app.get("/api/products/search", async (req, res, next) => {
-  const { q = "", category = "", sort = "recommended", onlyOpen = "false", onlyAvailable = "false" } = req.query;
+  const { q = "", category = "", sort = "recommended", onlyOpen = "false", onlyAvailable = "false", limit = "" } = req.query;
+  const rowLimit = Math.min(Math.max(Number.parseInt(limit, 10) || 0, 0), 200);
+  const limitSql = rowLimit ? ` limit ${rowLimit}` : "";
   const ordering = {
     recommended: "s.is_open desc, (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) desc, sold desc, p.name asc",
     newest: "p.created_at desc",
@@ -485,7 +544,8 @@ app.get("/api/products/search", async (req, res, next) => {
   }[sort] || "s.is_open desc, (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) desc, sold desc, p.name asc";
   try {
     const result = await pool.query(
-      `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description, p.image,
+      `select p.id, p.store_id as "storeId", p.name, p.category, p.price, p.toppings, p.description,
+        ${imageUrl("product", "p", "image")} as image,
         p.seller_phone as "sellerPhone",
         p.stock_quantity as "stockQuantity",
         (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)) as "inStock",
@@ -498,9 +558,10 @@ app.get("/api/products/search", async (req, res, next) => {
          and ($2::boolean is false or s.is_open)
          and ($3::boolean is false or (p.in_stock and (p.stock_quantity is null or p.stock_quantity > 0)))
          and ($4 = '' or concat_ws(' ', p.name, p.description, s.name, p.category) ilike '%' || $4 || '%')
-       order by ${ordering}`,
+       order by ${ordering}${limitSql}`,
       [category, onlyOpen === "true", onlyAvailable === "true", String(q)]
     );
+    publicCache(res);
     res.json(result.rows);
   } catch (error) {
     next(error);
@@ -556,7 +617,8 @@ app.patch("/api/products/:id", async (req, res, next) => {
     if (!owner.rowCount) return fail(res, 404, "Produk tidak ditemukan.");
     if (!requireOwner(req, res, owner.rows[0].store_id)) return;
     const result = await pool.query(
-      `update products set name = $2, price = $3, category = $4, description = $5, image = $6, toppings = $7,
+      `update products set name = $2, price = $3, category = $4, description = $5,
+         image = case when $6::text like '/api/img/%' then image else $6::text end, toppings = $7,
          stock_quantity = $8, seller_phone = $9
        where id = $1 returning id, store_id as "storeId", name, price, category, description, image, toppings,
          seller_phone as "sellerPhone",
@@ -843,6 +905,7 @@ app.get("/api/stats", async (req, res, next) => {
         (select coalesce(sum(oi.qty), 0)::int from order_items oi join orders o on o.id = oi.order_id
           where o.status = 'done') as sold`
     );
+    publicCache(res);
     res.json(result.rows[0]);
   } catch (error) {
     next(error);
