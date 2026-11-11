@@ -16,13 +16,14 @@ import { usePageTitle } from "../hooks/usePageTitle";
 import { useOtpVerification } from "../hooks/useOtpVerification";
 import { normalizePhone, sanitizePhone } from "../utils/phone";
 import { clearPendingOrder, markOtpSent, readPendingOrder } from "../utils/pendingOrder";
+import { OTP_ENABLED } from "../utils/otpConfig";
 
 const EMPTY_DIGITS = ["", "", "", "", "", ""];
 const formatCountdown = (seconds) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
 export default function VerifyPage() {
-  usePageTitle("Verifikasi OTP");
+  usePageTitle(OTP_ENABLED ? "Verifikasi OTP" : "Memproses pesanan");
   const navigate = useNavigate();
   const { cart, total, clear, saveCustomer, openTracker } = useCart();
   const pending = useMemo(() => readPendingOrder(), []);
@@ -78,6 +79,11 @@ export default function VerifyPage() {
   useEffect(() => {
     if (autoSent.current || !pending) return;
     autoSent.current = true;
+    // OTP dimatikan: langsung buat pesanan tanpa kirim kode (lihat src/utils/otpConfig.js).
+    if (!OTP_ENABLED) {
+      createOrders();
+      return;
+    }
     if (initialResendIn > 0) return;
     otp.sendCode().then((ok) => {
       if (ok) markOtpSent();
@@ -153,7 +159,7 @@ export default function VerifyPage() {
 
   if (orders) return <OrderSuccess orders={orders} customer={pending?.customer} onTrack={() => openTracker()} />;
   if (!pending || !wa) return <Navigate to="/checkout" replace />;
-  if (otp.status === "verified") {
+  if (!OTP_ENABLED || otp.status === "verified") {
     return (
       <section className="shell max-w-lg py-10 sm:py-14">
         <div className="card p-6 text-center sm:p-8">
@@ -175,7 +181,7 @@ export default function VerifyPage() {
               </span>
               <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight text-navy">Menyimpan pesanan...</h1>
               <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-navy/60">
-                Nomor WhatsApp terverifikasi. Kami sedang membuat nomor antrean untukmu.
+                {OTP_ENABLED ? "Nomor WhatsApp terverifikasi. " : ""}Kami sedang membuat nomor antrean untukmu.
               </p>
             </>
           )}
@@ -332,7 +338,7 @@ function OrderSuccess({ orders, customer, onTrack }) {
           </span>
           <h1 className="relative mt-5 font-display text-2xl font-extrabold tracking-tight text-navy sm:text-3xl">Pesanan diterima!</h1>
           <p className="relative mx-auto mt-2 max-w-md text-sm leading-relaxed text-navy/60">
-            Nomor WhatsApp terverifikasi. Tunjukkan nomor antrean ini di booth, lalu pantau statusnya di halaman
+            {OTP_ENABLED ? "Nomor WhatsApp terverifikasi. " : ""}Tunjukkan nomor antrean ini di booth, lalu pantau statusnya di halaman
             pesanan.
           </p>
 

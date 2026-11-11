@@ -19,6 +19,7 @@ import { useConfirm } from "../context/ConfirmContext";
 import { formatRupiah } from "../data/products";
 import { validatePhone } from "../utils/phone";
 import { readPendingOrder, savePendingOrder } from "../utils/pendingOrder";
+import { OTP_ENABLED } from "../utils/otpConfig";
 
 const METHODS = [
   { id: "pickup", title: "Ambil di booth", desc: "Ambil sendiri saat pesanan siap", Icon: MapPin },
@@ -110,7 +111,7 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
         <div>
           <p className="eyebrow mb-1">Langkah terakhir</p>
           <h1 className="font-display text-[22px] font-extrabold text-navy sm:text-3xl">Selesaikan pesananmu</h1>
-          <p className="mt-1 text-[13px] leading-relaxed text-navy/60 sm:text-sm">Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth. Pembayaran dikonfirmasi langsung ke penjual melalui WhatsApp (sistem PO).</p>
+          <p className="mt-1 text-[13px] leading-relaxed text-navy/60 sm:text-sm">{OTP_ENABLED ? "Isi data, verifikasi WhatsApp, lalu pesanan diteruskan ke booth." : "Isi data, lalu pesanan langsung diteruskan ke booth."} Pembayaran dikonfirmasi langsung ke penjual melalui WhatsApp (sistem PO).</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700">
           <ShieldCheck size={13} /> Data hanya dipakai untuk pesanan
@@ -118,11 +119,17 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
       </div>
 
       <ol className="mb-5 flex items-center gap-1.5 rounded-2xl border border-navy/[0.06] bg-white/70 px-3 py-2.5 text-[11px] font-bold shadow-sm backdrop-blur sm:mb-7 sm:gap-2 sm:px-4 sm:text-xs" aria-label="Tahapan pemesanan">
-        {[
-          { n: 1, label: "Data", state: "on" },
-          { n: 2, label: "Verifikasi WA", state: "next" },
-          { n: 3, label: "Konfirmasi", state: "next" },
-        ].map((s, i) => (
+        {(OTP_ENABLED
+          ? [
+              { n: 1, label: "Data", state: "on" },
+              { n: 2, label: "Verifikasi WA", state: "next" },
+              { n: 3, label: "Konfirmasi", state: "next" },
+            ]
+          : [
+              { n: 1, label: "Data", state: "on" },
+              { n: 2, label: "Konfirmasi", state: "next" },
+            ]
+        ).map((s, i, list) => (
           <li key={s.n} className="flex flex-1 items-center gap-1.5 sm:gap-2">
             <span
               className={`tnum flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] transition ${
@@ -132,7 +139,7 @@ export default function CheckoutPage({ cart, total, onChangeQty }) {
               {s.n}
             </span>
             <span className={`truncate ${s.state === "on" ? "text-navy" : "text-navy/35"}`}>{s.label}</span>
-            {i < 2 && <span className="h-px flex-1 bg-navy/10" aria-hidden="true" />}
+            {i < list.length - 1 && <span className="h-px flex-1 bg-navy/10" aria-hidden="true" />}
           </li>
         ))}
       </ol>
