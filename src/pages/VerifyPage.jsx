@@ -309,24 +309,18 @@ function buildConfirmationMessage(orders, customer) {
 }
 
 function OrderSuccess({ orders, customer, onTrack }) {
-  // Nomor penjual dari produk (fallback ke nomor toko) diutamakan; VITE_SELLER_WHATSAPP jadi cadangan.
-  const productSellerPhone = orders
-    .flatMap((order) => order.items || [])
-    .map((item) => sanitizePhone(item.sellerPhone || ""))
-    .find(Boolean);
-  const sellerPhone = productSellerPhone || sanitizePhone(import.meta.env.VITE_SELLER_WHATSAPP || "");
-  const waLink = sellerPhone
-    ? `https://wa.me/62${sellerPhone.slice(1)}?text=${encodeURIComponent(buildConfirmationMessage(orders, customer))}`
-    : "";
-
-  // Setelah OTP valid, pembeli langsung diarahkan ke WhatsApp penjual untuk konfirmasi.
-  useEffect(() => {
-    if (!waLink) return undefined;
-    const timer = setTimeout(() => {
-      window.location.href = waLink;
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [waLink]);
+  // Satu tombol WhatsApp per toko: nomor diambil dari produk yang dipesan di toko itu
+  // (fallback ke nomor toko di server), lalu VITE_SELLER_WHATSAPP sebagai cadangan.
+  const fallbackPhone = sanitizePhone(import.meta.env.VITE_SELLER_WHATSAPP || "");
+  const confirmations = orders.map((order) => {
+    const phone =
+      (order.items || []).map((item) => sanitizePhone(item.sellerPhone || "")).find(Boolean) || fallbackPhone;
+    const link = phone
+      ? `https://wa.me/62${phone.slice(1)}?text=${encodeURIComponent(buildConfirmationMessage([order], customer))}`
+      : "";
+    return { order, link };
+  });
+  const hasConfirmation = confirmations.some((entry) => entry.link);
 
   return (
     <section className="shell max-w-2xl py-8 sm:py-14">
@@ -341,6 +335,36 @@ function OrderSuccess({ orders, customer, onTrack }) {
             Nomor WhatsApp terverifikasi. Tunjukkan nomor antrean ini di booth, lalu pantau statusnya di halaman
             pesanan.
           </p>
+
+          <div className="relative mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4">
+            <p className="text-sm font-bold text-emerald-900">Langkah terakhir: konfirmasi ke penjual</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-emerald-800">
+              Tekan tombol di bawah untuk membuka WhatsApp penjual. Pesan konfirmasi sudah terisi otomatis, tinggal kirim.
+            </p>
+            <div className="mt-3 grid gap-2">
+              {confirmations.map(({ order, link }) =>
+                link ? (
+                  <a
+                    key={order.id}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 text-sm font-bold text-white shadow-soft transition duration-200 hover:bg-emerald-700 active:scale-[0.99]"
+                  >
+                    <MessageCircle size={18} aria-hidden="true" />
+                    {orders.length > 1 ? `Konfirmasi ke ${order.storeName}` : "Konfirmasi via WhatsApp"}
+                  </a>
+                ) : (
+                  <p key={order.id} className="rounded-xl bg-white/70 px-3 py-2 text-[11px] font-semibold text-emerald-900">
+                    {order.storeName}: nomor WhatsApp penjual belum tersedia. Tunjukkan nomor antrean {order.queueNo} di booth.
+                  </p>
+                ),
+              )}
+            </div>
+            {!hasConfirmation && (
+              <p className="mt-2 text-[11px] text-emerald-800">Pesanan tetap tercatat dan bisa dipantau di halaman pesanan.</p>
+            )}
+          </div>
 
           <div className="relative mt-6 grid gap-3 sm:grid-cols-2">
             {orders.map((order) => (
@@ -358,16 +382,6 @@ function OrderSuccess({ orders, customer, onTrack }) {
             ))}
           </div>
 
-          {waLink && (
-            <div className="relative mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5">
-              <p className="text-[11px] font-semibold text-emerald-800">
-                Mengalihkan ke WhatsApp penjual untuk konfirmasi pesanan…
-              </p>
-              <a href={waLink} className="btn-accent mt-2 inline-flex">
-                <MessageCircle size={16} /> Konfirmasi via WhatsApp sekarang
-              </a>
-            </div>
-          )}
         </div>
 
         <div className="border-t border-dashed border-navy/10 bg-cream/60 px-5 py-5 sm:px-10">
