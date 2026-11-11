@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCheck, ChevronDown, Download, Footprints, MapPin, Phone, Search } from "lucide-react";
+import { CheckCheck, ChevronDown, Download, Footprints, MapPin, Phone, Search, XCircle } from "lucide-react";
 import EmptyState from "../ui/EmptyState";
 import { useConfirm } from "../../context/ConfirmContext";
 import { useToast } from "../../context/ToastContext";
@@ -8,6 +8,7 @@ import {
   ORDER_POLL_INTERVAL_MS,
   ORDER_STATUS,
   STATUS_TONE,
+  cancelOrder,
   getOrders,
   updateOrderStatus,
 } from "../../db/repository";
@@ -47,6 +48,23 @@ export default function OrdersTab({ store }) {
     if (!next) return;
     await updateOrderStatus(o.id, next[0]);
     toast(`${o.queueNo} → ${ORDER_STATUS[next[0]]}`, { type: "success", duration: 2000 });
+  };
+
+  const cancel = async (o) => {
+    const ok = await confirm({
+      title: `Batalkan pesanan ${o.queueNo}?`,
+      message: `Pesanan dari ${o.customer?.name || "pembeli"} akan ditandai Dibatalkan dan tidak bisa diaktifkan lagi. Hubungi pembeli lewat WhatsApp bila perlu menjelaskan alasannya.`,
+      confirmLabel: "Ya, batalkan",
+      cancelLabel: "Tidak jadi",
+      danger: true,
+    });
+    if (!ok) return;
+    try {
+      await cancelOrder(o.id);
+      toast(`${o.queueNo} dibatalkan.`, { type: "success", duration: 2500 });
+    } catch (error) {
+      toast(error.message || "Pesanan gagal dibatalkan.", { type: "error" });
+    }
   };
 
   const acceptAll = async () => {
@@ -156,10 +174,10 @@ export default function OrdersTab({ store }) {
             const next = NEXT_STATUS[o.status];
             const shown = o.items;
             return (
-              <article key={o.id} className="card relative overflow-hidden transition duration-200 hover:shadow-lift">
+              <article key={o.id} className={`card relative overflow-hidden transition duration-200 hover:shadow-lift ${o.status === "cancelled" ? "opacity-70" : ""}`}>
                 <span
                   className={`absolute inset-y-0 left-0 w-[3px] ${
-                    o.status === "pending" ? "bg-accent" : o.status === "done" ? "bg-emerald-500" : "bg-navy/20"
+                    o.status === "pending" ? "bg-accent" : o.status === "done" ? "bg-emerald-500" : o.status === "cancelled" ? "bg-rose-400" : "bg-navy/20"
                   }`}
                   aria-hidden="true"
                 />
@@ -188,7 +206,7 @@ export default function OrdersTab({ store }) {
                     <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${STATUS_TONE[o.status] || ""}`}>
                       {ORDER_STATUS[o.status]}
                     </span>
-                    <span className="tnum text-sm font-extrabold text-price">{formatRupiah(o.total)}</span>
+                    <span className={`tnum text-sm font-extrabold ${o.status === "cancelled" ? "text-navy/40 line-through" : "text-price"}`}>{formatRupiah(o.total)}</span>
                   </div>
                 </div>
 
@@ -216,14 +234,27 @@ export default function OrdersTab({ store }) {
                       {timeAgo(o.createdAt)} · {formatDateTime(o.createdAt)}
                     </span>
                     {next ? (
-                      <button
-                        type="button"
-                        onClick={() => advance(o)}
-                        className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 text-xs font-bold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:shadow-lift active:scale-95"
-                        style={{ backgroundImage: "linear-gradient(180deg,#163a63 0%,#0b2545 100%)" }}
-                      >
-                        {next[1]} <ChevronDown size={12} className="-rotate-90" />
-                      </button>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => cancel(o)}
+                          className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-rose-200 bg-white px-3.5 text-xs font-bold text-rose-600 transition duration-200 hover:bg-rose-50 active:scale-95"
+                        >
+                          <XCircle size={13} /> Batalkan
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => advance(o)}
+                          className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 text-xs font-bold text-white shadow-soft transition duration-200 hover:-translate-y-0.5 hover:shadow-lift active:scale-95"
+                          style={{ backgroundImage: "linear-gradient(180deg,#163a63 0%,#0b2545 100%)" }}
+                        >
+                          {next[1]} <ChevronDown size={12} className="-rotate-90" />
+                        </button>
+                      </div>
+                    ) : o.status === "cancelled" ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-[10px] font-semibold text-rose-700">
+                        <XCircle size={12} /> Dibatalkan
+                      </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
                         <CheckCheck size={12} /> Selesai

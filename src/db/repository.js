@@ -45,6 +45,7 @@ export const ORDER_STATUS = {
   accepted: "Diterima",
   processing: "Diproses",
   done: "Selesai",
+  cancelled: "Dibatalkan",
 };
 export const NEXT_STATUS = {
   pending: ["accepted", "Terima"],
@@ -56,6 +57,7 @@ export const STATUS_TONE = {
   accepted: "bg-violet-100 text-violet-700",
   processing: "bg-sky-100 text-sky-700",
   done: "bg-emerald-100 text-emerald-700",
+  cancelled: "bg-rose-100 text-rose-700",
 };
 
 export function normalizeCode(input = "") {
@@ -166,6 +168,7 @@ export const getOrdersByIds = (ids = []) =>
 export const getOrders = (storeId) => request(`/stores/${encodeURIComponent(storeId)}/orders`);
 export const updateOrderStatus = (id, status) =>
   request(`/orders/${encodeURIComponent(id)}/status`, { method: "PATCH", body: body({ status }) });
+export const cancelOrder = (id) => updateOrderStatus(id, "cancelled");
 export const getStoreStats = (storeId) => request(`/stores/${encodeURIComponent(storeId)}/stats`);
 export const getMarketStats = () => request("/stats");
 

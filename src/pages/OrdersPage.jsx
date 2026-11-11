@@ -86,11 +86,12 @@ export default function OrdersPage() {
           {orders.map((o) => {
             const step = o.status === "done" ? 2 : o.status === "processing" ? 1 : 0;
             const stepLabels = ["Diantre", "Dimasak", o.method === "delivery" ? "Diantar" : "Siap ambil"];
-            const active = o.status !== "done";
+            const cancelled = o.status === "cancelled";
+            const active = o.status !== "done" && !cancelled;
             return (
               <article key={o.id} className="card group relative overflow-hidden">
                 <span
-                  className={`absolute inset-x-0 top-0 h-[3px] ${active ? "bg-gradient-to-r from-accent via-amber-400 to-accent/30" : "bg-emerald-500/70"}`}
+                  className={`absolute inset-x-0 top-0 h-[3px] ${active ? "bg-gradient-to-r from-accent via-amber-400 to-accent/30" : cancelled ? "bg-rose-400/70" : "bg-emerald-500/70"}`}
                   aria-hidden="true"
                 />
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-dashed border-navy/10 p-4 sm:p-5">
@@ -119,6 +120,11 @@ export default function OrdersPage() {
 
                 <div className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:p-5">
                   <div>
+                    {cancelled ? (
+                      <p className="rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-[11px] leading-relaxed text-rose-700">
+                        Pesanan ini dibatalkan oleh penjual. Hubungi penjual bila ada pertanyaan, atau pesan lagi.
+                      </p>
+                    ) : (
                     <ol className="flex items-center gap-1 text-[9px] font-semibold sm:gap-1.5 sm:text-[10px]" aria-label="Progres pesanan">
                       {STEPS.map((_, i) => (
                         <li key={i} className="flex flex-1 items-center gap-1 last:flex-none sm:gap-1.5">
@@ -136,6 +142,7 @@ export default function OrdersPage() {
                         </li>
                       ))}
                     </ol>
+                    )}
 
                     <ul className="mt-3 space-y-1.5 text-xs">
                       {o.items.map((it, idx) => (
@@ -156,7 +163,7 @@ export default function OrdersPage() {
                   <div className="flex flex-col items-start justify-between gap-3 border-t border-dashed border-navy/10 pt-3 sm:min-w-[10rem] sm:items-end sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
                     <div className="sm:text-right">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-navy/50">Total</p>
-                      <p className="tnum font-display text-lg font-extrabold text-price">{formatRupiah(o.total)}</p>
+                      <p className={`tnum font-display text-lg font-extrabold ${cancelled ? "text-navy/40 line-through" : "text-price"}`}>{formatRupiah(o.total)}</p>
                     </div>
                     <div className="flex w-full gap-2 sm:w-auto">
                       <button

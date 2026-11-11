@@ -149,7 +149,7 @@ const STORE_SELECT = `
     s.seller_phone as "sellerPhone",
     s.is_open as "isOpen", s.joined_at as "joinedAt",
     (select count(*)::int from products p where p.store_id = s.id) as "productCount",
-    (select count(*)::int from orders o where o.store_id = s.id) as "orderCount",
+    (select count(*)::int from orders o where o.store_id = s.id and o.status <> 'cancelled') as "orderCount",
     (select coalesce(sum(oi.qty), 0)::int from orders o join order_items oi on oi.order_id = o.id
       where o.store_id = s.id and o.status = 'done') as "soldCount"
   from stores s`;
@@ -159,7 +159,7 @@ const ORDER_SELECT = `
     o.queue_no as "queueNo", o.method, o.note, o.total, o.status, o.created_at as "createdAt",
     c.name as "customerName", c.kelas as "customerClass", c.phone as "customerPhone",
     (select count(*)::int from orders ahead
-      where ahead.store_id = o.store_id and ahead.created_at < o.created_at and ahead.status <> 'done') as ahead,
+      where ahead.store_id = o.store_id and ahead.created_at < o.created_at and ahead.status not in ('done', 'cancelled')) as ahead,
     coalesce(json_agg(json_build_object(
       'id', oi.id, 'productId', oi.product_id, 'name', oi.name, 'price', oi.price, 'qty', oi.qty,
       'options', oi.options, 'optionsObj', oi.options_obj, 'note', oi.note,
@@ -190,7 +190,7 @@ async function ordersByIds(ids, database = pool) {
   const orders = result.rows;
   return orders.map((order) => {
     const qty = order.items.reduce((total, item) => total + item.qty, 0);
-    const minutes = order.status === "done" ? 0 : order.status === "processing" ? 3 + qty * 2 : 5 + order.ahead * 4 + qty * 2;
+    const minutes = order.status === "done" || order.status === "cancelled" ? 0 : order.status === "processing" ? 3 + qty * 2 : 5 + order.ahead * 4 + qty * 2;
     return { ...order, minutes };
   });
 }
@@ -830,13 +830,27 @@ app.get("/api/stores/:storeId/orders", async (req, res, next) => {
 });
 
 app.patch("/api/orders/:id/status", async (req, res, next) => {
-  const valid = ["pending", "accepted", "processing", "done"];
-  if (!valid.includes(req.body.status)) return fail(res, 400, "Status tidak valid.");
+  const valid = ["pending", "accepted", "processing", "done", "cancelled"];
+  const nextStatus = req.body.status;
+  if (!valid.includes(nextStatus)) return fail(res, 400, "Status tidak valid.");
   try {
-    const order = await pool.query("select store_id from orders where id = $1", [req.params.id]);
+    const order = await pool.query("select store_id, status from orders where id = $1", [req.params.id]);
     if (!order.rowCount) return fail(res, 404, "Pesanan tidak ditemukan.");
     if (!requireOwner(req, res, order.rows[0].store_id)) return;
-    await pool.query("update orders set status = $2 where id = $1", [req.params.id, req.body.status]);
+    const current = order.rows[0].status;
+
+    if (nextStatus === "cancelled") {
+      if (current === "cancelled") return res.json({ ok: true });
+      // Hanya pesanan yang belum selesai yang bisa dibatalkan (dicek atomik di query).
+      const updated = await pool.query(
+        "update orders set status = 'cancelled' where id = $1 and status not in ('done', 'cancelled')",
+        [req.params.id]
+      );
+      if (!updated.rowCount) return fail(res, 409, "Pesanan yang sudah selesai tidak bisa dibatalkan.");
+    } else {
+      if (current === "cancelled") return fail(res, 409, "Pesanan ini sudah dibatalkan.");
+      await pool.query("update orders set status = $2 where id = $1", [req.params.id, nextStatus]);
+    }
     sendChange();
     res.json({ ok: true });
   } catch (error) {
@@ -875,14 +889,15 @@ app.get("/api/stores/:storeId/stats", async (req, res, next) => {
       }
     }
     const revenue = done.reduce((sum, order) => sum + order.total, 0);
-    const statusCounts = Object.fromEntries(["pending", "accepted", "processing", "done"]
+    const statusCounts = Object.fromEntries(["pending", "accepted", "processing", "done", "cancelled"]
       .map((status) => [status, orders.filter((order) => order.status === status).length]));
     res.json({
       revenue,
-      orderCount: orders.length,
+      orderCount: orders.filter((order) => order.status !== "cancelled").length,
+      cancelledCount: orders.filter((order) => order.status === "cancelled").length,
       doneCount: done.length,
       avgOrder: done.length ? Math.round(revenue / done.length) : 0,
-      pendingRevenue: orders.filter((order) => order.status !== "done").reduce((sum, order) => sum + order.total, 0),
+      pendingRevenue: orders.filter((order) => order.status !== "done" && order.status !== "cancelled").reduce((sum, order) => sum + order.total, 0),
       soldPortions: done.reduce((sum, order) => sum + order.items.reduce((qty, item) => qty + item.qty, 0), 0),
       days: days.map((date) => date.toLocaleDateString("id-ID", { weekday: "short" })),
       revenueByDay,

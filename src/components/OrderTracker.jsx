@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, CheckCircle2, ChefHat, Clock, MapPin, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChefHat, Clock, MapPin, X, XCircle } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatRupiah, timeAgo } from "../data/products";
 import { getOrdersByIds, ORDER_POLL_INTERVAL_MS } from "../db/repository";
@@ -12,7 +12,8 @@ const stepOf = (s) => (s === "done" ? 2 : s === "processing" ? 1 : 0);
 function Ticket({ o }) {
   const step = stepOf(o.status);
   const steps = ["Diantre", "Sedang dimasak", o.method === "delivery" ? "Siap diantar" : "Siap diambil"];
-  const Icon = [Clock, ChefHat, CheckCircle2][step];
+  const cancelled = o.status === "cancelled";
+  const Icon = cancelled ? XCircle : [Clock, ChefHat, CheckCircle2][step];
 
   return (
     <div className="overflow-hidden rounded-[24px] border border-navy/[0.07] bg-white shadow-card">
@@ -28,19 +29,22 @@ function Ticket({ o }) {
           </div>
           <span
             className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold ring-1 ${
-              step === 2
+              cancelled
+                ? "bg-rose-50 text-rose-700 ring-rose-100"
+                : step === 2
                 ? "bg-emerald-50 text-emerald-700 ring-emerald-100"
                 : step === 1
                   ? "bg-sky-50 text-sky-700 ring-sky-100"
                   : "bg-amber-50 text-amber-700 ring-amber-100"
             }`}
           >
-            <Icon size={13} /> {steps[step]}
+            <Icon size={13} /> {cancelled ? "Dibatalkan" : steps[step]}
           </span>
         </div>
       </div>
 
       <div className="p-4">
+        {!cancelled && (
         <ol className="flex items-center" aria-label="Progres pesanan">
           {steps.map((label, i) => (
             <li key={label} className="flex flex-1 flex-col items-start last:flex-none">
@@ -66,11 +70,18 @@ function Ticket({ o }) {
             </li>
           ))}
         </ol>
+        )}
 
-        <p className="mt-4 rounded-xl border border-navy/[0.06] bg-navy-50/70 px-3 py-2 text-[11px] leading-relaxed text-navy/60">
-          {step === 2
-            ? "Pesananmu sudah siap. Silakan ambil di booth atau tunggu diantar ya!"
-            : `Estimasi tunggu sekitar ${o.minutes} menit. Status diperbarui langsung oleh penjual.`}
+        <p
+          className={`rounded-xl border px-3 py-2 text-[11px] leading-relaxed ${
+            cancelled ? "border-rose-100 bg-rose-50 text-rose-700" : "mt-4 border-navy/[0.06] bg-navy-50/70 text-navy/60"
+          }`}
+        >
+          {cancelled
+            ? "Pesanan ini dibatalkan oleh penjual. Hubungi penjual bila ada pertanyaan, atau pesan lagi dari menu."
+            : step === 2
+              ? "Pesananmu sudah siap. Silakan ambil di booth atau tunggu diantar ya!"
+              : `Estimasi tunggu sekitar ${o.minutes} menit. Status diperbarui langsung oleh penjual.`}
         </p>
 
         <ul className="mt-4 space-y-1 border-t border-dashed border-navy/10 pt-3 text-xs">

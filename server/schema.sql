@@ -55,8 +55,11 @@ create table if not exists customers (
 );
 
 do $$ begin
-  create type order_status as enum ('pending', 'accepted', 'processing', 'done');
+  create type order_status as enum ('pending', 'accepted', 'processing', 'done', 'cancelled');
 exception when duplicate_object then null; end $$;
+
+-- Database lama: tambahkan status pesanan dibatalkan.
+alter type order_status add value if not exists 'cancelled';
 
 create sequence if not exists order_queue_seq;
 create table if not exists orders (

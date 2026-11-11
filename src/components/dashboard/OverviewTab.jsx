@@ -43,7 +43,7 @@ export default function OverviewTab({ store, orders }) {
     {
       label: "Perlu diproses",
       value: stats ? formatRupiah(stats.pendingRevenue) : "—",
-      sub: `${orders.filter((o) => o.status !== "done").length} pesanan aktif`,
+      sub: `${orders.filter((o) => o.status !== "done" && o.status !== "cancelled").length} pesanan aktif`,
       Icon: Wallet,
       tone: "bg-white text-navy border-navy/[0.07]",
       iconTone: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
